@@ -1,13 +1,14 @@
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+// import com.revrobotics.spark.SparkBase.PersistMode;
+// import com.revrobotics.spark.SparkBase.ResetMode;
+// import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 //import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 //import com.pathplanner.lib.util.PIDConstants;
@@ -21,7 +22,9 @@ import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios;
 import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
-
+//public final class constants
+//this is for the constants
+//for your information
 public final class Constants {
     public static final double CONTROLLER_DEADBAND = 0.1;
 
@@ -31,7 +34,9 @@ public final class Constants {
 
         public static final boolean INVERT_GYRO = true;
         public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(driveRatios.L2);
-
+    public static final class TurretConstants {
+        
+    }
         /**
          * Units: Meters
          */
@@ -86,6 +91,16 @@ public final class Constants {
         public static final boolean DRIVE_ENABLE_CURRENT_LIMIT = true;
         public static final boolean DRIVE_ENABLE_STATOR_CURRENT_LIMIT = false;
 
+
+/*
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+*/
+
         /*
          * These values are used by the drive falcon to ramp in open loop and closed
          * loop driving.
@@ -117,7 +132,7 @@ public final class Constants {
         public static final class Mod0 {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
-            public static final int canCoderID = 3;
+            public static final int canCoderID = 3; 
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-177.178);
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     canCoderID, angleOffset);
@@ -161,13 +176,63 @@ public final class Constants {
                 );
 
     }
-
     
+    //Intake Constants:
+    public static final class IntakeConstants {
+        public static final int intakeMotor = 0;
 
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+    }
+    
+    
+    //Turret Constants
+    public static final class TurretConstants {
+        public static final int angleMotor = 0;
+        public static final PIDConstants anglePID = new PIDConstants(0, 0, 0);
+
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+    }
+
+    //Shooter Constants
+    public static final class ShooterConstants {
+        public static final int shooterMotor1 = 0;
+        public static final int shooterMotor2 = 0;
+
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+    } 
+
+    //Climb Constants
+    public static final class ClimbConstants {
+        public static final int climbMotor = 0;
+
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+    }
+
+    //Auto Constants
     public static final class AutoConstants { 
 
         public static final double kHeadingOffset = 90;
-                                              // tuned to specific robot
+        // tuned to specific robot
         public static final double kMaxSpeedMetersPerSecond = 7.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 5.2;
         public static final double kMaxAngularSpeedRadiansPerSecond = 3 * Math.PI;
@@ -187,5 +252,12 @@ public final class Constants {
         // =
         // new TrapezoidProfile.Constraints(
         // kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+    public static final class AutoAimConstants{
+
+        public static final double kP = 0.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+
     }
 }

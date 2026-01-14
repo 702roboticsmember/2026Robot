@@ -41,7 +41,6 @@ public class Swerve extends SubsystemBase {
         try {
             config = RobotConfig.fromGUISettings();
         } catch (IOException | ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

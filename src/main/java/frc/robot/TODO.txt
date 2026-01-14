@@ -1,0 +1,11 @@
+Subsytems
+Climb - (1 motor, pully, 48:1 gearbox)
+Intake - (1 motor)
+Shooter - (2 motors)
+Turret - (1 motor, angle)
+
+Commands
+    Toggle Intake
+    Toggle AutoAim (full auto aim to manual aim)
+    Hold Shoot
+    

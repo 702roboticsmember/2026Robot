@@ -3,8 +3,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonSRXConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.signals.InvertedValue;
-import com.ctre.phoenix6.signals.NeutralModeValue;
+// import com.ctre.phoenix6.signals.InvertedValue;
+// import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public final class CTREConfigs {
@@ -70,16 +70,16 @@ public final class CTREConfigs {
         swerveDriveFXConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = Constants.Swerve.CLOSED_LOOP_RAMP;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.Swerve.CLOSED_LOOP_RAMP;
     
-        //turret configs
-            turretConfig.peakCurrentLimit = Constants.TurretConstants.CURRENT_LIMIT;
-            turretConfig.continuousCurrentLimit = Constants.TurretConstants.CURRENT_LIMIT;
-            //turretConfig.
+        // //turret configs
+        //     turretConfig.peakCurrentLimit = Constants.TurretConstants.CURRENT_LIMIT;
+        //     turretConfig.continuousCurrentLimit = Constants.TurretConstants.CURRENT_LIMIT;
+        //     //turretConfig.
             
 
-            turretConfig.forwardSoftLimitEnable = Constants.TurretConstants.LimitEnable;
-            turretConfig.forwardSoftLimitThreshold = Constants.TurretConstants.forwardSoftLimit;
-            turretConfig.reverseSoftLimitEnable = Constants.TurretConstants.LimitEnable;
-            turretConfig.reverseSoftLimitThreshold = Constants.TurretConstants.reverseSoftLimit;
+        //     turretConfig.forwardSoftLimitEnable = Constants.TurretConstants.LimitEnable;
+        //     turretConfig.forwardSoftLimitThreshold = Constants.TurretConstants.forwardSoftLimit;
+        //     turretConfig.reverseSoftLimitEnable = Constants.TurretConstants.LimitEnable;
+        //     turretConfig.reverseSoftLimitThreshold = Constants.TurretConstants.reverseSoftLimit;
 
         // turretConfig.inverted(Constants.TurretConstants.MotorInverted);
     
@@ -95,48 +95,48 @@ public final class CTREConfigs {
         // turretConfig.softLimit.reverseSoftLimitEnabled(Constants.TurretConstants.LimitEnable);
    
 
-        //shooter configs
-        var s_currentlimits = shooterConfigs.CurrentLimits;
-        s_currentlimits.StatorCurrentLimit = Constants.ShootSubsystem.STATOR_CURRENT_LIMIT;
-        s_currentlimits.StatorCurrentLimitEnable = Constants.ShootSubsystem.ENABLE_STATOR_CURRENT_LIMIT;
-        s_currentlimits.SupplyCurrentLimit = Constants.ShootSubsystem.CURRENT_LIMIT;
-        s_currentlimits.SupplyCurrentLimitEnable = Constants.ShootSubsystem.ENABLE_CURRENT_LIMIT;
+        // //shooter configs
+        // var s_currentlimits = shooterConfigs.CurrentLimits;
+        // s_currentlimits.StatorCurrentLimit = Constants.ShootSubsystem.STATOR_CURRENT_LIMIT;
+        // s_currentlimits.StatorCurrentLimitEnable = Constants.ShootSubsystem.ENABLE_STATOR_CURRENT_LIMIT;
+        // s_currentlimits.SupplyCurrentLimit = Constants.ShootSubsystem.CURRENT_LIMIT;
+        // s_currentlimits.SupplyCurrentLimitEnable = Constants.ShootSubsystem.ENABLE_CURRENT_LIMIT;
 
-        var s_motoroutput = shooterConfigs.MotorOutput;
-        s_motoroutput.NeutralMode = Constants.ShootSubsystem.ShootMotorMode;
-        s_motoroutput.Inverted = Constants.ShootSubsystem.ShootMotorInverted;
+        // var s_motoroutput = shooterConfigs.MotorOutput;
+        // s_motoroutput.NeutralMode = Constants.ShootSubsystem.ShootMotorMode;
+        // s_motoroutput.Inverted = Constants.ShootSubsystem.ShootMotorInverted;
 
-        var s_slot0Configs = shooterConfigs.Slot0;
-        s_slot0Configs.kS = Constants.ShootSubsystem.kS; // Add 0.25 V output to overcome static friction
-        s_slot0Configs.kV = Constants.ShootSubsystem.kV; // A velocity target of 1 rps results in 0.12 V output
-        s_slot0Configs.kA = Constants.ShootSubsystem.kA; // An acceleration of 1 rps/s requires 0.01 V output
-        s_slot0Configs.kP = Constants.ShootSubsystem.kP; // An error of 1 rps results in 0.11 V output
-        s_slot0Configs.kI = Constants.ShootSubsystem.kI; // no output for integrated error
-        s_slot0Configs.kD = Constants.ShootSubsystem.kD; // no output for error derivative
+        // var s_slot0Configs = shooterConfigs.Slot0;
+        // s_slot0Configs.kS = Constants.ShootSubsystem.kS; // Add 0.25 V output to overcome static friction
+        // s_slot0Configs.kV = Constants.ShootSubsystem.kV; // A velocity target of 1 rps results in 0.12 V output
+        // s_slot0Configs.kA = Constants.ShootSubsystem.kA; // An acceleration of 1 rps/s requires 0.01 V output
+        // s_slot0Configs.kP = Constants.ShootSubsystem.kP; // An error of 1 rps results in 0.11 V output
+        // s_slot0Configs.kI = Constants.ShootSubsystem.kI; // no output for integrated error
+        // s_slot0Configs.kD = Constants.ShootSubsystem.kD; // no output for error derivative
 
-        // set Motion Magic Velocity settings
-        var s_motionMagicConfigs = shooterConfigs.MotionMagic;
-        s_motionMagicConfigs.MotionMagicAcceleration = Constants.ShootSubsystem.MotionMagicAcceleration; // Target acceleration of 400 rps/s (0.25 seconds to max)
-        s_motionMagicConfigs.MotionMagicJerk = Constants.ShootSubsystem.MotionMagicJerk; // Target jerk of 4000 rps/s/s (0.1 seconds)
+        // // set Motion Magic Velocity settings
+        // var s_motionMagicConfigs = shooterConfigs.MotionMagic;
+        // s_motionMagicConfigs.MotionMagicAcceleration = Constants.ShootSubsystem.MotionMagicAcceleration; // Target acceleration of 400 rps/s (0.25 seconds to max)
+        // s_motionMagicConfigs.MotionMagicJerk = Constants.ShootSubsystem.MotionMagicJerk; // Target jerk of 4000 rps/s/s (0.1 seconds)
 
 
-        //intake configs
-        var i_currentlimits = intakeConfigs.CurrentLimits;
-        i_currentlimits.StatorCurrentLimit = Constants.IntakeConstants.STATOR_CURRENT_LIMIT;
-        i_currentlimits.StatorCurrentLimitEnable = Constants.IntakeConstants.ENABLE_STATOR_CURRENT_LIMIT;
-        i_currentlimits.SupplyCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
-        i_currentlimits.SupplyCurrentLimitEnable = Constants.IntakeConstants.ENABLE_CURRENT_LIMIT;
+        // //intake configs
+        // var i_currentlimits = intakeConfigs.CurrentLimits;
+        // i_currentlimits.StatorCurrentLimit = Constants.IntakeConstants.STATOR_CURRENT_LIMIT;
+        // i_currentlimits.StatorCurrentLimitEnable = Constants.IntakeConstants.ENABLE_STATOR_CURRENT_LIMIT;
+        // i_currentlimits.SupplyCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
+        // i_currentlimits.SupplyCurrentLimitEnable = Constants.IntakeConstants.ENABLE_CURRENT_LIMIT;
 
-        var i_motoroutput = intakeConfigs.MotorOutput;
-        i_motoroutput.NeutralMode = NeutralModeValue.Brake;
-        i_motoroutput.Inverted = InvertedValue.Clockwise_Positive;
+        // var i_motoroutput = intakeConfigs.MotorOutput;
+        // i_motoroutput.NeutralMode = NeutralModeValue.Brake;
+        // i_motoroutput.Inverted = InvertedValue.Clockwise_Positive;
 
-        //release configs
-        releaseConfig.inverted(Constants.ReleaseConstants.MotorInverted);
+        // //release configs
+        // releaseConfig.inverted(Constants.ReleaseConstants.MotorInverted);
     
-        releaseConfig.smartCurrentLimit(Constants.ReleaseConstants.CURRENT_LIMIT);
+        // releaseConfig.smartCurrentLimit(Constants.ReleaseConstants.CURRENT_LIMIT);
     
-        releaseConfig.idleMode(Constants.ReleaseConstants.MotorMode);
+        // releaseConfig.idleMode(Constants.ReleaseConstants.MotorMode);
 
     }
 }

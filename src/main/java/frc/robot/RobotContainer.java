@@ -12,10 +12,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+// import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+// import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,15 +29,30 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+    // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+
     private final XboxController driver = new XboxController(0);
+    // private final XboxController codriver = new XboxController(0);
+
+
+    //driver buttons
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
+    
+    //codriver buttons
+    // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
     public static double power = 1;
     public static boolean robotCentric = false;
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
     
+
+    // private Command setIntake(boolean value) {
+    //     return new InstantCommand(
+    //         () -> intakeSubsystem.setSpeed(1)
+    //     );
+    // }
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
