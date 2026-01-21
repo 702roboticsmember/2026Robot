@@ -45,7 +45,7 @@ public class AlignCommand extends Command {
   
 
   /** Creates a new AutoAim. */
-  public AlignCommand( double x, double z, double ry, Swerve s_Swerve) {
+  public AlignCommand(double x, double z, double ry, LimelightSubsystem l_LimelightSubsystem, Swerve s_Swerve) {
     
     this.l_LimelightSubsystem = l_LimelightSubsystem;
     this.TX = ()-> l_LimelightSubsystem.getTargetPos(0);
@@ -93,17 +93,17 @@ public class AlignCommand extends Command {
 
     
     boolean Target =  l_LimelightSubsystem.IsTargetAvailable();
-    double value = TranslatePID.calculate(Tx);
-    //double result = Math.copySign(Math.abs(value) + 0.01, value); 
-    double Tranlate = (Target && !TranslatePID.atSetpoint()  ? MathUtil.clamp(value, -0.47, 0.47) : 0);
-    SmartDashboard.putNumber("TPID", value);
+    // double value = TranslatePID.calculate(Tx);
+    // double result = Math.copySign(Math.abs(value) + 0.01, value); 
+    // double Tranlate = (Target && !TranslatePID.atSetpoint()  ? MathUtil.clamp(value, -0.47, 0.47) : 0);
+    // SmartDashboard.putNumber("TPID", value);
     SmartDashboard.putNumber("TTX", x);
 
     
-    double value1 = StrafePID.calculate(Tz);
+    // double value1 = StrafePID.calculate(Tz);
     //double result1 = Math.copySign(Math.abs(value1) + 0.0955, value1); 
-    double Strafe = (Target && !StrafePID.atSetpoint()? MathUtil.clamp(value1, -0.47, 0.47) : 0);
-    SmartDashboard.putNumber("SPID", value1);
+    // double Strafe = (Target && !StrafePID.atSetpoint()? MathUtil.clamp(value1, -0.47, 0.47) : 0);
+    // SmartDashboard.putNumber("SPID", value1);
     SmartDashboard.putNumber("STZ", z);
     //Cameron Trux Team 702 :3
     //double angle = Math.tanh(x/z);
@@ -126,12 +126,12 @@ public class AlignCommand extends Command {
     // }
     SmartDashboard.putNumber("RRY", a);
     SmartDashboard.putNumber("RPID", Rotate);
-    s_Swerve.drive(
-                new Translation2d(Strafe, -Tranlate).times(Constants.Swerve.MAX_SPEED),
-                Rotate * Constants.Swerve.MAX_ANGULAR_VELOCITY,
-                !true,
-                true);
-                SmartDashboard.putNumber("RRPID", Rotate* (1 + Strafe));
+    // s_Swerve.drive(
+    //             new Translation2d(Strafe, -Tranlate).times(Constants.Swerve.MAX_SPEED),
+    //             Rotate * Constants.Swerve.MAX_ANGULAR_VELOCITY,
+    //             !true,
+    //             true);
+    //             SmartDashboard.putNumber("RRPID", Rotate* (1 + Strafe));
 
   }
 

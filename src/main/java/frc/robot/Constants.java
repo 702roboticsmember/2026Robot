@@ -28,6 +28,12 @@ import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
 public final class Constants {
     public static final double CONTROLLER_DEADBAND = 0.1;
 
+    public static final class LEDConstants {
+
+        public static final int LEDPort = 0;
+        public static final int BufferLength = 0;
+
+    }
    
 
     public static final class Swerve {
@@ -220,6 +226,7 @@ public final class Constants {
     public static final class ClimbConstants {
         public static final int climbMotor = 0;
 
+        public static final double CLIMB_GEAR_RATIO = 1/1;
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60

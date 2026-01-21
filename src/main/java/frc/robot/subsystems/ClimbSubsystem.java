@@ -13,6 +13,13 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
   private TalonFX motor = new TalonFX(Constants.ClimbConstants.climbMotor);
+  public double speed;
+  public double getClimbAngle(){
+    return TickToDeg(motor.getPosition().getValueAsDouble());
+  }
+  public double TickToDeg(double ticks){
+    return ticks *1/1;
+  }
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     TalonFXConfigurator talonFXConfigurator = motor.getConfigurator();
@@ -24,6 +31,10 @@ public class ClimbSubsystem extends SubsystemBase {
     limits.SupplyCurrentLimitEnable = Constants.ClimbConstants.ENABLE_CURRENT_LIMIT;
 
     talonFXConfigurator.apply(limits);
+  }
+
+  public void setSpeed(double speed){
+    motor.set(speed);
   }
 
 
