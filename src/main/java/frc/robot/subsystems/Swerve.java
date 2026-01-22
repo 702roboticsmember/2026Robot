@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import frc.robot.SwerveModule;
 import frc.robot.Constants;
+import frc.robot.LimelightHelpers;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -17,7 +18,8 @@ import org.json.simple.parser.ParseException;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 
-
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,7 +32,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * Our main drive subsystem
  */
 public class Swerve extends SubsystemBase {
-    public SwerveDriveOdometry swerveOdometry;
+   
+    public SwerveDrivePoseEstimator swerveOdometry;
     public SwerveModule[] swerveModules;
     public AHRS gyro;
     public  RobotConfig config;
@@ -53,7 +56,7 @@ public class Swerve extends SubsystemBase {
 
         
     
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions());
+        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), getPose());
         
         AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -142,7 +145,7 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return swerveOdometry.getPoseMeters();
+        return swerveOdometry.getEstimatedPosition();
     }
 
     public void setPose(Pose2d pose) {
@@ -181,11 +184,38 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
+        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Swerve.ODOMETRY_LIMELIGHT_NAME);
+        boolean doRejectUpdate = false;
+      
         SmartDashboard.putNumber("Acc",this.getAcc());
         for (SwerveModule mod : swerveModules) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
+        }
+
+        
+        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        {
+              if(mt1.rawFiducials[0].ambiguity > .7)
+              {
+                doRejectUpdate = true;
+                }
+            if(mt1.rawFiducials[0].distToCamera > 3)
+            {
+                doRejectUpdate = true;
+            }
+        }
+        if(mt1.tagCount == 0)
+        {
+            doRejectUpdate = true;
+        }
+        if(!doRejectUpdate)
+        {
+            swerveOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+            swerveOdometry.addVisionMeasurement(
+                mt1.pose,
+                mt1.timestampSeconds);
         }
     }
 }

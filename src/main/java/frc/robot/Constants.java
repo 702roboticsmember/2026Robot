@@ -19,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios;
+import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i;
 import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
@@ -39,19 +40,18 @@ public final class Constants {
     public static final class Swerve {
 
         public static final boolean INVERT_GYRO = true;
-        public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(driveRatios.L2);
-    public static final class TurretConstants {
-        
-    }
+         public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
+        public static final double ANGLE_GEAR_RATIO = 18.75;
+        public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(DRIVE_GEAR_RATIO);
         /**
          * Units: Meters
          */
-        public static final double TRACK_WIDTH = Units.inchesToMeters(23.5);
+        public static final double TRACK_WIDTH = Units.inchesToMeters(27.75);
 
         /**
          * Units: Meters
          */
-        public static final double BASE_WIDTH = Units.inchesToMeters(23.5);
+        public static final double BASE_WIDTH = Units.inchesToMeters(15.75);
 
         /**
          * Units: Meters
@@ -71,9 +71,10 @@ public final class Constants {
                 new Translation2d(-BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
                 new Translation2d(-BASE_WIDTH / 2.0, -TRACK_WIDTH / 2.0));
 
+
+
         /* Module Gear Ratios */
-        public static final double DRIVE_GEAR_RATIO = FALCON_500_CONSTANTS.driveGearRatio;
-        public static final double ANGLE_GEAR_RATIO = FALCON_500_CONSTANTS.angleGearRatio;
+       
 
         public static final InvertedValue ANGLE_MOTOR_INVERT = FALCON_500_CONSTANTS.angleMotorInvert;
         public static final InvertedValue DRIVE_MOTOR_INVERT = FALCON_500_CONSTANTS.driveMotorInvert;
@@ -181,6 +182,8 @@ public final class Constants {
                 // new ReplanningConfig()
                 );
 
+        public static final String ODOMETRY_LIMELIGHT_NAME = null;
+
     }
     
     //Intake Constants:
@@ -249,18 +252,8 @@ public final class Constants {
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
  
-
-        
-        /**
-         * Config for PathPlanner to follow auto paths
-         */
-
-        /* Constraint for the motion profilied robot angle controller */
-        // public static final TrapezoidProfile.Constraints kThetaControllerConstraints
-        // =
-        // new TrapezoidProfile.Constraints(
-        // kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
+
     public static final class AutoAimConstants{
 
         public static final double kP = 0.0;
