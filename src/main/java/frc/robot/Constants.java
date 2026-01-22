@@ -186,7 +186,7 @@ public final class Constants {
     //Intake Constants:
     public static final class IntakeConstants {
         public static final int intakeMotor = 0;
-
+        public static final int armMotor = 0;
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60
@@ -248,6 +248,7 @@ public final class Constants {
         public static final double kPXController = 1;
         public static final double kPYController = 1;
         public static final double kPThetaController = 1;
+ 
 
         
         /**
@@ -266,5 +267,18 @@ public final class Constants {
         public static final double kI = 0.0;
         public static final double kD = 0.0;
 
+    }
+
+     //Indexer Constants
+    public static final class IndexerConstants {
+
+        public static final int indexMotorFeeder = 0;
+        public static final int indexMotorTurret = 1;
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
     }
 }

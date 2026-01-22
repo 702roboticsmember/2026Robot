@@ -14,11 +14,13 @@ import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotor);
-
-  public void setSpeed(double speed) {
+  TalonFX armMotor = new TalonFX(Constants.IntakeConstants.armMotor);
+  public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
-  
+  public void setArmSpeed(double speed){
+    armMotor.set(speed);
+  }
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     TalonFXConfigurator talonFXConfigurator = intakeMotor.getConfigurator();
@@ -32,6 +34,12 @@ public class IntakeSubsystem extends SubsystemBase {
     talonFXConfigurator.apply(limits);
 
     
+  }
+  public double tickToDeg(double tick){
+    return tick * 1/1;
+  }
+  public double getArmAngle(){
+    return tickToDeg(armMotor.getPosition().getValueAsDouble());
   }
   @Override
   public void periodic() {

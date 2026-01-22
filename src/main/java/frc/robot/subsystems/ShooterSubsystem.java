@@ -17,6 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
     motor2.setControl(new Follower(Constants.ShooterConstants.shooterMotor1, MotorAlignmentValue.Aligned));
+    
   }
 
   public void setSpeed(double speed) {

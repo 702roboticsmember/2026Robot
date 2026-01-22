@@ -13,8 +13,9 @@ public final class CTREConfigs {
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
     public TalonFXConfiguration shooterConfigs = new TalonFXConfiguration();
     public TalonFXConfiguration intakeConfigs = new TalonFXConfiguration();
-    public TalonSRXConfiguration turretConfig = new TalonSRXConfiguration();
+    public TalonSRXConfiguration turretConfigs = new TalonSRXConfiguration();
     public SparkMaxConfig releaseConfig = new SparkMaxConfig();
+    public TalonFXConfiguration indexConfigs = new TalonFXConfiguration();
 
     public CTREConfigs() {
         /** Swerve CANCoder Configuration */
@@ -137,6 +138,13 @@ public final class CTREConfigs {
         // releaseConfig.smartCurrentLimit(Constants.ReleaseConstants.CURRENT_LIMIT);
     
         // releaseConfig.idleMode(Constants.ReleaseConstants.MotorMode);
+
+var i_currentlimits = indexConfigs.CurrentLimits;
+        i_currentlimits.StatorCurrentLimit = Constants.IntakeConstants.STATOR_CURRENT_LIMIT;
+        i_currentlimits.StatorCurrentLimitEnable = Constants.IntakeConstants.ENABLE_STATOR_CURRENT_LIMIT;
+        i_currentlimits.SupplyCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
+        i_currentlimits.SupplyCurrentLimitEnable = Constants.IntakeConstants.ENABLE_CURRENT_LIMIT;
+
 
     }
 }
