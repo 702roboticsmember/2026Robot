@@ -12,17 +12,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
-  private TalonFX motor1 = new TalonFX(Constants.ShooterConstants.shooterMotor1);
-  private TalonFX motor2 = new TalonFX(Constants.ShooterConstants.shooterMotor2);
+  private TalonFX FlywheelMotor1 = new TalonFX(Constants.ShooterConstants.shooterMotor1);
+  private TalonFX FlywheelMotor2 = new TalonFX(Constants.ShooterConstants.shooterMotor2);
+  //private TalonFX TurretMotor = new TalonFX(Constants.ShooterConstants.angleMotor);
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
-    motor2.setControl(new Follower(Constants.ShooterConstants.shooterMotor1, MotorAlignmentValue.Aligned));
+    FlywheelMotor2.setControl(new Follower(Constants.ShooterConstants.shooterMotor1, MotorAlignmentValue.Aligned));
     
   }
 
   public void setSpeed(double speed) {
-    motor1.set(speed);
+    FlywheelMotor1.set(speed);
   }
+   //public double tickToDeg("")
 
   @Override
   public void periodic() {

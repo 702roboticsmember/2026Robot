@@ -10,18 +10,18 @@ import frc.robot.subsystems.IntakeSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRollerCommand extends Command {
   /** Creates a new IntakeRollerCommand. */
-  IntakeSubsystem subsystem;
+  IntakeSubsystem i_subsystem;
 
-  public IntakeRollerCommand(IntakeSubsystem subsystem) {
+  public IntakeRollerCommand(IntakeSubsystem i_subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.subsystem = subsystem;
-    addRequirements(subsystem);
+    this.i_subsystem = i_subsystem;
+    addRequirements(i_subsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    subsystem.setIntakeSpeed(0.1);
+    i_subsystem.setIntakeSpeed(0.1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -31,7 +31,7 @@ public class IntakeRollerCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    subsystem.setIntakeSpeed(0);
+    i_subsystem.setIntakeSpeed(0);
   }
 
   // Returns true when the command should end.

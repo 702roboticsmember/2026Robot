@@ -56,7 +56,7 @@ public class Swerve extends SubsystemBase {
 
         
     
-        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), getPose());
+        swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
         
         AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -184,8 +184,12 @@ public class Swerve extends SubsystemBase {
     @Override
     public void periodic() {
         swerveOdometry.update(getGyroYaw(), getModulePositions());
-        LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Swerve.ODOMETRY_LIMELIGHT_NAME);
-        boolean doRejectUpdate = false;
+         SmartDashboard.putNumber("gyro", getGyroYaw().getDegrees());
+
+        // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Swerve.ODOMETRY_LIMELIGHT_NAME);
+        // }
+
+        // boolean doRejectUpdate = false;
       
         SmartDashboard.putNumber("Acc",this.getAcc());
         for (SwerveModule mod : swerveModules) {
@@ -195,27 +199,27 @@ public class Swerve extends SubsystemBase {
         }
 
         
-        if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-        {
-              if(mt1.rawFiducials[0].ambiguity > .7)
-              {
-                doRejectUpdate = true;
-                }
-            if(mt1.rawFiducials[0].distToCamera > 3)
-            {
-                doRejectUpdate = true;
-            }
-        }
-        if(mt1.tagCount == 0)
-        {
-            doRejectUpdate = true;
-        }
-        if(!doRejectUpdate)
-        {
-            swerveOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-            swerveOdometry.addVisionMeasurement(
-                mt1.pose,
-                mt1.timestampSeconds);
-        }
+        // if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+        // {
+        //       if(mt1.rawFiducials[0].ambiguity > .7)
+        //       {
+        //         doRejectUpdate = true;
+        //         }
+        //     if(mt1.rawFiducials[0].distToCamera > 3)
+        //     {
+        //         doRejectUpdate = true;
+        //     }
+        // }
+        // if(mt1.tagCount == 0)
+        // {
+        //     doRejectUpdate = true;
+        // }
+        // if(!doRejectUpdate)
+        // {
+        //     swerveOdometry.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        //     swerveOdometry.addVisionMeasurement(
+        //         mt1.pose,
+        //         mt1.timestampSeconds);
+        // }
     }
 }
