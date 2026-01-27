@@ -27,7 +27,7 @@ import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
 //this is for the constants
 //for your information
 public final class Constants {
-    public static final double CONTROLLER_DEADBAND = 0.1;
+    public static final double CONTROLLER_DEADBAND = 0.05;//0.05
 
     public static final class LEDConstants {
 
@@ -63,7 +63,7 @@ public final class Constants {
          */
         public static final double DRIVEBASE_RADIUS = DRIVEBASE_DIAMETER / 2f;
 
-        public static final double WHEEL_CIRCUMFERENCE = FALCON_500_CONSTANTS.wheelCircumference;
+        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.048;
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
@@ -113,22 +113,22 @@ public final class Constants {
          * loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
          */
-        public static final double OPEN_LOOP_RAMP = 0.45;
+        public static final double OPEN_LOOP_RAMP = 0.25;
         public static final double CLOSED_LOOP_RAMP = 0;
 
         public static final PIDConstants ANGLE_PID = new PIDConstants(FALCON_500_CONSTANTS.angleKP,
                 FALCON_500_CONSTANTS.angleKI, FALCON_500_CONSTANTS.angleKD);
-        public static final PIDConstants DRIVE_PID = new PIDConstants(0.12, 0.0, 0.0);
+        public static final PIDConstants DRIVE_PID = new PIDConstants(1, 0.0, 0.0);
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double DRIVE_KS = 0.32;
-        public static final double DRIVE_KV = 1.51;
-        public static final double DRIVE_KA = 0.27;
+        public static final double DRIVE_KS = 0.32;//.32
+        public static final double DRIVE_KV = 1.51;//1.51
+        public static final double DRIVE_KA = 0.27;//.27
 
         /** Units: m/s */
-        public static final double MAX_SPEED = 10;
+        public static final double MAX_SPEED = 12;
         /** Units: radians/s */
-        public static final double MAX_ANGULAR_VELOCITY = 3.0;
+        public static final double MAX_ANGULAR_VELOCITY = 7;
 
         /* Neutral Modes */
         public static final NeutralModeValue ANGLE_NEUTRAL_MODE = NeutralModeValue.Coast;

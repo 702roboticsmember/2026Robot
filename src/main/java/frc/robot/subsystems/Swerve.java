@@ -25,6 +25,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -34,6 +35,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
    
     public SwerveDrivePoseEstimator swerveOdometry;
+    //public SwerveDriveOdometry swerveOdometry;
     public SwerveModule[] swerveModules;
     public AHRS gyro;
     public  RobotConfig config;
@@ -57,6 +59,7 @@ public class Swerve extends SubsystemBase {
         
     
         swerveOdometry = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
+        //swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
         
         AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -146,6 +149,7 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d getPose() {
         return swerveOdometry.getEstimatedPosition();
+       
     }
 
     public void setPose(Pose2d pose) {
@@ -183,7 +187,10 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        //swerveOdometry.update(getGyroYaw(), getModulePositions());
+        swerveOdometry.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
+        SmartDashboard.putNumber("ox", getPose().getX());
+        SmartDashboard.putNumber("oy", getPose().getY());
          SmartDashboard.putNumber("gyro", getGyroYaw().getDegrees());
 
         // LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Swerve.ODOMETRY_LIMELIGHT_NAME);

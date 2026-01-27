@@ -107,7 +107,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
-        slowMode.onTrue(new InstantCommand(() -> RobotContainer.power = .333));
+        slowMode.onTrue(new InstantCommand(() -> RobotContainer.power = .25));
         fastMode.onTrue(new InstantCommand(() -> RobotContainer.power = 1));         
         shoot.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeSubsystem), new WaitCommand(1), new IntakeRollerCommand(i_IntakeSubsystem))); 
         shoot.whileFalse(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeSubsystem)));        
