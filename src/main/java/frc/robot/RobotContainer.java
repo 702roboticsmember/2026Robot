@@ -4,6 +4,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Value;
 
+import javax.xml.crypto.dsig.spec.HMACParameterSpec;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
@@ -40,6 +42,7 @@ public class RobotContainer {
     private final IntakeSubsystem i_IntakeSubsystem = new IntakeSubsystem();
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
+    private final IndexerSubsystem i_IndexerSubsystem = new IndexerSubsystem();
 
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(0);
@@ -54,8 +57,7 @@ public class RobotContainer {
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton autoAim = new JoystickButton(codriver, 0);
-
-    
+    private final JoystickButton shoot = new JoystickButton(codriver, XboxController.Button.kA.value);
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
     public static double power = 1;
@@ -118,7 +120,14 @@ public class RobotContainer {
         flywheel.toggleOnTrue(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(1)));
         climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
-        
+        shoot.onTrue(new InstantCommand(() -> {
+            i_IndexerSubsystem.setSpeedPrimary(0.1);
+            i_IndexerSubsystem.setSpeedSecondary(0.05);
+        }));
+        shoot.onFalse(new InstantCommand(() -> {
+            i_IndexerSubsystem.setSpeedPrimary(0);
+            i_IndexerSubsystem.setSpeedSecondary(0);
+        }));
     }
     
     public Command getAutonomousCommand() {
