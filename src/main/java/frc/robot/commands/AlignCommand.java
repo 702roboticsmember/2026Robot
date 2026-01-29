@@ -109,7 +109,7 @@ public class AlignCommand extends Command {
     //double angle = Math.tanh(x/z);
 
     double a =  l_LimelightSubsystem.getTargetPos(4);
-    double tx = l_LimelightSubsystem.getTargetX();
+    // double tx = l_LimelightSubsystem.getTargetX();
     double value2 =  RotatePID.calculate(a);
     //double result2 = Math.copySign(Math.abs(value2) + 0.0955, value2); 
     double Rotate = (Target && !RotatePID.atSetpoint() ? MathUtil.clamp(value2, -0.17, 0.17) : 0);

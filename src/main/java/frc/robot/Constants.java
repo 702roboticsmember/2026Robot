@@ -1,6 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -18,8 +17,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.lib.util.COTSTalonFXSwerveConstants;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios;
-import frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i;
 import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
@@ -210,6 +207,11 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+        public static final double Tolerance = 0;
+
     }
 
     //Shooter Constants
@@ -217,13 +219,24 @@ public final class Constants {
         public static final int shooterMotor1 = 0;
         public static final int shooterMotor2 = 0;
         public static final int angleMotor = 0;
-
+     
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+
+        public static final double CruiseVelocity = 0;
+        public static final double Acceleration = 0;
+        public static final double Jerk = 0;
+
+        public static final double kS = 0;
+        public static final double kV = 0;
+        public static final double kA = 0;
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
     } 
 
     //Climb Constants
@@ -237,6 +250,8 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+
+        public static final double extendedAngle = 0;
     }
 
     //Auto Constants
@@ -275,4 +290,14 @@ public final class Constants {
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
     }
+
+    public static final class HoodConstants {
+        
+    public static final int HoodMotor = 0;
+public static final double kP=0;
+public static final double kI= 0;
+public static final double kD= 0;
+public static final double Tolerance = 0;
+    }
+    
 }

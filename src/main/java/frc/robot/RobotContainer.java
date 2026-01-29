@@ -2,6 +2,8 @@ package frc.robot;
 
 
 
+import static edu.wpi.first.units.Units.Value;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
@@ -37,19 +39,21 @@ public class RobotContainer {
     // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final IntakeSubsystem i_IntakeSubsystem = new IntakeSubsystem();
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
+    private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
 
     private final XboxController driver = new XboxController(0);
-    // private final XboxController codriver = new XboxController(0);
+    private final XboxController codriver = new XboxController(0);
 
 
     //driver buttons
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton shoot = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
-        private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
-
-
+    private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+    private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton autoAim = new JoystickButton(codriver, 0);
 
     
     //codriver buttons
@@ -109,9 +113,11 @@ public class RobotContainer {
         zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
         slowMode.onTrue(new InstantCommand(() -> RobotContainer.power = .25));
         fastMode.onTrue(new InstantCommand(() -> RobotContainer.power = 1));         
-        shoot.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeSubsystem), new WaitCommand(1), new IntakeRollerCommand(i_IntakeSubsystem))); 
-        shoot.whileFalse(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeSubsystem)));        
+        intake.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeSubsystem), new WaitCommand(1), new IntakeRollerCommand(i_IntakeSubsystem))); 
+        intake.whileFalse(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeSubsystem)));        
         flywheel.toggleOnTrue(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(1)));
+        climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
+        climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
         
     }
     

@@ -4,38 +4,46 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.Constants;
+import frc.robot.subsystems.HoodSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShooterCommand extends Command {
-  /** Creates a new ShooterCommand. */
-  private ShooterSubsystem s_subsystem;
-  public ShooterCommand(ShooterSubsystem s_subsystem) {
-   this.s_subsystem = s_subsystem;
-   addRequirements(s_subsystem);
+public class HoodPIDCommand extends Command {
+  private PIDController PID = new PIDController(Constants.HoodConstants.kP, Constants.HoodConstants.kI, Constants.HoodConstants.kD);
+  /** Creates a new HoodPIDCommand. */
+  private HoodSubsystem hoodSubsystem;
+  private double target;
+  public HoodPIDCommand(HoodSubsystem hoodSubsystem, double target) {
+    this.hoodSubsystem = hoodSubsystem;
+    this.target = target;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    s_subsystem.setSpeed(0.1);
+    PID.setSetpoint(target);
+    PID.setTolerance(Constants.HoodConstants.Tolerance);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  double speed = PID.calculate(hoodSubsystem.getHoodAngle());
+    hoodSubsystem.setSpeed(speed);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_subsystem.setSpeed(0);
+    hoodSubsystem.setSpeed(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return PID.atSetpoint();
   }
 }

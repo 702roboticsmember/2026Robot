@@ -4,17 +4,27 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-
+//9800 is better
 public class TurretSubsytem extends SubsystemBase {
-  public TalonSRX angleMotor = new TalonSRX(Constants.TurretConstants.angleMotor);
+  public TalonFX angleMotor = new TalonFX(Constants.TurretConstants.angleMotor);
   /** Creates a new TurretSubsytem. */
+  public void setAngleSpeed(double speed){
+    angleMotor.set(speed);
+  }
+  public double tickToDeg(double tick){ 
+    return tick * 1/1;
+  }
+  public double getArmAngle(){
+    return tickToDeg(angleMotor.getPosition().getValueAsDouble());
+  }
+
   public TurretSubsytem() {
+
+  
     // TalonFXConfigurator talonFXConfigurator = angleMotor.getConfigurator();
     // CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
 
@@ -26,8 +36,10 @@ public class TurretSubsytem extends SubsystemBase {
     // talonFXConfigurator.apply(limits);
   }
 
+  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
-}
+}//
