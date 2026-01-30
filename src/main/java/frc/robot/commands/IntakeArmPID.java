@@ -6,15 +6,16 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.Constants;
+import frc.robot.subsystems.IntakeArmSubsytem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeArmPID extends Command {
   /** Creates a new IntakeArmPID. */
-  private IntakeSubsystem i_subsystem;
-  private PIDController controller = new PIDController(0,0,0);
+  private IntakeArmSubsytem i_subsystem;
+  private PIDController controller = new PIDController(Constants.IntakeConstants.kP,Constants.IntakeConstants.kI,Constants.IntakeConstants.kD);
   private double targetAngle;
-  public IntakeArmPID(double targetAngle, IntakeSubsystem i_subsystem) {
+  public IntakeArmPID(double targetAngle, IntakeArmSubsytem i_subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.targetAngle = targetAngle;
     this.i_subsystem = i_subsystem;

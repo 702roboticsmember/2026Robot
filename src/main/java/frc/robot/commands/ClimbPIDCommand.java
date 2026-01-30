@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ClimbPIDCommand extends Command {
   /** Creates a new ClimbPIDCommand. */
   private ClimbSubsystem c_subsystem;
-  private PIDController controller = new PIDController(0, 0, 0);
+  private PIDController controller = new PIDController(Constants.ClimbConstants.kP, Constants.ClimbConstants.kI, Constants.ClimbConstants.kD);
   private double TargetAngle; 
   
   public ClimbPIDCommand(double TargetAngle, ClimbSubsystem c_subsystem) {

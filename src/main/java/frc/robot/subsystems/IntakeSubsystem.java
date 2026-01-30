@@ -4,22 +4,23 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
   TalonFX intakeMotor = new TalonFX(Constants.IntakeConstants.intakeMotor);
-  TalonFX armMotor = new TalonFX(Constants.IntakeConstants.armMotor);
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
-  public void setArmSpeed(double speed){
-    armMotor.set(speed);
-  }
+  
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     TalonFXConfigurator talonFXConfigurator = intakeMotor.getConfigurator();
@@ -34,14 +35,16 @@ public class IntakeSubsystem extends SubsystemBase {
 
     
   }
-  public double tickToDeg(double tick){
-    return tick * 1/1;
-  }
-  public double getArmAngle(){
-    return tickToDeg(armMotor.getPosition().getValueAsDouble());
-  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+  public Command spin(DoubleSupplier speed) {
+    return Commands.runEnd(
+      () -> { setIntakeSpeed(speed.getAsDouble()); },
+      () -> { setIntakeSpeed(0); },
+      this
+    );
   }
 }

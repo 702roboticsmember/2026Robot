@@ -4,17 +4,24 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ShooterSubsystem extends SubsystemBase {
   private TalonFX FlywheelMotor1 = new TalonFX(Constants.ShooterConstants.shooterMotor1);
   private TalonFX FlywheelMotor2 = new TalonFX(Constants.ShooterConstants.shooterMotor2);
+
+  private MotionMagicVelocityDutyCycle velControl = new MotionMagicVelocityDutyCycle(0);
   //private TalonFX TurretMotor = new TalonFX(Constants.ShooterConstants.angleMotor);
   /** Creates a new ShooterSubsystem. */
   public ShooterSubsystem() {
@@ -46,8 +53,21 @@ public class ShooterSubsystem extends SubsystemBase {
   }
    //public double tickToDeg("")
 
+  // public void setVelocity(double velocity){
+  //   FlywheelMotor1.setControl(velControl.withVelocity(velocity));
+  // }
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command spin(DoubleSupplier speed) {
+    return Commands.runEnd(() -> {
+      setSpeed(speed.getAsDouble());
+    }, () -> {
+      setSpeed(0);
+    }, this);
   }
 }

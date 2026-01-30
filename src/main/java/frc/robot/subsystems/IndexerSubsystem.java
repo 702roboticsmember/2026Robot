@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -27,12 +31,12 @@ public class IndexerSubsystem extends SubsystemBase {
     indexMotorSecondary.set(speed);
   }
 
- public void setSpeedPrimary(double speed){
+  public void setSpeedPrimary(double speed){
     indexMotorPrimary.set(speed);
- }
- public double getPrimaryDeg(){
+  }
+  public double getPrimaryDeg(){
   return primaryTickToDeg(indexMotorPrimary.getPosition().getValueAsDouble());
- }
+  }
   public double getSecondaryDeg(){
     return secondaryTickToDeg(indexMotorSecondary.getPosition().getValueAsDouble());
   }
@@ -46,5 +50,15 @@ public class IndexerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command spin(DoubleSupplier speedPrimary, DoubleSupplier speedSecondary) {
+    return Commands.runEnd(() -> {
+      setSpeedPrimary(speedPrimary.getAsDouble()); //Constants.IndexerConstants.PrimarySpeed
+      setSpeedSecondary(speedSecondary.getAsDouble()); //Constants.IndexerConstants.SecondarySpeed
+    }, () -> {
+      setSpeedPrimary(0);
+      setSpeedSecondary(0);
+    }, this);
   }
 }

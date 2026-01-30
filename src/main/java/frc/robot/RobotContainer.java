@@ -2,14 +2,11 @@ package frc.robot;
 
 
 
-import static edu.wpi.first.units.Units.Value;
 
-import javax.xml.crypto.dsig.spec.HMACParameterSpec;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -43,16 +39,20 @@ public class RobotContainer {
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
     private final IndexerSubsystem i_IndexerSubsystem = new IndexerSubsystem();
+    private final IntakeArmSubsytem i_IntakeArmSubsystem = new IntakeArmSubsytem();
 
     private final XboxController driver = new XboxController(0);
-    private final XboxController codriver = new XboxController(0);
+    private final XboxController codriver = new XboxController(1);
 
 
     //driver buttons
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+    //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+    private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+
     private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
@@ -115,19 +115,14 @@ public class RobotContainer {
         zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
         slowMode.onTrue(new InstantCommand(() -> RobotContainer.power = .25));
         fastMode.onTrue(new InstantCommand(() -> RobotContainer.power = 1));         
-        intake.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeSubsystem), new WaitCommand(1), new IntakeRollerCommand(i_IntakeSubsystem))); 
-        intake.whileFalse(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeSubsystem)));        
+        intakeOut.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeArmSubsystem), new WaitCommand(1), i_IntakeSubsystem.spin(() -> Constants.IntakeConstants.intakeMotor))); 
+        intakeIn.whileTrue(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  //#TODO change as the intake should only go in during certian circumstances       
+        //intake.whileTrue(new IntakeSubsystem.spin(Constants.IntakeConstants.intakeMotor));
         flywheel.toggleOnTrue(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(1)));
         climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
-        shoot.onTrue(new InstantCommand(() -> {
-            i_IndexerSubsystem.setSpeedPrimary(0.1);
-            i_IndexerSubsystem.setSpeedSecondary(0.05);
-        }));
-        shoot.onFalse(new InstantCommand(() -> {
-            i_IndexerSubsystem.setSpeedPrimary(0);
-            i_IndexerSubsystem.setSpeedSecondary(0);
-        }));
+        shoot.whileTrue(i_IndexerSubsystem.spin(() -> Constants.IndexerConstants.PrimarySpeed, () -> Constants.IndexerConstants.SecondarySpeed));
+        
     }
     
     public Command getAutonomousCommand() {

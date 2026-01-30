@@ -4,8 +4,12 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 //9800 is better
@@ -41,5 +45,13 @@ public class TurretSubsytem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+  }
+
+  public Command spin(DoubleSupplier speed) {
+    return Commands.runEnd(() -> {
+      setAngleSpeed(speed.getAsDouble());
+    }, () -> {
+      setAngleSpeed(0);
+    }, this);
   }
 }//

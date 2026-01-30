@@ -193,6 +193,9 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+		public static final double kP = 0;
+        public static final double kI = 0;
+		public static double kD;
     }
     
     
@@ -231,10 +234,10 @@ public final class Constants {
         public static final double Acceleration = 0;
         public static final double Jerk = 0;
 
-        public static final double kS = 0;
-        public static final double kV = 0;
-        public static final double kA = 0;
-        public static final double kP = 0;
+        public static final double kS = .25;
+        public static final double kV = .12;
+        public static final double kA = .01;
+        public static final double kP = .11;
         public static final double kI = 0;
         public static final double kD = 0;
     } 
@@ -252,6 +255,11 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
 
         public static final double extendedAngle = 0;
+
+        public static final double kP = 0;
+        public static final double kI = 0;
+        public static final double kD = 0;
+
     }
 
     //Auto Constants
@@ -289,6 +297,8 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final double PrimarySpeed = 0;
+        public static final double SecondarySpeed = 0;
     }
 
     public static final class HoodConstants {
