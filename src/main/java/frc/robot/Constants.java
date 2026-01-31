@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -20,6 +22,8 @@ import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
+
+import java.io.FilenameFilter;
 //public final class constants
 //this is for the constants
 //for your information
@@ -115,7 +119,7 @@ public final class Constants {
 
         public static final PIDConstants ANGLE_PID = new PIDConstants(FALCON_500_CONSTANTS.angleKP,
                 FALCON_500_CONSTANTS.angleKI, FALCON_500_CONSTANTS.angleKD);
-        public static final PIDConstants DRIVE_PID = new PIDConstants(1, 0.0, 0.0);
+        public static final PIDConstants DRIVE_PID = new PIDConstants(0.5, 0.0, 0.0);
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double DRIVE_KS = 0.32;//.32
@@ -125,7 +129,7 @@ public final class Constants {
         /** Units: m/s */
         public static final double MAX_SPEED = 12;
         /** Units: radians/s */
-        public static final double MAX_ANGULAR_VELOCITY = 7;
+        public static final double MAX_ANGULAR_VELOCITY = 8;
 
         /* Neutral Modes */
         public static final NeutralModeValue ANGLE_NEUTRAL_MODE = NeutralModeValue.Coast;
@@ -137,7 +141,7 @@ public final class Constants {
             public static final int driveMotorID = 1;
             public static final int angleMotorID = 2;
             public static final int canCoderID = 3; 
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(230.009);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(230.889);
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     canCoderID, angleOffset);
         }
@@ -147,7 +151,7 @@ public final class Constants {
             public static final int driveMotorID = 4;
             public static final int angleMotorID = 5;
             public static final int canCoderID = 6;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(27.457);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(28.916);
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     canCoderID, angleOffset);
         }
@@ -157,7 +161,7 @@ public final class Constants {
             public static final int driveMotorID = 7;
             public static final int angleMotorID = 8;
             public static final int canCoderID = 9;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(57.656);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(58.436);
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     canCoderID, angleOffset);
         }
@@ -167,7 +171,7 @@ public final class Constants {
             public static final int driveMotorID = 10;
             public static final int angleMotorID = 11;
             public static final int canCoderID = 12;
-            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-3.099);
+            public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-0.527);
             public static final SwerveModuleConstants constants = new SwerveModuleConstants(driveMotorID, angleMotorID,
                     canCoderID, angleOffset);
         }
@@ -185,8 +189,8 @@ public final class Constants {
     
     //Intake Constants:
     public static final class IntakeConstants {
-        public static final int intakeMotor = 0;
-        public static final int armMotor = 0;
+        public static final int intakeMotor = 13;
+        public static final int armMotor = 14;
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60
@@ -196,12 +200,17 @@ public final class Constants {
 		public static final double kP = 0;
         public static final double kI = 0;
 		public static double kD;
+        public static final boolean softLimitEnable = false;
+
+        public static final double forwardLimit = 0;
+
+        public static final double reverseLimit = 0;
     }
     
     
     //Turret Constants
     public static final class TurretConstants {
-        public static final int angleMotor = 0;
+        public static final int angleMotor = 15;
         public static final PIDConstants anglePID = new PIDConstants(0, 0, 0);
 
         public static final int STATOR_CURRENT_LIMIT = 50;
@@ -219,9 +228,9 @@ public final class Constants {
 
     //Shooter Constants
     public static final class ShooterConstants {
-        public static final int shooterMotor1 = 0;
-        public static final int shooterMotor2 = 0;
-        public static final int angleMotor = 0;
+        public static final int shooterMotor1 = 16;
+        public static final int shooterMotor2 = 17;
+        public static final int angleMotor = 18;
      
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
@@ -244,7 +253,7 @@ public final class Constants {
 
     //Climb Constants
     public static final class ClimbConstants {
-        public static final int climbMotor = 0;
+        public static final int climbMotor = 19;
 
         public static final double CLIMB_GEAR_RATIO = 1/1;
         public static final int STATOR_CURRENT_LIMIT = 50;
@@ -259,6 +268,12 @@ public final class Constants {
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
+
+        public static final boolean softLimitEnable = false;
+
+        public static final double forwardLimit = 0;
+
+        public static final double reverseLimit = 0;
 
     }
 
@@ -288,9 +303,9 @@ public final class Constants {
 
      //Indexer Constants
     public static final class IndexerConstants {
-
-        public static final int indexMotorFeeder = 0;
-        public static final int indexMotorTurret = 1;
+        
+        public static final int indexMotorFeeder = 20;
+        public static final int indexMotorTurret = 21;
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60
@@ -299,15 +314,33 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
         public static final double PrimarySpeed = 0;
         public static final double SecondarySpeed = 0;
+
+        public static final int STATOR_CURRENT_LIMIT_SECONDARY = 50;
+        public static final int CURRENT_LIMIT_SECONDARY = 35;
+        public static final int CURRENT_THRESHOLD_SECONDARY = 50;
+        public static final double CURRENT_THRESHOLD_TIME_SECONDARY = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT_SECONDARY = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
     }
 
     public static final class HoodConstants {
         
     public static final int HoodMotor = 0;
-public static final double kP=0;
-public static final double kI= 0;
-public static final double kD= 0;
+public static final double kP = 0;
+public static final double kI = 0;
+public static final double kD = 0;
 public static final double Tolerance = 0;
+        public static final int STATOR_CURRENT_LIMIT = 50;
+        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+         public static final boolean softLimitEnable = false;
+
+        public static final double forwardLimit = 0;
+
+        public static final double reverseLimit = 0;
     }
     
 }

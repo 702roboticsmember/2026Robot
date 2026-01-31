@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -13,24 +14,37 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
   private TalonFX motor = new TalonFX(Constants.ClimbConstants.climbMotor);
-  public double speed;
-  public double getClimbAngle(){
-    return TickToDeg(motor.getPosition().getValueAsDouble());
-  }
-  public double TickToDeg(double ticks){
-    return ticks *1/1;
-  }
+  
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     TalonFXConfigurator talonFXConfigurator = motor.getConfigurator();
-    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    var CurrentLimits = config.CurrentLimits;
+    CurrentLimits.StatorCurrentLimit = Constants.ClimbConstants.STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
+    CurrentLimits.StatorCurrentLimitEnable = Constants.ClimbConstants.ENABLE_STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimitEnable = Constants.ClimbConstants.ENABLE_CURRENT_LIMIT;
 
-    limits.StatorCurrentLimit = Constants.ClimbConstants.STATOR_CURRENT_LIMIT;
-    limits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
-    limits.StatorCurrentLimitEnable = Constants.ClimbConstants.ENABLE_STATOR_CURRENT_LIMIT;
-    limits.SupplyCurrentLimitEnable = Constants.ClimbConstants.ENABLE_CURRENT_LIMIT;
+    var SoftLimits = config.SoftwareLimitSwitch;
+    SoftLimits.ForwardSoftLimitEnable = Constants.ClimbConstants.softLimitEnable;
+    SoftLimits.ForwardSoftLimitThreshold = DistToTick(Constants.ClimbConstants.forwardLimit);
+    SoftLimits.ReverseSoftLimitEnable = Constants.ClimbConstants.softLimitEnable;
+    SoftLimits.ReverseSoftLimitThreshold = DistToTick(Constants.ClimbConstants.reverseLimit);
 
-    talonFXConfigurator.apply(limits);
+    talonFXConfigurator.apply(config);
+  }
+
+   public double getClimbAngle(){
+    return TickToDist(motor.getPosition().getValueAsDouble());
+  }
+
+  public double TickToDist(double ticks){
+    return ticks *1/1;
+  }
+
+  public double DistToTick(double dist){
+    return dist * 1/1;
   }
 
   public void setSpeed(double speed){

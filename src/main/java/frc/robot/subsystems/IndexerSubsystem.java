@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,8 +25,28 @@ public class IndexerSubsystem extends SubsystemBase {
 
   /** Creates a new IndexerSubsystem. */
   public IndexerSubsystem() {
-    indexMotorPrimary.getConfigurator().apply(Robot.CTRE_CONFIGS.indexConfigs);
-    indexMotorSecondary.getConfigurator().apply(Robot.CTRE_CONFIGS.indexConfigs);
+    //Primary
+    TalonFXConfigurator talonFXConfigurator = indexMotorPrimary.getConfigurator();
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    var CurrentLimits = config.CurrentLimits;
+    CurrentLimits.StatorCurrentLimit = Constants.IndexerConstants.STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT;
+    CurrentLimits.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT;
+
+    //Secondary
+            TalonFXConfigurator talonFXConfiguratorSecondary = indexMotorSecondary.getConfigurator();
+    TalonFXConfiguration configSecondary = new TalonFXConfiguration();
+    
+    var CurrentLimitsSecondary = config.CurrentLimits;
+    CurrentLimitsSecondary.StatorCurrentLimit = Constants.IndexerConstants.STATOR_CURRENT_LIMIT_SECONDARY;
+    CurrentLimitsSecondary.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT_SECONDARY;
+    CurrentLimitsSecondary.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT_SECONDARY;
+    CurrentLimitsSecondary.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT_SECONDARY;
+    //apply
+    talonFXConfigurator.apply(config);
+    talonFXConfiguratorSecondary.apply(configSecondary);
   }
 
   public void setSpeedSecondary(double speed){
