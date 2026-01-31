@@ -18,6 +18,7 @@ public class HoodPIDCommand extends Command {
   public HoodPIDCommand(HoodSubsystem hoodSubsystem, double target) {
     this.hoodSubsystem = hoodSubsystem;
     this.target = target;
+     //addRequirements(hoodSubsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
