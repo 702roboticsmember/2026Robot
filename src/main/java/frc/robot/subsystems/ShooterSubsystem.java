@@ -6,8 +6,10 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -42,6 +44,19 @@ public class ShooterSubsystem extends SubsystemBase {
     motionMagicConfigs.MotionMagicCruiseVelocity = Constants.ShooterConstants.CruiseVelocity; // Target cruise velocity of 80 rps
     motionMagicConfigs.MotionMagicAcceleration = Constants.ShooterConstants.Acceleration; // Target acceleration of 160 rps/s (0.5 seconds)
     motionMagicConfigs.MotionMagicJerk = Constants.ShooterConstants.Jerk; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+        TalonFXConfigurator talonFXConfigurator = FlywheelMotor1.getConfigurator();
+        TalonFXConfigurator talonFXConfigurator2 = FlywheelMotor2.getConfigurator();
+    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+
+    limits.StatorCurrentLimit = Constants.ShooterConstants.STATOR_CURRENT_LIMIT;
+    limits.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
+    limits.StatorCurrentLimitEnable = Constants.ShooterConstants.ENABLE_STATOR_CURRENT_LIMIT;
+    limits.SupplyCurrentLimitEnable = Constants.ShooterConstants.ENABLE_CURRENT_LIMIT;
+
+    talonFXConfigurator.apply(limits);
+    talonFXConfigurator2.apply(limits);
+
 
     FlywheelMotor1.getConfigurator().apply(talonFXConfigs);
     FlywheelMotor2.getConfigurator().apply(talonFXConfigs);

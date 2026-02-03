@@ -1,7 +1,5 @@
 package frc.robot;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -23,7 +21,6 @@ import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
 
-import java.io.FilenameFilter;
 //public final class constants
 //this is for the constants
 //for your information
@@ -197,6 +194,12 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final int STATOR_CURRENT_LIMIT2 = 50;
+        public static final int CURRENT_LIMIT2 = 35;//35
+        public static final int CURRENT_THRESHOLD2 = 50;//60
+        public static final double CURRENT_THRESHOLD_TIME2 = 0.1;
+        public static final boolean ENABLE_CURRENT_LIMIT2 = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT2 = false;
 		public static final double kP = 0;
         public static final double kI = 0;
 		public static double kD;
@@ -223,6 +226,11 @@ public final class Constants {
         public static final double kI = 0;
         public static final double kD = 0;
         public static final double Tolerance = 0;
+                public static final boolean softLimitEnable = false;
+
+        public static final double forwardLimit = 0;
+
+        public static final double reverseLimit = 0;
 
     }
 
@@ -325,7 +333,7 @@ public final class Constants {
 
     public static final class HoodConstants {
         
-    public static final int HoodMotor = 0;
+    public static final int HoodMotor = 22;
 public static final double kP = 0;
 public static final double kI = 0;
 public static final double kD = 0;
@@ -344,20 +352,20 @@ public static final double Tolerance = 0;
     }
      public static final class PointToPointPIDConstants {
 
-public static final double xP = 0;
+public static final double xP = 0.1;
 public static final double xI = 0;
 public static final double xD = 0;
 
-public static final double yP = 0;
+public static final double yP = 0.1;
 public static final double yI = 0;
 public static final double yD = 0;
 
-public static final double aP = 0;
+public static final double aP = 0.1;
 public static final double aI = 0;
 public static final double aD = 0;
 
-public static final double tTolerance = 0;
-public static final double aTolerance = 0;
+public static final double tTolerance = 0.1;
+public static final double aTolerance = 0.1;
 
 
 

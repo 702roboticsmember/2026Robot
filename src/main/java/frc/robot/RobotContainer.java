@@ -7,6 +7,9 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -52,6 +55,7 @@ public class RobotContainer {
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton pointPID = new JoystickButton(driver, XboxController.Button.kStart.value);
 
     private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -122,7 +126,7 @@ public class RobotContainer {
         climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
         shoot.whileTrue(i_IndexerSubsystem.spin(() -> Constants.IndexerConstants.PrimarySpeed, () -> Constants.IndexerConstants.SecondarySpeed));
-        
+        pointPID.whileTrue(new PointToPointPID(s_Swerve, new Pose2d(new Translation2d(2,2),new Rotation2d(Math.toRadians(180)))));
     }
     
     public Command getAutonomousCommand() {

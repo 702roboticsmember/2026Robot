@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,22 +24,34 @@ public class TurretSubsytem extends SubsystemBase {
   public double tickToDeg(double tick){ 
     return tick * 1/1;
   }
-  public double getArmAngle(){
+  public double degToTick(double deg){
+    return deg *1/1;
+  }
+
+ 
+  public double getAngle(){
     return tickToDeg(angleMotor.getPosition().getValueAsDouble());
   }
 
   public TurretSubsytem() {
 
+    TalonFXConfigurator talonFXConfigurator = angleMotor.getConfigurator();
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    var CurrentLimits = config.CurrentLimits;
+    CurrentLimits.StatorCurrentLimit = Constants.TurretConstants.STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimit = Constants.TurretConstants.CURRENT_LIMIT;
+    CurrentLimits.StatorCurrentLimitEnable = Constants.TurretConstants.ENABLE_STATOR_CURRENT_LIMIT;
+    CurrentLimits.SupplyCurrentLimitEnable = Constants.TurretConstants.ENABLE_CURRENT_LIMIT;
+
+    var SoftLimits = config.SoftwareLimitSwitch;
+    SoftLimits.ForwardSoftLimitEnable = Constants.TurretConstants.softLimitEnable;
+    SoftLimits.ForwardSoftLimitThreshold = degToTick(Constants.TurretConstants.forwardLimit);
+    SoftLimits.ReverseSoftLimitEnable = Constants.TurretConstants.softLimitEnable;
+    SoftLimits.ReverseSoftLimitThreshold = degToTick(Constants.TurretConstants.reverseLimit);
+
+    talonFXConfigurator.apply(config);
   
-    // TalonFXConfigurator talonFXConfigurator = angleMotor.getConfigurator();
-    // CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
-
-    // limits.StatorCurrentLimit = Constants.ClimbConstants.STATOR_CURRENT_LIMIT;
-    // limits.SupplyCurrentLimit = Constants.ClimbConstants.CURRENT_LIMIT;
-    // limits.StatorCurrentLimitEnable = Constants.ClimbConstants.ENABLE_STATOR_CURRENT_LIMIT;
-    // limits.SupplyCurrentLimitEnable = Constants.ClimbConstants.ENABLE_CURRENT_LIMIT;
-
-    // talonFXConfigurator.apply(limits);
   }
 
   

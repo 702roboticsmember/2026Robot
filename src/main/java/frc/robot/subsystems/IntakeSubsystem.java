@@ -6,13 +6,13 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
@@ -24,15 +24,15 @@ public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
     TalonFXConfigurator talonFXConfigurator = intakeMotor.getConfigurator();
-    CurrentLimitsConfigs limits = new CurrentLimitsConfigs();
+    TalonFXConfiguration config = new TalonFXConfiguration();
+    
+    var CurrentLimits = config.CurrentLimits;
+    CurrentLimits.StatorCurrentLimit = Constants.IntakeConstants.STATOR_CURRENT_LIMIT2;
+    CurrentLimits.SupplyCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT2;
+    CurrentLimits.StatorCurrentLimitEnable = Constants.IntakeConstants.ENABLE_STATOR_CURRENT_LIMIT2;
+    CurrentLimits.SupplyCurrentLimitEnable = Constants.IntakeConstants.ENABLE_CURRENT_LIMIT2;
 
-    limits.StatorCurrentLimit = Constants.IntakeConstants.STATOR_CURRENT_LIMIT;
-    limits.SupplyCurrentLimit = Constants.IntakeConstants.CURRENT_LIMIT;
-    limits.StatorCurrentLimitEnable = Constants.IntakeConstants.ENABLE_STATOR_CURRENT_LIMIT;
-    limits.SupplyCurrentLimitEnable = Constants.IntakeConstants.ENABLE_CURRENT_LIMIT;
-
-    talonFXConfigurator.apply(limits);
-
+    talonFXConfigurator.apply(config);
     
   }
 
