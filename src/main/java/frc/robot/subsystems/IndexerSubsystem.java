@@ -7,8 +7,9 @@ package frc.robot.subsystems;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,15 +19,14 @@ import frc.robot.Constants;
 
 public class IndexerSubsystem extends SubsystemBase {
 
-  TalonFX indexMotorPrimary = new TalonFX(Constants.IndexerConstants.indexMotorFeeder);
-  TalonFX indexMotorSecondary = new TalonFX(Constants.IndexerConstants.indexMotorTurret);
+  TalonFX indexMotorPrimary = new TalonFX(Constants.IndexerConstants.indexMotorTurret1);
+  TalonFX indexMotorSecondary = new TalonFX(Constants.IndexerConstants.indexMotorTurret2);
 
   public double speed;
 
   /** Creates a new IndexerSubsystem. */
   public IndexerSubsystem() {
     //Primary
-    TalonFXConfigurator talonFXConfigurator = indexMotorPrimary.getConfigurator();
     TalonFXConfiguration config = new TalonFXConfiguration();
     
     var CurrentLimits = config.CurrentLimits;
@@ -34,24 +34,26 @@ public class IndexerSubsystem extends SubsystemBase {
     CurrentLimits.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT;
     CurrentLimits.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT;
     CurrentLimits.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT;
-
-    //Secondary
-            TalonFXConfigurator talonFXConfiguratorSecondary = indexMotorSecondary.getConfigurator();
-    TalonFXConfiguration configSecondary = new TalonFXConfiguration();
+    indexMotorPrimary.getConfigurator().apply(config);
+    indexMotorSecondary.getConfigurator().apply(config);
+    indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
+    // //Secondary
+    //         TalonFXConfigurator talonFXConfiguratorSecondary = indexMotorSecondary.getConfigurator();
+    // TalonFXConfiguration configSecondary = new TalonFXConfiguration();
     
-    var CurrentLimitsSecondary = config.CurrentLimits;
-    CurrentLimitsSecondary.StatorCurrentLimit = Constants.IndexerConstants.STATOR_CURRENT_LIMIT_SECONDARY;
-    CurrentLimitsSecondary.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT_SECONDARY;
-    CurrentLimitsSecondary.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT_SECONDARY;
-    CurrentLimitsSecondary.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT_SECONDARY;
-    //apply
-    talonFXConfigurator.apply(config);
-    talonFXConfiguratorSecondary.apply(configSecondary);
+    // var CurrentLimitsSecondary = config.CurrentLimits;
+    // CurrentLimitsSecondary.StatorCurrentLimit = Constants.IndexerConstants.STATOR_CURRENT_LIMIT_SECONDARY;
+    // CurrentLimitsSecondary.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT_SECONDARY;
+    // CurrentLimitsSecondary.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT_SECONDARY;
+    // CurrentLimitsSecondary.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT_SECONDARY;
+    // //apply
+    // talonFXConfigurator.apply(config);
+    // talonFXConfiguratorSecondary.apply(configSecondary);
   }
 
-  public void setSpeedSecondary(double speed){
-    indexMotorSecondary.set(speed);
-  }
+  // public void setSpeedSecondary(double speed){
+  //   indexMotorSecondary.set(speed);
+  // }
 
   public void setSpeedPrimary(double speed){
     indexMotorPrimary.set(speed);
@@ -59,13 +61,13 @@ public class IndexerSubsystem extends SubsystemBase {
   public double getPrimaryDeg(){
   return primaryTickToDeg(indexMotorPrimary.getPosition().getValueAsDouble());
   }
-  public double getSecondaryDeg(){
-    return secondaryTickToDeg(indexMotorSecondary.getPosition().getValueAsDouble());
-  }
+  // public double getSecondaryDeg(){
+  //   return secondaryTickToDeg(indexMotorSecondary.getPosition().getValueAsDouble());
+  // }
  
-  public double secondaryTickToDeg(double Tick){
-    return Tick * 1/1;
-}
+//   public double secondaryTickToDeg(double Tick){
+//     return Tick * 1/1;
+// }
  public double primaryTickToDeg( double tick){
   return tick * 1/1;
  }
@@ -74,13 +76,13 @@ public class IndexerSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public Command spin(DoubleSupplier speedPrimary, DoubleSupplier speedSecondary) {
+  public Command spin(DoubleSupplier speedPrimary) {
     return Commands.runEnd(() -> {
       setSpeedPrimary(speedPrimary.getAsDouble()); //Constants.IndexerConstants.PrimarySpeed
-      setSpeedSecondary(speedSecondary.getAsDouble()); //Constants.IndexerConstants.SecondarySpeed
+      // setSpeedSecondary(speedSecondary.getAsDouble()); //Constants.IndexerConstants.SecondarySpeed
     }, () -> {
       setSpeedPrimary(0);
-      setSpeedSecondary(0);
+      // setSpeedSecondary(0);
     }, this);
   }
 }

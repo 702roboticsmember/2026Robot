@@ -312,8 +312,10 @@ public final class Constants {
      //Indexer Constants
     public static final class IndexerConstants {
         
+        public static final double gearingMultiplier = 1;
         public static final int indexMotorFeeder = 20;
-        public static final int indexMotorTurret = 21;
+        public static final int indexMotorTurret1 = 21;
+        public static final int indexMotorTurret2 = 22;
         public static final int STATOR_CURRENT_LIMIT = 50;
         public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 50;//60
@@ -329,6 +331,13 @@ public final class Constants {
         public static final double CURRENT_THRESHOLD_TIME_SECONDARY = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT_SECONDARY = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
+        //Floor Indexer Constants
+        public static final int FloorID = 0;
+		public static final double FLOOR_STATOR_CURRENT_LIMIT = 0;
+        public static final double FLOOR_CURRENT_LIMIT = 0;
+        public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = false;
+        public static final double FloorSpeed = 0.5;
     }
 
     public static final class HoodConstants {
@@ -350,22 +359,19 @@ public static final double Tolerance = 0;
 
         public static final double reverseLimit = 0;
     }
-     public static final class PointToPointPIDConstants {
+    
+    public static final class PointToPointPIDConstants {
 
-public static final double xP = 0.1;
-public static final double xI = 0;
-public static final double xD = 0;
+    public static final double tP = 2;
+    public static final double tI = 0;
+    public static final double tD = 0;
 
-public static final double yP = 0.1;
-public static final double yI = 0;
-public static final double yD = 0;
+    public static final double aP = 0.05;
+    public static final double aI = 0;
+    public static final double aD = 0;
 
-public static final double aP = 0.1;
-public static final double aI = 0;
-public static final double aD = 0;
-
-public static final double tTolerance = 0.1;
-public static final double aTolerance = 0.1;
+    public static final double tTolerance = 0.001;
+    public static final double aTolerance = 0.1;
 
 
 

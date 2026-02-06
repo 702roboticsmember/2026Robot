@@ -6,19 +6,15 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.IntakeSubsystem;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -42,7 +38,9 @@ public class RobotContainer {
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
     private final IndexerSubsystem i_IndexerSubsystem = new IndexerSubsystem();
+    private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final IntakeArmSubsytem i_IntakeArmSubsystem = new IntakeArmSubsytem();
+    // private final TurretSubsytem t_TurretSubsytem = new TurretSubsytem();
 
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
@@ -54,13 +52,14 @@ public class RobotContainer {
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton pointPID = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);    
+    
+    
 
     private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton autoAim = new JoystickButton(codriver, 0);
+    // private final JoystickButton autoAim = new JoystickButton(codriver, 0);
     private final JoystickButton shoot = new JoystickButton(codriver, XboxController.Button.kA.value);
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
@@ -75,9 +74,39 @@ public class RobotContainer {
     //       () -> IntakeSubsystem.setArmSpeed(1)
     //     );
     // }
-
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+
+    private Command IntakeOut() {
+        return new SequentialCommandGroup(
+        new IntakeArmPID(120, i_IntakeArmSubsystem),
+         // new WaitCommand(1),
+            i_IntakeSubsystem.spin(() -> Constants.IntakeConstants.intakeMotor)
+            );
+    }
+    
+    private Command IntakeIn() {
+        return new ParallelCommandGroup(
+            new IntakeArmPID(0, i_IntakeArmSubsystem),
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))
+        );
+    }
+
+    private Command Shoot() {
+        return Commands.runEnd(() -> {
+            i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed);
+            f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed);
+        }, () -> {
+            i_IndexerSubsystem.setSpeedPrimary(0);
+            f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
+        }, f_FloorIndexerSubsystem, i_IndexerSubsystem);
+    }
+    
+    // private Command AutoAim() {
+    //     return new ParallelCommandGroup(
+    //         new TurretRotatePIDCommand(t_TurretSubsytem, )
+    //     )
+    // }
 
     public RobotContainer() {
         Field2d field = new Field2d();
@@ -119,16 +148,16 @@ public class RobotContainer {
         zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
         slowMode.onTrue(new InstantCommand(() -> RobotContainer.power = .25));
         fastMode.onTrue(new InstantCommand(() -> RobotContainer.power = 1));         
-        intakeOut.whileTrue(new SequentialCommandGroup(new IntakeArmPID(120, i_IntakeArmSubsystem), new WaitCommand(1), i_IntakeSubsystem.spin(() -> Constants.IntakeConstants.intakeMotor))); 
-        intakeIn.whileTrue(new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  //#TODO change as the intake should only go in during certian circumstances       
+        intakeOut.whileTrue(IntakeOut()); 
+        intakeIn.whileTrue(IntakeIn());//new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  
         //intake.whileTrue(new IntakeSubsystem.spin(Constants.IntakeConstants.intakeMotor));
+        // floorIndexer.toggleOnTrue(f_FloorIndexerSubsystem.spin(() -> Constants.IndexerConstants.FloorSpeed));
         flywheel.toggleOnTrue(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(1)));
         climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
-        shoot.whileTrue(i_IndexerSubsystem.spin(() -> Constants.IndexerConstants.PrimarySpeed, () -> Constants.IndexerConstants.SecondarySpeed));
-        pointPID.whileTrue(new PointToPointPID(s_Swerve, new Pose2d(new Translation2d(2,2),new Rotation2d(Math.toRadians(180)))));
-    }
-    
+        shoot.whileTrue(Shoot());
+        // autoAim.toggleOnTrue(autoAim());
+    }    
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup((new InstantCommand(() -> {
              s_Swerve.gyro.reset();

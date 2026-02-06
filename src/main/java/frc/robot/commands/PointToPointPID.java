@@ -15,9 +15,9 @@ import frc.robot.subsystems.Swerve;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PointToPointPID extends Command {
 
-  private PIDController X = new PIDController(Constants.HoodConstants.kP, Constants.HoodConstants.kI, Constants.HoodConstants.kD);
-  private PIDController Y = new PIDController(Constants.HoodConstants.kP, Constants.HoodConstants.kI, Constants.HoodConstants.kD);
-  private PIDController A = new PIDController(Constants.HoodConstants.kP, Constants.HoodConstants.kI, Constants.HoodConstants.kD);
+  private PIDController X = new PIDController(Constants.PointToPointPIDConstants.tP, Constants.PointToPointPIDConstants.tI, Constants.PointToPointPIDConstants.tD);
+  private PIDController Y = new PIDController(Constants.PointToPointPIDConstants.tP, Constants.PointToPointPIDConstants.tI, Constants.PointToPointPIDConstants.tD);
+  private PIDController A = new PIDController(Constants.PointToPointPIDConstants.aP, Constants.PointToPointPIDConstants.aI, Constants.PointToPointPIDConstants.aD);
   private Pose2d setpoint;
   private Swerve Swerve;
   /** Creates a new PointToPointPID. */
