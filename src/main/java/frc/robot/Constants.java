@@ -9,6 +9,8 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 // import com.revrobotics.spark.SparkBase.ResetMode;
 // import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
 //import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 //import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.ReplanningConfig;
@@ -36,10 +38,14 @@ public final class Constants {
    
 
     public static final class Swerve {
-
+        public static SwerveDrivePoseEstimator swervePoseEstimator;
+        public static boolean BLUE_ALLIANCE = true;
         public static final boolean INVERT_GYRO = true;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
         public static final double ANGLE_GEAR_RATIO = 18.75;
+        public static final double LIMELIGHT_TURRET_POSE_Y = 0;
+        public static final double LIMELIGHT_TURRET_POSE_X = 0;
+
         public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(DRIVE_GEAR_RATIO);
         /**
          * Units: Meters
@@ -181,6 +187,8 @@ public final class Constants {
                 );
 
         public static final String ODOMETRY_LIMELIGHT_NAME = null;
+        public static final Translation2d Blue_Hub = null;
+        public static final Translation2d Red_Hub = null;
 
     }
     
@@ -231,6 +239,7 @@ public final class Constants {
         public static final double forwardLimit = 0;
 
         public static final double reverseLimit = 0;
+        public static Pose2d turretPose2d = null;
 
     }
 
@@ -376,6 +385,30 @@ public static final double Tolerance = 0;
 
 
 
+
+
+
+
+
+
+
+
+
      }
+
+     public static final class limelightConstants {
+
+		public static final String limelightTurret = "limelight-Duncan";        
+        public static final String limelightFront = "limelight-Douglas";
+        public static final String limelightBack = "limelight-Mega";
+    }
+
+    public static final class PhysicsConstants {
+        public static final double gravity = 9.81;
+        public static final double HubHeight = 1.89;
+        public static final double BallIntialHeight = 0.4572;
+        
+
+    }
     
 }

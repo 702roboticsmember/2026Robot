@@ -6,6 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -15,7 +19,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.subsystems.IntakeSubsystem;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -38,9 +42,10 @@ public class RobotContainer {
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
     private final IndexerSubsystem i_IndexerSubsystem = new IndexerSubsystem();
-    private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final IntakeArmSubsytem i_IntakeArmSubsystem = new IntakeArmSubsytem();
-    // private final TurretSubsytem t_TurretSubsytem = new TurretSubsytem();
+    private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
+    private final TurretSubsytem t_TurretSubsytem = new TurretSubsytem();
+    private final HoodSubsystem h_HoodSubsystem = new HoodSubsystem();
 
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
@@ -52,15 +57,15 @@ public class RobotContainer {
     private final JoystickButton slowMode = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);    
-    
-    
+    private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
+    private final JoystickButton pointPID = new JoystickButton(driver, XboxController.Button.kStart.value);
 
     private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    // private final JoystickButton autoAim = new JoystickButton(codriver, 0);
+    private final JoystickButton autoAim = new JoystickButton(codriver, 0);
     private final JoystickButton shoot = new JoystickButton(codriver, XboxController.Button.kA.value);
+    private final JoystickButton Nest = new JoystickButton(codriver, 0);
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
     public static double power = 1;
@@ -68,14 +73,6 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
     
-
-    //private Command setIntake(boolean value) {
-    //    return new InstantCommand(
-    //       () -> IntakeSubsystem.setArmSpeed(1)
-    //     );
-    // }
-    /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
 
     private Command IntakeOut() {
         return new SequentialCommandGroup(
@@ -101,14 +98,27 @@ public class RobotContainer {
             f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
         }, f_FloorIndexerSubsystem, i_IndexerSubsystem);
     }
+
+    private Command AutoAim() {
+        return new AutoAimCommand(Constants.Swerve.BLUE_ALLIANCE ? Constants.Swerve.Blue_Hub : Constants.Swerve.Red_Hub, t_TurretSubsytem, h_HoodSubsystem, s_ShooterSubsystem);
+    }
     
+    private Command Nest() {
+        return new InstantCommand(() -> h_HoodSubsystem.goToAngle(0));
+    }
+
     // private Command AutoAim() {
     //     return new ParallelCommandGroup(
     //         new TurretRotatePIDCommand(t_TurretSubsytem, )
     //     )
     // }
 
+
+    /* Subsystems */
+    private final Swerve s_Swerve = new Swerve();
+
     public RobotContainer() {
+        
         Field2d field = new Field2d();
         SmartDashboard.putData("Field", field);
         PathPlannerLogging.setLogCurrentPoseCallback((pose) -> {
@@ -151,13 +161,17 @@ public class RobotContainer {
         intakeOut.whileTrue(IntakeOut()); 
         intakeIn.whileTrue(IntakeIn());//new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  
         //intake.whileTrue(new IntakeSubsystem.spin(Constants.IntakeConstants.intakeMotor));
-        // floorIndexer.toggleOnTrue(f_FloorIndexerSubsystem.spin(() -> Constants.IndexerConstants.FloorSpeed));
         flywheel.toggleOnTrue(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(1)));
         climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
+        pointPID.whileTrue(new PointToPointPID(s_Swerve, new Pose2d(new Translation2d(2,2),new Rotation2d(Math.toRadians(180)))));
         shoot.whileTrue(Shoot());
-        // autoAim.toggleOnTrue(autoAim());
-    }    
+        autoAim.toggleOnTrue(AutoAim());
+        Nest.onTrue(Nest());
+
+
+    }
+    
     public Command getAutonomousCommand() {
         return new SequentialCommandGroup((new InstantCommand(() -> {
              s_Swerve.gyro.reset();
