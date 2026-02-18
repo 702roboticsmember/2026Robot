@@ -38,6 +38,7 @@ public class Swerve extends SubsystemBase {
     public static AHRS gyro;
     public  RobotConfig config;
     public LimelightHelpers.PoseEstimate limelightMeasurement;
+    public LimelightHelpers.PoseEstimate limelightMeasurementTurret;
 
 
     public Swerve() {
@@ -249,7 +250,8 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightFront);
+        limelightMeasurementTurret =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
         Constants.Swerve.swervePoseEstimator.update(getGyroYaw(), getModulePositions());
        
         
@@ -261,23 +263,47 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
-        if (this.limelightMeasurement != null){
+        if (this.limelightMeasurementTurret != null){
             SmartDashboard.putBoolean("local1", true);
-            Constants.TurretConstants.turretPose2d=RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
+            
              SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
         SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("llx", limelightMeasurement.pose.getX());
-        SmartDashboard.putNumber("lly", limelightMeasurement.pose.getY());
-    if (limelightMeasurement.tagCount >= 2) {
-        SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
-        Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
-        Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
-            limelightTurretPoseAdjustedToRobot(limelightMeasurement.pose),
-            limelightMeasurement.timestampSeconds
-    );
+        SmartDashboard.putNumber("llx", limelightMeasurementTurret.pose.getX());
+        SmartDashboard.putNumber("lly", limelightMeasurementTurret.pose.getY());
+            if (limelightMeasurementTurret.tagCount >= 2) {
+                SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
+                Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+                Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
+                    limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose),
+                    limelightMeasurementTurret.timestampSeconds
+            );
 
+            }
+        }
+    if (this.limelightMeasurement != null){
+                SmartDashboard.putBoolean("local1", true);
+                
+                SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
+            SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
+            SmartDashboard.putNumber("llx", limelightMeasurement.pose.getX());
+            SmartDashboard.putNumber("lly", limelightMeasurement.pose.getY());
+        if (limelightMeasurement.tagCount >= 2) {
+            SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
+            Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
+            Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
+                limelightMeasurement.pose,
+                limelightMeasurement.timestampSeconds
+        );
+           SmartDashboard.putNumber("limelight-duncanPosex", limelightMeasurement.pose.getX());
+           SmartDashboard.putNumber("limelight-duncanPosey", limelightMeasurement.pose.getY());
+
+
+        }
     }
-}
+    Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
+    SmartDashboard.putNumber("turretPosex",  Constants.TurretConstants.turretPose2d.getX());
+           SmartDashboard.putNumber("turretPosey",  Constants.TurretConstants.turretPose2d.getY());
+    //SmartDashboard.putNumber("limelight");
     
 }
     

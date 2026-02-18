@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,14 +15,14 @@ import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
-import frc.robot.subsystems.TurretSubsytem;
+import frc.robot.subsystems.TurretSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAimCommand extends Command {
   private String limelightName = Constants.limelightConstants.limelightTurret;
   private double txOffset;
  
-  private TurretSubsytem t_TurretSubsystem ;
+  private TurretSubsystem t_TurretSubsystem ;
   private HoodSubsystem h_HoodSubsystem;
   private ShooterSubsystem s_ShooterSubsystem;
   
@@ -31,17 +33,28 @@ public class AutoAimCommand extends Command {
 
   private Translation2d poi;
   public LimelightHelpers.PoseEstimate limelightMeasurement;
+  private BooleanSupplier hoodUp;
  
- 
+  boolean angleRight;
+  public void checkAngle (){
+   Pose2d pose = Constants.TurretConstants.turretPose2d;
+    double off = getAngleToHub(pose).getTan()*getDistance(pose);
+   if (off < 2 && off > -2){
+     this.angleRight = true;
+    }else{
+     this.angleRight = false;
+    }
+  }
 
   
   /** Creates a new AutoAimCommand. */
-  public AutoAimCommand(Translation2d poi, TurretSubsytem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem) {
+  public AutoAimCommand(Translation2d poi, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     this.poi = poi;
+    this.hoodUp = hoodUp;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -59,22 +72,7 @@ public class AutoAimCommand extends Command {
     Pose2d pose = Constants.TurretConstants.turretPose2d;
     limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
     
-    if (limelightMeasurement != null){
-      Pose2d pose2 = limelightMeasurement.pose;
-      double degrees = getTurretAngleToHub(pose2).getDegrees();
-    pose2 = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName).pose;
-    //Pose2d angle = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName).angle;
-    SmartDashboard.putNumber("getDistance", getDistance(pose));
-    SmartDashboard.putNumber("getAngle", getAngleToHub(pose).getDegrees());
-    SmartDashboard.putNumber("getturretAngletohub", getTurretAngleToHub(pose).getDegrees());
-
     
-    SmartDashboard.putNumber("getDistanceS", getDistance(pose2));
-    SmartDashboard.putNumber("getAngleS", getAngleToHub(pose2).getDegrees());
-    SmartDashboard.putNumber("getturretAngletohubS", degrees);
-    SmartDashboard.putNumber("getturretAngle", getTurretAngle(pose2).getDegrees());
-    
-    }
     double turretangle = getTurretAngleToHub(pose).getDegrees();
     double distance = getDistance(pose);
     double vy = CalculateVy(distance);
@@ -87,8 +85,10 @@ public class AutoAimCommand extends Command {
     SmartDashboard.putNumber("shootSpeedy", vy);
     SmartDashboard.putNumber("poseturret angle", turretangle);
     SmartDashboard.putNumber("poseturretdist", distance);
+
     t_TurretSubsystem.goToAngle(-turretangle);
-    h_HoodSubsystem.goToAngle(shootAngle);
+    if(hoodUp.getAsBoolean())h_HoodSubsystem.goToAngle(shootAngle);
+    else h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
     s_ShooterSubsystem.setVelocity(vs * 2.35);
 
   }

@@ -6,13 +6,17 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeArmSubsytem extends SubsystemBase {
   TalonFX armMotor = new TalonFX(Constants.IntakeConstants.armMotor);
+  private MotionMagicVoltage motionMagic = new MotionMagicVoltage(0);
   /** Creates a new IntakeArmSubsytem. */
   public IntakeArmSubsytem() {
         TalonFXConfigurator talonFXConfigurator = armMotor.getConfigurator();
@@ -30,6 +34,22 @@ public class IntakeArmSubsytem extends SubsystemBase {
     SoftLimits.ReverseSoftLimitEnable = Constants.IntakeConstants.softLimitEnable;
     SoftLimits.ReverseSoftLimitThreshold = degToTick(Constants.IntakeConstants.reverseLimit);
 
+    var s_slot0Configs = config.Slot0;
+    s_slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
+    s_slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    s_slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    s_slot0Configs.kP = 4.8; // An error of 1 rps results in 0.11 V output
+    s_slot0Configs.kI = 0; // no output for integrated error
+    s_slot0Configs.kD = 0.1; // no output for error derivative
+    
+    var motionMagicConfigs = config.MotionMagic;
+    motionMagicConfigs.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
+    motionMagicConfigs.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+    motionMagicConfigs.MotionMagicJerk = 1600; // Target jerk of 1600 rps/s/s (0.1 seconds)
+
+    var motorOutput = config.MotorOutput;
+    motorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
     talonFXConfigurator.apply(config);
   }
 
@@ -37,10 +57,10 @@ public class IntakeArmSubsytem extends SubsystemBase {
     armMotor.set(speed);
   }
   public double tickToDeg(double tick){
-    return tick * 1/1;
+    return tick * Constants.IntakeConstants.intakeArmConversion;
   }
   public double degToTick(double deg){
-    return deg * 1/1;
+    return deg * 1/Constants.IntakeConstants.intakeArmConversion;
   }
   public double getArmAngle(){
     return tickToDeg(armMotor.getPosition().getValueAsDouble());
@@ -48,5 +68,15 @@ public class IntakeArmSubsytem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("armAngle", getArmAngle());
+    
+  }
+
+  public void goToAngle(double angle){
+    SmartDashboard.putNumber("HoodgoTo", tickToDeg(degToTick(angle)));
+    if(angle > Constants.IntakeConstants.forwardLimit)angle = Constants.IntakeConstants.forwardLimit;
+    if(angle < Constants.HoodConstants.reverseLimit)angle = Constants.IntakeConstants.reverseLimit;
+    armMotor.setControl(motionMagic.withPosition(degToTick(angle)));
+    
   }
 }
