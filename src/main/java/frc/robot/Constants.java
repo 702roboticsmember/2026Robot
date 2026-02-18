@@ -399,6 +399,7 @@ public final class Constants {
         public static final boolean LimitEnable = false;
         // public static final int forwardSoftLimit = 0;
         // public static final int reverseSoftLimit = 0;
+        public static final int angleMotor = 0;
 
     }
 
@@ -569,5 +570,6 @@ public final class Constants {
         
 
     }
+    }
     
-}
+

@@ -99,7 +99,7 @@ public class AutoAimCommand extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+    public boolean isFinished(){
     return false;
   }
 
@@ -132,9 +132,7 @@ public class AutoAimCommand extends Command {
     double yaw = data.Yaw;
     return 0;
   }
-
   
-
   /**
    * getVrz:
    *  unfinished 

@@ -64,7 +64,7 @@ public class HoodSubsystem extends SubsystemBase {
     HoodMotor.setPosition(degToTick(degrees));
   }
 
-   public void setSpeed(double speed) {
+  public void setSpeed(double speed) {
     HoodMotor.set(speed);
   }
   public double tickToDeg(double tick){

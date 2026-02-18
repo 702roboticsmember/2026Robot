@@ -132,8 +132,10 @@ public class RobotContainer {
     }
 
     private Command Shoot() {
-        return new ParallelCommandGroup(
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem)
+        return new ParallelCommandGroup(new SequentialCommandGroup(
+            new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem), 
+            new InstantCommand(()->f_FloorIndexerSubsystem.move(-3), f_FloorIndexerSubsystem)
+        )
            
             // Commands.repeatingSequence(new SequentialCommandGroup(new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(-0.1), f_FloorIndexerSubsystem),
             //  new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed), i_IndexerSubsystem),
