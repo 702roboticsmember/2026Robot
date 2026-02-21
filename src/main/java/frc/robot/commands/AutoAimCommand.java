@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
 import frc.robot.subsystems.TurretSubsystem;
@@ -58,6 +59,16 @@ public class AutoAimCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp) {
+    this.t_TurretSubsystem = t_TurretSubsystem;
+    this.s_ShooterSubsystem = s_ShooterSubsystem;
+    this.h_HoodSubsystem = h_HoodSubsystem;
+    addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+    this.poi = RobotContainer.currentPOI.location;
+    this.hoodUp = hoodUp;
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -68,9 +79,13 @@ public class AutoAimCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    this.poi = RobotContainer.currentPOI.location;
     
     Pose2d pose = Constants.TurretConstants.turretPose2d;
-    limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    //limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
+
+    checkAngle();
+    SmartDashboard.putBoolean("good to shoot", angleRight);
     
     
     double turretangle = getTurretAngleToHub(pose).getDegrees();
@@ -84,12 +99,14 @@ public class AutoAimCommand extends Command {
     SmartDashboard.putNumber("shootSpeedx", vx);
     SmartDashboard.putNumber("shootSpeedy", vy);
     SmartDashboard.putNumber("poseturret angle", turretangle);
+    SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
     SmartDashboard.putNumber("poseturretdist", distance);
-
-    t_TurretSubsystem.goToAngle(-turretangle);
+    SmartDashboard.putNumber("poitx", poi.getX());
+    SmartDashboard.putNumber("poity", poi.getY());
+    t_TurretSubsystem.goToAngleOffset(-turretangle);
     if(hoodUp.getAsBoolean())h_HoodSubsystem.goToAngle(shootAngle);
     else h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
-    s_ShooterSubsystem.setVelocity(vs * 2.35);
+    s_ShooterSubsystem.setVelocity(vs * 2.1492 + 0.56157);
 
   }
   

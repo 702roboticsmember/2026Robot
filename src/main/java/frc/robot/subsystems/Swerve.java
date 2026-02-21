@@ -39,10 +39,11 @@ public class Swerve extends SubsystemBase {
     public  RobotConfig config;
     public LimelightHelpers.PoseEstimate limelightMeasurement;
     public LimelightHelpers.PoseEstimate limelightMeasurementTurret;
+    
 
 
     public Swerve() {
-        limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+        //limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         gyro = new AHRS( NavXComType.kMXP_SPI);
         gyro.reset();
         try {
@@ -231,12 +232,12 @@ public class Swerve extends SubsystemBase {
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  -Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
         Rotation2d a = getHeading();
-       return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  new Rotation2d(Math.toRadians(LimelightHelpers.getIMUData("limelight").robotYaw)));
+       return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  new Rotation2d(Math.toRadians(LimelightHelpers.getIMUData(Constants.limelightConstants.limelightTurret).robotYaw)));
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
 
     public void setHeadingToField(){
-        Rotation2d rotate = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight").pose.getRotation();
+        Rotation2d rotate = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret).pose.getRotation();
         if (this.limelightMeasurement != null){
         setHeading(rotate);
         }
@@ -250,7 +251,7 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic() {
-        limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightFront);
+        limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         limelightMeasurementTurret =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
         Constants.Swerve.swervePoseEstimator.update(getGyroYaw(), getModulePositions());
        
@@ -277,7 +278,7 @@ public class Swerve extends SubsystemBase {
                     limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose),
                     limelightMeasurementTurret.timestampSeconds
             );
-
+//cpp is better
             }
         }
     if (this.limelightMeasurement != null){
@@ -303,6 +304,7 @@ public class Swerve extends SubsystemBase {
     Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
     SmartDashboard.putNumber("turretPosex",  Constants.TurretConstants.turretPose2d.getX());
            SmartDashboard.putNumber("turretPosey",  Constants.TurretConstants.turretPose2d.getY());
+           SmartDashboard.putNumber("tx test", LimelightHelpers.getTX("limelight"));
     //SmartDashboard.putNumber("limelight");
     
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -57,14 +58,14 @@ public class RobotContainer {
 
 
     //driver buttons
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
+    //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
    // private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton armOut = new JoystickButton(driver, XboxController.Button.kX.value);
-    //private final JoystickButton armIn = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton armIn = new JoystickButton(driver, XboxController.Button.kB.value);
     
     private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     
@@ -73,15 +74,17 @@ public class RobotContainer {
     //private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    //private final  servoEngage = new POVButton(driver, Constants.Direction.UP.direction);
     
     
-    private final JoystickButton autoAim = new JoystickButton(codriver, XboxController.Button.kX.value);
+    
+    private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
     
     private final JoystickButton Nest = new JoystickButton(codriver, 0);
-    private final POVButton UP = new POVButton(codriver, Constants.Direction.UP.direction);
-    private final POVButton DOWN = new POVButton(codriver, Constants.Direction.DOWN.direction);
-    private final POVButton LEFT = new POVButton(codriver, Constants.Direction.LEFT.direction);
-    private final POVButton RIGHT = new POVButton(codriver, Constants.Direction.RIGHT.direction);
+    private final POVButton UP = new POVButton(driver, Constants.Direction.UP.direction);
+    private final POVButton DOWN = new POVButton(driver, Constants.Direction.DOWN.direction);
+    private final POVButton LEFT = new POVButton(driver, Constants.Direction.LEFT.direction);
+    private final POVButton RIGHT = new POVButton(driver, Constants.Direction.RIGHT.direction);
     
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
@@ -96,11 +99,14 @@ public class RobotContainer {
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
 
-    private Locations currentPOI = Locations.BLUEHUB;
+    public static Locations currentPOI = Locations.BLUEHUB;
+    private Field2d locField2d = new Field2d();
 
     public void debugLocations() {
         SmartDashboard.putString("Currently Aiming at",
                 String.format("%s ", currentPOI.label));
+                locField2d.setRobotPose(new Pose2d(currentPOI.location, new Rotation2d(0)));
+        SmartDashboard.putData("current location", locField2d);
     }
     
 
@@ -132,14 +138,21 @@ public class RobotContainer {
     }
 
     private Command Shoot() {
-        return new ParallelCommandGroup(new SequentialCommandGroup(
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem), 
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(-3), f_FloorIndexerSubsystem)
-        )
+        return new ParallelCommandGroup(
+        //     new SequentialCommandGroup(
+        //     new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem).withDeadline(new WaitCommand(1)), 
+        //     new InstantCommand(()->f_FloorIndexerSubsystem.move(-3), f_FloorIndexerSubsystem).withDeadline(new WaitCommand(1)),
+         new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0.1), i_IndexerSubsystem),
+        //     new WaitCommand(1)
+        // ),
+         //new InstantCommand(()->s_ShooterSubsystem.setVelocity(14), s_ShooterSubsystem),
+        //     new InstantCommand(()->hoodUp = ()-> true)
+             //new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(), i_IndexerSubsystem),
            
             // Commands.repeatingSequence(new SequentialCommandGroup(new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(-0.1), f_FloorIndexerSubsystem),
             //  new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed), i_IndexerSubsystem),
-            // new WaitCommand(0.6),new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed), f_FloorIndexerSubsystem),
+            // new WaitCommand(0.6),
+            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.5), f_FloorIndexerSubsystem)
             //  new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(-.10), i_IndexerSubsystem),
             // new WaitCommand(0.4))), 
             
@@ -153,13 +166,14 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(0), i_IndexerSubsystem),
             new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem),
-            new InstantCommand(()->s_ShooterSubsystem.setVelocity(0), s_ShooterSubsystem),
+           // new InstantCommand(()->s_ShooterSubsystem.setVelocity(0), s_ShooterSubsystem),
             new InstantCommand(()->hoodUp = ()-> true));
         
     }
 
     private Command AutoAim() {
-        return new AutoAimCommand(currentPOI.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
+        SmartDashboard.putBoolean("autorun", true);
+        return new AutoAimCommand( t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
     }
     
     private Command Nest() {
@@ -210,7 +224,7 @@ public class RobotContainer {
         ()-> -driver.getRawAxis(4) * power, 
         ()->robotCentric));
 
-
+        driver.setRumble(RumbleType.kBothRumble, 0.2);
 
        
         NamedCommands.registerCommand("shoot", Shoot());
@@ -235,7 +249,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         /* Driver Buttons */
-        zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
+        //zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
         speedToggle.toggleOnTrue(new InstantCommand(() -> RobotContainer.power = .25));
         speedToggle.toggleOnFalse(new InstantCommand(() -> RobotContainer.power = 1));
         
@@ -251,13 +265,14 @@ public class RobotContainer {
         //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         shoot.onFalse(ShootOff());
 
-        // autoAim.toggleOnTrue(AutoAim());
-        // UP.onTrue(wrapLocationChange(()-> nextAllianceLocation()));
-        // DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
-        // RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));
-        // LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
+        autoAim.whileTrue(AutoAim());
+        UP.onTrue(wrapLocationChange(()-> nextAllianceLocation()));
+        DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
+        RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));
+        LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
         armOut.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem));
-        //armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
+        armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
+
 
          //pointPID.whileTrue(new PointToPointPID(s_Swerve, new Pose2d(new Translation2d(2,2),new Rotation2d(Math.toRadians(180)))));
 

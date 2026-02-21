@@ -58,6 +58,7 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void setSpeedPrimary(double speed){
     indexMotorPrimary.set(speed);
+    indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
   }
   public double getPrimaryDeg(){
   return primaryTickToDeg(indexMotorPrimary.getPosition().getValueAsDouble());

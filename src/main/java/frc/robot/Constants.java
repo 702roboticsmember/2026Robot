@@ -51,7 +51,7 @@ public final class Constants {
     public enum Locations {
         BLUEHUB(new Translation2d(4.62, 4.035), "Blue Alliance Hub"),
         BLUELEFT(new Translation2d(), "Blue Alliance left side"),
-        BLUERIGHT(new Translation2d(),  "right Alliance right side"),
+        BLUERIGHT(new Translation2d(),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.920, 4.035), "Red Alliance Hub"),
         REDLEFT(new Translation2d(), "Red Alliance left side"),
         REDRIGHT(new Translation2d(),  "Red Alliance right side");
@@ -179,10 +179,13 @@ public final class Constants {
         var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
                         if(alliance.get() == DriverStation.Alliance.Red){
-                            Constants.Swerve.BLUE_ALLIANCE = false;}else{
+                            Constants.Swerve.BLUE_ALLIANCE = false;
+                            return false;
+                        }else{
                                 Constants.Swerve.BLUE_ALLIANCE = true;
+                                return true;
                             }
-                      return alliance.get() == DriverStation.Alliance.Red;
+                      
                     }
                     return false;
     }
@@ -522,10 +525,10 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
          public static final boolean softLimitEnable = false;
 
-        public static final double forwardLimit = 63;
+        public static final double forwardLimit = 66;
 
         public static final double reverseLimit = 46.2;
-        public static final double initialAngle = 63.3;
+        public static final double initialAngle = 66.5;
         public static final double conversion = ((16.0/50.0) * (12.0/150.0));
     }
     

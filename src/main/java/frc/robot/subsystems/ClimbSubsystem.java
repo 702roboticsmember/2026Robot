@@ -8,12 +8,13 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
   private TalonFX motor = new TalonFX(Constants.ClimbConstants.climbMotor);
-  
+  private Servo ratchetServo = new Servo(0);
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
     TalonFXConfigurator talonFXConfigurator = motor.getConfigurator();
@@ -49,7 +50,9 @@ public class ClimbSubsystem extends SubsystemBase {
   public void setSpeed(double speed){
     motor.set(speed);
   }
-
+  public void setServo(double angle){
+    ratchetServo.setAngle(angle);
+ }
 
   @Override
   public void periodic() {
