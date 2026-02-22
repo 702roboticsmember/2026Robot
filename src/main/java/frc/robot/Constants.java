@@ -545,19 +545,19 @@ public final class Constants {
     public static final double tTolerance = 0.001;
     public static final double aTolerance = 0.1;
 
-
-
-
-
-
-
-
-
-
-
-
-
      }
+    public static final class AutoFollowConstants{
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;   
+
+    public static final double AutoFollowPIDSetpoint = 6;   
+    public static final double AutoFollowPIDTolerance = 0;   
+    public static final double AutoAimPIDSetpoint = 0;   
+    public static final double AutoAimPIDTolerance = 0;   
+
+
+    }
 
      public static final class limelightConstants {
 
