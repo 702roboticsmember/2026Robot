@@ -39,10 +39,12 @@ public class Swerve extends SubsystemBase {
     public  RobotConfig config;
     public LimelightHelpers.PoseEstimate limelightMeasurement;
     public LimelightHelpers.PoseEstimate limelightMeasurementTurret;
+    public TurretSubsystem t_Subsystem;
     
 
 
-    public Swerve() {
+    public Swerve(TurretSubsystem t_Subsystem) {
+        this.t_Subsystem = t_Subsystem;
         //limelightMeasurement =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         gyro = new AHRS( NavXComType.kMXP_SPI);
         gyro.reset();
@@ -222,9 +224,16 @@ public class Swerve extends SubsystemBase {
     public Pose2d limelightTurretPoseAdjustedToRobot(Pose2d pose){
         double y = Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
-        Rotation2d a = getHeading();
+        Rotation2d a = pose.getRotation().minus(t_Subsystem.getAngle());
         
-       return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ), a);
+       Pose2d returnpose = new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ), a);
+       SmartDashboard.putNumber("ogPosex", pose.getX());
+           SmartDashboard.putNumber("ogPosey", pose.getY());
+           SmartDashboard.putNumber("ogheading", pose.getRotation().getDegrees());
+       SmartDashboard.putNumber("adjPosex", returnpose.getX());
+           SmartDashboard.putNumber("adjPosey", returnpose.getY());
+           SmartDashboard.putNumber("adjheading", a.getDegrees());
+           return returnpose;
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
 
@@ -235,6 +244,7 @@ public class Swerve extends SubsystemBase {
        return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  new Rotation2d(Math.toRadians(LimelightHelpers.getIMUData(Constants.limelightConstants.limelightTurret).robotYaw)));
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
+   
 
     public void setHeadingToField(){
         Rotation2d rotate = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret).pose.getRotation();
@@ -272,12 +282,17 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("llx", limelightMeasurementTurret.pose.getX());
         SmartDashboard.putNumber("lly", limelightMeasurementTurret.pose.getY());
             if (limelightMeasurementTurret.tagCount >= 2) {
+                Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
                 SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
                 Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
                 Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
-                    limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose),
+                    pose,
                     limelightMeasurementTurret.timestampSeconds
             );
+            setHeading(pose.getRotation());
+            SmartDashboard.putNumber("limelight-duncanPosex", limelightMeasurementTurret.pose.getX());
+           SmartDashboard.putNumber("limelight-duncanPosey", limelightMeasurementTurret.pose.getY());
+           SmartDashboard.putNumber("limelight-duncanheading", limelightMeasurementTurret.pose.getRotation().getDegrees());
 //cpp is better
             }
         }
@@ -295,8 +310,7 @@ public class Swerve extends SubsystemBase {
                 limelightMeasurement.pose,
                 limelightMeasurement.timestampSeconds
         );
-           SmartDashboard.putNumber("limelight-duncanPosex", limelightMeasurement.pose.getX());
-           SmartDashboard.putNumber("limelight-duncanPosey", limelightMeasurement.pose.getY());
+           
 
 
         }

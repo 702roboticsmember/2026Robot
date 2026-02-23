@@ -391,9 +391,9 @@ public final class Constants {
         public static final double Tolerance = 0.1;
                 public static final boolean softLimitEnable = false;
 
-        public static final double forwardLimit = 85;
+        public static final double forwardLimit = 265;
 
-        public static final double reverseLimit = 265;
+        public static final double reverseLimit = -85;
         
         public static Pose2d turretPose2d = new Pose2d();
 

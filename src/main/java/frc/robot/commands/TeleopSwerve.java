@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -35,12 +36,17 @@ public class TeleopSwerve extends Command {
                 Constants.CONTROLLER_DEADBAND);
         double strafeVal = MathUtil.applyDeadband(strafeSupplier.getAsDouble(), Constants.CONTROLLER_DEADBAND);
         double rotationVal = MathUtil.applyDeadband(rotationSupplier.getAsDouble(), Constants.CONTROLLER_DEADBAND);
+        Rotation2d offset;
+        if(Constants.getAlliance())
+                offset = new Rotation2d();
+                else offset = new Rotation2d(Math.toRadians(180));
 
         /* Drive */
-        swerveSubsystem.drive(
+        swerveSubsystem.driveAdjustedHeading(
                 new Translation2d(translationVal, strafeVal).times(Constants.Swerve.MAX_SPEED),
                 rotationVal * Constants.Swerve.MAX_ANGULAR_VELOCITY,
                 !robotCentricSupplier.getAsBoolean(),
-                true);
+                true,
+                offset);
     }
 }
