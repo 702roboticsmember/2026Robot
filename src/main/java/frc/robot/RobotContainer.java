@@ -79,6 +79,7 @@ public class RobotContainer {
     
     
     private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton autoAimCo = new JoystickButton(codriver, XboxController.Button.kY.value);
     
     private final JoystickButton Nest = new JoystickButton(codriver, 0);
     private final POVButton UP = new POVButton(driver, Constants.Direction.UP.direction);
@@ -139,26 +140,11 @@ public class RobotContainer {
 
     private Command Shoot() {
         return new ParallelCommandGroup(
-        //     new SequentialCommandGroup(
-        //     new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem).withDeadline(new WaitCommand(1)), 
-        //     new InstantCommand(()->f_FloorIndexerSubsystem.move(-3), f_FloorIndexerSubsystem).withDeadline(new WaitCommand(1)),
-         new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0.1), i_IndexerSubsystem),
-        //     new WaitCommand(1)
-        // ),
-         //new InstantCommand(()->s_ShooterSubsystem.setVelocity(14), s_ShooterSubsystem),
-        //     new InstantCommand(()->hoodUp = ()-> true)
-             //new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(), i_IndexerSubsystem),
+            new InstantCommand(()->hoodUp = ()-> true),
+            new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0.2), i_IndexerSubsystem),
+            new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
+            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.3), f_FloorIndexerSubsystem)
            
-            // Commands.repeatingSequence(new SequentialCommandGroup(new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(-0.1), f_FloorIndexerSubsystem),
-            //  new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed), i_IndexerSubsystem),
-            // new WaitCommand(0.6),
-            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.5), f_FloorIndexerSubsystem)
-            //  new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(-.10), i_IndexerSubsystem),
-            // new WaitCommand(0.4))), 
-            
-            
-            // new InstantCommand(()->s_ShooterSubsystem.setVelocity(14), s_ShooterSubsystem),
-            // new InstantCommand(()->hoodUp = ()-> true)
             );
         
     }
@@ -166,8 +152,9 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(0), i_IndexerSubsystem),
             new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem),
+            new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem),   
            // new InstantCommand(()->s_ShooterSubsystem.setVelocity(0), s_ShooterSubsystem),
-            new InstantCommand(()->hoodUp = ()-> true));
+            new InstantCommand(()->hoodUp = ()-> false));
         
     }
 
@@ -201,7 +188,7 @@ public class RobotContainer {
 
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(t_TurretSubsystem);
 
     public RobotContainer() {
         Constants.Swerve.BLUE_ALLIANCE = Constants.getAlliance();
@@ -224,7 +211,7 @@ public class RobotContainer {
         ()-> -driver.getRawAxis(4) * power, 
         ()->robotCentric));
 
-        driver.setRumble(RumbleType.kBothRumble, 0.2);
+        //driver.setRumble(RumbleType.kBothRumble, 0.2);
 
        
         NamedCommands.registerCommand("shoot", Shoot());
@@ -266,12 +253,13 @@ public class RobotContainer {
         shoot.onFalse(ShootOff());
 
         autoAim.whileTrue(AutoAim());
+        autoAimCo.whileTrue(AutoAim());
         UP.onTrue(wrapLocationChange(()-> nextAllianceLocation()));
         DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
         RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));
         LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
         armOut.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem));
-        armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
+        // armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
 
 
          //pointPID.whileTrue(new PointToPointPID(s_Swerve, new Pose2d(new Translation2d(2,2),new Rotation2d(Math.toRadians(180)))));

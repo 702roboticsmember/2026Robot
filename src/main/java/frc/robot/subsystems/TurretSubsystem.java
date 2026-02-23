@@ -29,6 +29,7 @@ import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 
 
@@ -64,6 +65,9 @@ public class TurretSubsystem extends SubsystemBase {
               motionMagicConfigs.MotionMagicAcceleration = 80; // Target acceleration of 160 rps/s (0.5 seconds)
               motionMagicConfigs.MotionMagicJerk = 800; // Target jerk of 1600 rps/s/s (0.1 seconds)
 
+              var motorOutput = turretConfig.MotorOutput;
+              motorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
       Motor.getConfigurator().apply(turretConfig);
     
   // /** Creates a new ReleaseSubsystem. */
@@ -94,7 +98,7 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return new Rotation2d(getAngleAsDouble());
+    return new Rotation2d(Math.toRadians(getAngleAsDouble()));
     
     
   }
@@ -102,6 +106,8 @@ public class TurretSubsystem extends SubsystemBase {
   public double getAngleAsDouble() {
     return getTicksToDegrees(Motor.getPosition().getValueAsDouble());
   }
+
+  
   public double getAngleAsTicks() {
     return Motor.getPosition().getValueAsDouble();
   }
@@ -133,12 +139,18 @@ public class TurretSubsystem extends SubsystemBase {
   }
 
   public void goToAngle(double angle){
+    if(angle > Constants.TurretConstants.forwardLimit)angle = Constants.TurretConstants.forwardLimit;
+    if(angle < Constants.TurretConstants.reverseLimit)angle = Constants.TurretConstants.reverseLimit;
     Motor.setControl(motionMagic.withPosition(getDegreesToticks(angle)));
+    
   }
 
   public void goToAngleOffset(double angleOffset){
-  
-    Motor.setControl(motionMagic.withPosition(getDegreesToticks(getAngleAsDouble() + angleOffset)));
+    double angle = angleOffset + getAngleAsDouble();
+    if(angle > Constants.TurretConstants.forwardLimit)angle = Constants.TurretConstants.forwardLimit;
+    if(angle < Constants.TurretConstants.reverseLimit)angle = Constants.TurretConstants.reverseLimit;
+    
+    Motor.setControl(motionMagic.withPosition(getDegreesToticks(angle)));
   
   }
 
