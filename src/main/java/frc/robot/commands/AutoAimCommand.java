@@ -125,7 +125,10 @@ public class AutoAimCommand extends Command {
     
     t_TurretSubsystem.goToAngle(RobotBasedAngle);
     if(hoodUp.getAsBoolean()){h_HoodSubsystem.goToAngle(shootAngle);
-      s_ShooterSubsystem.setVelocity(vs * 2.2492 + 0.56157);
+      //s_ShooterSubsystem.setVelocity(vs * 2.2492 + 0.56157);
+      double output = vs * 2.2492 + 0.56157;
+      //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
+      s_ShooterSubsystem.setVelocity(output);
     }
     else {h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
       s_ShooterSubsystem.setVelocity(0);
@@ -194,9 +197,14 @@ public class AutoAimCommand extends Command {
 
   public Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
-        double x =  -Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
+        double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
         Rotation2d a = pose.getRotation();
-       return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  a);
+        Pose2d returnpose = new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  a);
+        SmartDashboard.putNumber("2adjPosex", returnpose.getX());
+           SmartDashboard.putNumber("2adjPosey", returnpose.getY());
+           SmartDashboard.putNumber("2adjheading", a.getDegrees());
+       return returnpose;
+
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
 

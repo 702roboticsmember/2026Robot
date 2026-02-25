@@ -223,7 +223,7 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d limelightTurretPoseAdjustedToRobot(Pose2d pose){
         double y = Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
-        double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
+        double x =  -Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
         Rotation2d a = pose.getRotation().minus(t_Subsystem.getAngle());
         
        Pose2d returnpose = new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ), a);
@@ -239,7 +239,7 @@ public class Swerve extends SubsystemBase {
 
     public Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
-        double x =  -Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
+        double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
         Rotation2d a = getHeading();
        return new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ),  new Rotation2d(Math.toRadians(LimelightHelpers.getIMUData(Constants.limelightConstants.limelightTurret).robotYaw)));
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
@@ -278,9 +278,9 @@ public class Swerve extends SubsystemBase {
             SmartDashboard.putBoolean("local1", true);
             
              SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
-        SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
-        SmartDashboard.putNumber("llx", limelightMeasurementTurret.pose.getX());
-        SmartDashboard.putNumber("lly", limelightMeasurementTurret.pose.getY());
+        // SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
+        // SmartDashboard.putNumber("llx", limelightMeasurementTurret.pose.getX());
+        // SmartDashboard.putNumber("lly", limelightMeasurementTurret.pose.getY());
             if (limelightMeasurementTurret.tagCount >= 2) {
                 Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
                 SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
@@ -299,8 +299,8 @@ public class Swerve extends SubsystemBase {
     if (this.limelightMeasurement != null){
                 SmartDashboard.putBoolean("local1", true);
                 
-                SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
-            SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
+            //     SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
+            // SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
             SmartDashboard.putNumber("llx", limelightMeasurement.pose.getX());
             SmartDashboard.putNumber("lly", limelightMeasurement.pose.getY());
         if (limelightMeasurement.tagCount >= 2) {

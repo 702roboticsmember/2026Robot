@@ -42,7 +42,7 @@ public class HoodSubsystem extends SubsystemBase {
     s_slot0Configs.kS = 0.25; // Add 0.25 V output to overcome static friction
     s_slot0Configs.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
     s_slot0Configs.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
-    s_slot0Configs.kP = 4.8; // An error of 1 rps results in 0.11 V output
+    s_slot0Configs.kP = 5; // An error of 1 rps results in 0.11 V output
     s_slot0Configs.kI = 0; // no output for integrated error
     s_slot0Configs.kD = 0.1; // no output for error derivative
     

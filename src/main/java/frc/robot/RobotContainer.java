@@ -143,15 +143,17 @@ public class RobotContainer {
             new InstantCommand(()->hoodUp = ()-> true),
             new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0.2), i_IndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
-            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.3), f_FloorIndexerSubsystem)
+            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.4), f_FloorIndexerSubsystem)
            
             );
         
     }
     private Command ShootOff() {
         return new ParallelCommandGroup(
-            new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(0), i_IndexerSubsystem),
-            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem),
+            new SequentialCommandGroup(new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(-0), i_IndexerSubsystem),
+            new WaitCommand(1),
+            new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(0), i_IndexerSubsystem)),
+            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem),   
            // new InstantCommand(()->s_ShooterSubsystem.setVelocity(0), s_ShooterSubsystem),
             new InstantCommand(()->hoodUp = ()-> false));
@@ -160,9 +162,19 @@ public class RobotContainer {
 
     private Command AutoAim() {
         SmartDashboard.putBoolean("autorun", true);
-        return new AutoAimCommand( t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
     }
     
+    private Command AimAndShoot() {
+        return new ParallelCommandGroup(
+            new InstantCommand(() ->AutoAim()),
+            new InstantCommand(() ->AimAtHub()), 
+            new InstantCommand(() ->Shoot()),
+            new WaitCommand(3),
+            new InstantCommand(() ->ShootOff())
+        );
+    }
+
     private Command Nest() {
         return new InstantCommand(() -> h_HoodSubsystem.goToAngle(0));
     }
@@ -178,6 +190,20 @@ public class RobotContainer {
         else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
     }
 
+    private Command releaseClimb(){
+        return new InstantCommand(()->{
+            c_ClimbSubsystem.goToPosOffset(1);
+            c_ClimbSubsystem.setServo(90);
+        }, c_ClimbSubsystem);
+    }
+
+    private Command ExtendClimb(){
+        return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.extendedAngle), c_ClimbSubsystem);
+    }
+
+    private Command RetractClimb(){
+        return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.retractedAngle), c_ClimbSubsystem);
+    }
 
 
     // private Command AutoAim() {
@@ -216,6 +242,7 @@ public class RobotContainer {
        
         NamedCommands.registerCommand("shoot", Shoot());
         NamedCommands.registerCommand("AimAtHub", AimAtHub());
+        NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
         
         //s_ShooterSubsystem.setDefaultCommand(s_ShooterSubsystem.runCmd(()-> codriver.getRawAxis(2) * 1));
         t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)));

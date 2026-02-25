@@ -49,10 +49,10 @@ public final class Constants {
      }
 
     public enum Locations {
-        BLUEHUB(new Translation2d(4.62, 4.035), "Blue Alliance Hub"),
+        BLUEHUB(new Translation2d(4.620419, 4.034631), "Blue Alliance Hub"),
         BLUELEFT(new Translation2d(), "Blue Alliance left side"),
         BLUERIGHT(new Translation2d(),  "Blue Alliance right side"),
-        REDHUB(new Translation2d(11.920, 4.035), "Red Alliance Hub"),
+        REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
         REDLEFT(new Translation2d(), "Red Alliance left side"),
         REDRIGHT(new Translation2d(),  "Red Alliance right side");
 
@@ -348,8 +348,8 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
-        public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 50;//35
+        public static final int STATOR_CURRENT_LIMIT = 40;
+        public static final int CURRENT_LIMIT = 35;//35
         public static final int CURRENT_THRESHOLD = 35;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = false;
@@ -413,9 +413,9 @@ public final class Constants {
         public static final int angleMotor = 18;
         public static final double conversion = 1.5;
      
-        public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 35;//35
-        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final int STATOR_CURRENT_LIMIT = 60;
+        public static final int CURRENT_LIMIT = 40;//35
+        public static final int CURRENT_THRESHOLD = 40;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
@@ -455,6 +455,8 @@ public final class Constants {
         public static final double forwardLimit = 0;
 
         public static final double reverseLimit = 0;
+
+        public static final double retractedAngle = 0;
 
     }
 
