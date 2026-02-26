@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -21,6 +22,8 @@ import frc.robot.Constants;
 public class FloorIndexerSubsystem extends SubsystemBase {
    private MotionMagicVoltage motionMagic = new MotionMagicVoltage(0);
   TalonFX FloorIndexMotor = new TalonFX(Constants.IndexerConstants.indexMotorFeeder);
+  private MotionMagicVelocityVoltage velControl = new MotionMagicVelocityVoltage(0);
+
   /** Creates a new FloorIndexerSubsystem. */
   public FloorIndexerSubsystem() {
     
@@ -73,6 +76,9 @@ public class FloorIndexerSubsystem extends SubsystemBase {
 
   public void move(double val){
     FloorIndexMotor.setControl(motionMagic.withPosition(getIndexerPos() + val));
+  }
+  public void setVelocity(double val){
+    FloorIndexMotor.setControl(velControl.withVelocity(val));
   }
 
   @Override

@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -22,6 +23,8 @@ public class IndexerSubsystem extends SubsystemBase {
 
   TalonFX indexMotorPrimary = new TalonFX(Constants.IndexerConstants.indexMotorTurret1);
   TalonFX indexMotorSecondary = new TalonFX(Constants.IndexerConstants.indexMotorTurret2);
+
+  private MotionMagicVelocityVoltage velControl = new MotionMagicVelocityVoltage(0);
 
   public double speed;
 
@@ -38,6 +41,18 @@ public class IndexerSubsystem extends SubsystemBase {
     indexMotorPrimary.getConfigurator().apply(config);
     indexMotorSecondary.getConfigurator().apply(config);
     indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
+
+    var slot0Configs2 = config.Slot0;
+    slot0Configs2.kS = 0.25; // Add 0.25 V output to overcome static friction
+    slot0Configs2.kV = 0.12; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs2.kA = 0.01; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs2.kP = 0.11; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs2.kI = 0; // no output for integrated error
+    slot0Configs2.kD = 0; // A velocity error of 1 rps results in 0.1 V output
+
+    var motionMagicConfigs = config.MotionMagic;
+    motionMagicConfigs.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
+    motionMagicConfigs.MotionMagicJerk = 4000; // Target jerk of 4000 rps/s/s (0.1 seconds)
     // //Secondary
     //         TalonFXConfigurator talonFXConfiguratorSecondary = indexMotorSecondary.getConfigurator();
     // TalonFXConfiguration configSecondary = new TalonFXConfiguration();
@@ -88,4 +103,11 @@ public class IndexerSubsystem extends SubsystemBase {
       // setSpeedSecondary(0);
     }, this);
   }
+
+  public void setVelocity(double vel){
+    indexMotorPrimary.setControl(velControl.withVelocity(vel));
+    indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
+  }
+    //FlywheelMotor2.setControl(velControl.withVelocity(rps));
+  
 }

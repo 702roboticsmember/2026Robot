@@ -67,12 +67,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     // set slot 0 gains
     var slot0Configs2 = talonFXConfigs2.Slot0;
-    slot0Configs2.kS = Constants.ShooterConstants.kS; // Add 0.25 V output to overcome static friction
-    slot0Configs2.kV = Constants.ShooterConstants.kV; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs2.kA = Constants.ShooterConstants.kA; // An acceleration of 1 rps/s requires 0.01 V output
-    slot0Configs2.kP = Constants.ShooterConstants.kP ; // A position error of 2.5 rotations results in 12 V output
-    slot0Configs2.kI = Constants.ShooterConstants.kI; // no output for integrated error
-    slot0Configs2.kD = Constants.ShooterConstants.kD; // A velocity error of 1 rps results in 0.1 V output
+    slot0Configs2.kS = Constants.ShooterConstants.kS * 2; // Add 0.25 V output to overcome static friction
+    slot0Configs2.kV = Constants.ShooterConstants.kV * 1; // A velocity target of 1 rps results in 0.12 V output
+    slot0Configs2.kA = Constants.ShooterConstants.kA * 2; // An acceleration of 1 rps/s requires 0.01 V output
+    slot0Configs2.kP = Constants.ShooterConstants.kP * 4; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs2.kI = Constants.ShooterConstants.kI * 1; // no output for integrated error
+    slot0Configs2.kD = Constants.ShooterConstants.kD * 1; // A velocity error of 1 rps results in 0.1 V output
 
     // set Motion Magic settings
     
