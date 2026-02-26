@@ -22,8 +22,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 // import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 // import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -52,7 +54,7 @@ public class RobotContainer {
     private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final TurretSubsystem t_TurretSubsystem = new TurretSubsystem();
     private final HoodSubsystem h_HoodSubsystem = new HoodSubsystem();
-
+    private final LIDARSubsystem l_lidarSubsystem = new LIDARSubsystem();
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
 
@@ -90,7 +92,6 @@ public class RobotContainer {
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
 
-     //TODO post a boolean to smart dashboard if your able to shoot or not, red or green
         //TODO still have the capability to move turret without auto aim
         //Intake left bumper, shoot right bumper, flywheel on andd off x, fast mode toggle on a, climber up left trigger, climber down right trigger, y be outtake, turn it on with the flywheel, x toggles on the passing shot, 
     
@@ -205,6 +206,12 @@ public class RobotContainer {
         return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.retractedAngle), c_ClimbSubsystem);
     }
 
+    private Command AutoShoot() {
+        return new SequentialCommandGroup(Shoot(),
+        new WaitUntilCommand(() -> !l_lidarSubsystem.indexer_full()),
+        ShootOff());
+    }
+
 
     // private Command AutoAim() {
     //     return new ParallelCommandGroup(
@@ -231,18 +238,27 @@ public class RobotContainer {
             field.getObject("path").setPoses(poses);
         });
 
+        t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
+
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> -driver.getRawAxis(1) * power, 
         ()-> -driver.getRawAxis(0) * power,
         ()-> -driver.getRawAxis(4) * power, 
         ()->robotCentric));
 
-        //driver.setRumble(RumbleType.kBothRumble, 0.2);
+        // driver.setRumble(RumbleType.kBothRumble, 0.2);
 
        
-        NamedCommands.registerCommand("shoot", Shoot());
+        NamedCommands.registerCommand("Shoot", AutoShoot());
         NamedCommands.registerCommand("AimAtHub", AimAtHub());
-        NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
+        // NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
+        NamedCommands.registerCommand("IntakeNormal", IntakeIn());
+        NamedCommands.registerCommand("StopIntake", IntakeStop());
+        NamedCommands.registerCommand("IntakeOut", IntakeOut());
+        NamedCommands.registerCommand("AutoIntake", new AutoIntakeCommand(null, null, DOWN, s_Swerve, power, i_IntakeSubsystem));
+        NamedCommands.registerCommand("Climb", new ClimbPIDCommand(Constants.ClimbConstants.climbExtendAngle, c_ClimbSubsystem));
+        // NamedCommands.registerCommand("P2Ptop", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
+        // NamedCommands.registerCommand("P2Pbottom", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         
         //s_ShooterSubsystem.setDefaultCommand(s_ShooterSubsystem.runCmd(()-> codriver.getRawAxis(2) * 1));
         t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)));

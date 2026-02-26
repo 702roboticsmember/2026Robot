@@ -458,6 +458,8 @@ public final class Constants {
 
         public static final double retractedAngle = 0;
 
+        public static final double climbExtendAngle = 0;
+
     }
 
     //Auto Constants
@@ -574,6 +576,14 @@ public final class Constants {
         public static final double BallIntialHeight = 0.4572;
         
 
+    }
+    public static final class lidarConstants {
+        public static final int rampCounterID = 0;
+        public static final int tankCounterID = 9;
+		public static final double rampFullDistance = 40;
+        public static final double tankFullDistance = 200;
+		public static final double rampEmptyTime = 2;
+        public static final double tankFilledDistance = 0;
     }
     }
     
