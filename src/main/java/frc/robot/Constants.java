@@ -578,12 +578,13 @@ public final class Constants {
 
     }
     public static final class lidarConstants {
-        public static final int rampCounterID = 0;
-        public static final int tankCounterID = 9;
+        public static final int rampCounterID = 9;
+        public static final int tankCounterID = 0;
 		public static final double rampFullDistance = 40;
         public static final double tankFullDistance = 200;
 		public static final double rampEmptyTime = 2;
         public static final double tankFilledDistance = 0;
+        public static final double LIDAROffset = 10;
     }
     }
     

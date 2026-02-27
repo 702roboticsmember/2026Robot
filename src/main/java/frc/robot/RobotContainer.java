@@ -12,9 +12,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -76,8 +73,12 @@ public class RobotContainer {
     //private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
+    private final JoystickButton releaseClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
+    private final JoystickButton grabClimb = new JoystickButton(codriver, XboxController.Button.kA.value);
+    private final JoystickButton retractClimb = new JoystickButton(codriver, XboxController.Button.kB.value);
     //private final  servoEngage = new POVButton(driver, Constants.Direction.UP.direction);
-    
+
     
     
     private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
@@ -191,7 +192,14 @@ public class RobotContainer {
         else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
     }
 
-    private Command releaseClimb(){
+    private Command ReleaseClimb(){
+        return new InstantCommand(()->{
+            c_ClimbSubsystem.goToPosOffset(1);
+            c_ClimbSubsystem.setServo(90);
+        }, c_ClimbSubsystem);
+    }
+
+    private Command GrabClimb(){
         return new InstantCommand(()->{
             c_ClimbSubsystem.goToPosOffset(1);
             c_ClimbSubsystem.setServo(90);
@@ -302,6 +310,13 @@ public class RobotContainer {
         RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));
         LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
         armOut.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem));
+
+        grabClimb.onTrue(GrabClimb());
+        releaseClimb.onTrue(ReleaseClimb());
+        extendClimb.onTrue(ExtendClimb());
+        retractClimb.onTrue(RetractClimb());
+        
+        
         // armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
 
 

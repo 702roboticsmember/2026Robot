@@ -31,7 +31,6 @@ public class LIDARSubsystem extends SubsystemBase {
     m_TANK_LIDAR.setSemiPeriodMode(true);
     m_TANK_LIDAR.reset();
   }
-  final double off = 10;
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -39,7 +38,7 @@ public class LIDARSubsystem extends SubsystemBase {
     if (m_RAMP_LIDAR.get() < 1){
       ramp_dist = 0;
     } else {
-      ramp_dist = (m_RAMP_LIDAR.getPeriod()*1000000.0/10.0) - off;
+      ramp_dist = (m_RAMP_LIDAR.getPeriod()*1000000.0/10.0) - Constants.lidarConstants.LIDAROffset;
       SmartDashboard.putNumber("Distance", ramp_dist);
     }
 
@@ -50,7 +49,7 @@ public class LIDARSubsystem extends SubsystemBase {
     if (m_TANK_LIDAR.get() < 1){
       tank_dist = 0;
     } else {
-      tank_dist = (m_TANK_LIDAR.getPeriod()*1000000.0/10.0) - off;
+      tank_dist = (m_TANK_LIDAR.getPeriod()*1000000.0/10.0) - Constants.lidarConstants.LIDAROffset;
       SmartDashboard.putNumber("Distance", tank_dist);
     }
 
