@@ -220,6 +220,10 @@ public class RobotContainer {
         ShootOff());
     }
 
+    public Command ClimbAuto() {
+        return new SequentialCommandGroup(new ClimbPIDCommand(Constants.ClimbConstants.climbExtendAngle, c_ClimbSubsystem), ExtendClimb(), GrabClimb());
+    }
+
 
     // private Command AutoAim() {
     //     return new ParallelCommandGroup(
@@ -264,7 +268,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopIntake", IntakeStop());
         NamedCommands.registerCommand("IntakeOut", IntakeOut());
         NamedCommands.registerCommand("AutoIntake", new AutoIntakeCommand(null, null, DOWN, s_Swerve, power, i_IntakeSubsystem));
-        NamedCommands.registerCommand("Climb", new ClimbPIDCommand(Constants.ClimbConstants.climbExtendAngle, c_ClimbSubsystem));
+        NamedCommands.registerCommand("Climb", ClimbAuto());
+
         // NamedCommands.registerCommand("P2Ptop", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         // NamedCommands.registerCommand("P2Pbottom", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         
