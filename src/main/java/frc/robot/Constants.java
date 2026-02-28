@@ -410,7 +410,6 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int shooterMotor1 = 16;
         public static final int shooterMotor2 = 17;
-        public static final int angleMotor = 18;
         public static final double conversion = 1.5;
      
         public static final int STATOR_CURRENT_LIMIT = 60;
@@ -526,8 +525,8 @@ public final class Constants {
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
-         public static final boolean softLimitEnable = false;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
+         public static final boolean softLimitEnable = true;
 
         public static final double forwardLimit = 66;
 

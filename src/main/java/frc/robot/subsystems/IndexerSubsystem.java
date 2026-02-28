@@ -38,8 +38,7 @@ public class IndexerSubsystem extends SubsystemBase {
     CurrentLimits.SupplyCurrentLimit = Constants.IndexerConstants.CURRENT_LIMIT;
     CurrentLimits.StatorCurrentLimitEnable = Constants.IndexerConstants.ENABLE_STATOR_CURRENT_LIMIT;
     CurrentLimits.SupplyCurrentLimitEnable = Constants.IndexerConstants.ENABLE_CURRENT_LIMIT;
-    indexMotorPrimary.getConfigurator().apply(config);
-    indexMotorSecondary.getConfigurator().apply(config);
+    
     indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
 
     var slot0Configs2 = config.Slot0;
@@ -65,6 +64,8 @@ public class IndexerSubsystem extends SubsystemBase {
     // //apply
     // talonFXConfigurator.apply(config);
     // talonFXConfiguratorSecondary.apply(configSecondary);
+    indexMotorPrimary.getConfigurator().apply(config);
+    indexMotorSecondary.getConfigurator().apply(config);
   }
 
   // public void setSpeedSecondary(double speed){
@@ -90,7 +91,8 @@ public class IndexerSubsystem extends SubsystemBase {
  }
   @Override
   public void periodic() {
-    
+    SmartDashboard.putNumber("indexvel", indexMotorPrimary.getVelocity().getValueAsDouble());
+     SmartDashboard.putNumber("indexSvel", indexMotorSecondary.getVelocity().getValueAsDouble());
     // This method will be called once per scheduler run
   }
 

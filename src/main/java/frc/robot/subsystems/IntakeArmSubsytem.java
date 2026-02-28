@@ -75,7 +75,7 @@ public class IntakeArmSubsytem extends SubsystemBase {
   public void goToAngle(double angle){
     SmartDashboard.putNumber("HoodgoTo", tickToDeg(degToTick(angle)));
     if(angle > Constants.IntakeConstants.forwardLimit)angle = Constants.IntakeConstants.forwardLimit;
-    if(angle < Constants.HoodConstants.reverseLimit)angle = Constants.IntakeConstants.reverseLimit;
+    if(angle < Constants.IntakeConstants.reverseLimit)angle = Constants.IntakeConstants.reverseLimit;
     armMotor.setControl(motionMagic.withPosition(degToTick(angle)));
     
   }
