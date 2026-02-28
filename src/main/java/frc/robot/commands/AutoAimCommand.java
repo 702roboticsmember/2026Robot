@@ -210,7 +210,7 @@ public class AutoAimCommand extends Command {
 
 
   public double CalculateOffset(double Vrz, double Dx, double t){
-    return Math.tanh((Vrz* t)/Dx);
+    return Math.atan((Vrz* t)/Dx);
   }
 
   public double CalculateVy(double Dx){
@@ -221,7 +221,13 @@ public class AutoAimCommand extends Command {
     double a = -g * 0.5;
     double b = Vy;
     double c = -(h-i);
-    return (-b) - Math.sqrt((b * b) - (4* a * c));
+    double output = (-b) - Math.sqrt((b * b) - (4* a * c));
+    
+    if(Double.isNaN(output)){
+      return 0;//TODO calculate max timeTill Target that would occur when NAN exists.
+    }else{
+    return output;
+    }
   }
 
 
@@ -229,7 +235,12 @@ public class AutoAimCommand extends Command {
     double a = -g * distance * distance * 0.5;
     double b = Vy*distance;
     double c = -(h - i);
-    return (2*(a)) / ((-b) - Math.sqrt((b * b) - 4*(a * c)));
+    double output = (2*(a)) / ((-b) - Math.sqrt((b * b) - 4*(a * c)));
+    if(Double.isNaN(output)){
+      return 0;
+    }else{
+      return output;
+    }
   }
 
   public double CalculateVs(double Vx, double Vy, double Vrx){
