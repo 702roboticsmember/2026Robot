@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "L-Start-R-Bulldoze"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-bulldoze-right-trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right-Trench-Depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left-depot-in-depot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "In-Depot-Climb"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -61,7 +61,7 @@ public class RobotContainer {
    // private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
-    private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton armOut = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton armIn = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -81,7 +81,8 @@ public class RobotContainer {
 
     
     
-    private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
+   // private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
+    private final JoystickButton autoAimHUB = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton autoAimCo = new JoystickButton(codriver, XboxController.Button.kY.value);
     
     private final JoystickButton Nest = new JoystickButton(codriver, 0);
@@ -143,9 +144,9 @@ public class RobotContainer {
     private Command Shoot() {
         return new ParallelCommandGroup(
             new InstantCommand(()->hoodUp = ()-> true),
-            new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0.2), i_IndexerSubsystem),
+            new InstantCommand(()->i_IndexerSubsystem.setSpeedPrimary(Constants.IndexerConstants.PrimarySpeed + 0), i_IndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
-            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(Constants.IndexerConstants.FloorSpeed + 0.4), f_FloorIndexerSubsystem)
+            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0.5), f_FloorIndexerSubsystem)
            
             );
         
@@ -201,7 +202,7 @@ public class RobotContainer {
 
     private Command GrabClimb(){
         return new InstantCommand(()->{
-            c_ClimbSubsystem.goToPosOffset(1);
+            //c_ClimbSubsystem.goToPosOffset(1);
             c_ClimbSubsystem.setServo(90);
         }, c_ClimbSubsystem);
     }
@@ -221,7 +222,7 @@ public class RobotContainer {
     }
 
     public Command ClimbAuto() {
-        return new SequentialCommandGroup(new ClimbPIDCommand(Constants.ClimbConstants.climbExtendAngle, c_ClimbSubsystem), ExtendClimb(), GrabClimb());
+        return new SequentialCommandGroup(ExtendClimb(), GrabClimb());
     }
 
 
@@ -300,6 +301,7 @@ public class RobotContainer {
         intakeOut.onFalse(IntakeStop()); 
         intakeIn.whileTrue(IntakeIn());//new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  
         intakeIn.onFalse(IntakeStop());
+        autoAimHUB.whileTrue(AimAtHub());
         
         // climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         // climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
@@ -308,7 +310,7 @@ public class RobotContainer {
         //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         shoot.onFalse(ShootOff());
 
-        autoAim.whileTrue(AutoAim());
+        //autoAim.whileTrue(AutoAim());
         autoAimCo.whileTrue(AutoAim());
         UP.onTrue(wrapLocationChange(()-> nextAllianceLocation()));
         DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
