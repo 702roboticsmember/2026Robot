@@ -97,12 +97,6 @@ public class AutoAimCommand extends Command {
     double vx = CalculateVx(distance, vy);
     double vs = CalculateVs(vx, vy, 0);
     double shootAngle = CalculateShootAngle(vx, vy, 0);
-    // if(turretangle > Constants.TurretConstants.forwardLimit){
-    //   turretangle =-360;
-    // }
-    // if(turretangle < Constants.TurretConstants.reverseLimit){
-    //   turretangle =+360;
-    // }
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
     }
@@ -194,7 +188,11 @@ public class AutoAimCommand extends Command {
     double roll = data.Roll;
     return 0;
   }
-
+  /**
+   * RobotPoseAdjustedTolimelightTurret
+   * @param robotPose the current position of the robot relative to the field(Blue-side relative)
+   * @return Position of the center of the turret relative to the field.
+   */
   public Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
@@ -208,19 +206,40 @@ public class AutoAimCommand extends Command {
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
 
-
+  /**CalculateVy
+   *  @param Dx value that is the distance from hub and not desired distance of shot.
+   * @return angle offset of the turret.
+   */
   public double CalculateOffset(double Vrz, double Dx, double t){
     double Input = (Vrz* t)/Dx;
 
-    if (Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+    if (Double.isNaN(Math.atan(Input))){
+      Input = 0;//TODO Constant based on data
     }
 
     return Math.atan(Input);
   }
 
+  public double CalculateShotDistance(double Vrz, double Dx, double t){
+    double angle = CalculateOffset(Vrz, Dx, t);
+    return Math.cos(angle) * Dx;
+  }
+
+  
+  public double CalculateShotDistance(double OffsetAngle, double Dx){
+    return Math.cos(OffsetAngle) * Dx;
+  }
+
+  /**CalculateVy
+   *  @param Dx psudo value that takes in distance from hub and not desired distance of shot.
+   * @return Vy (Vertical velocity) based on a preset formula to help reduce complexity.
+   */
   public double CalculateVy(double Dx){
-    return 0.098438*Dx + 5.81997;
+    return 0.098438*Dx + 5.81997;//Originally a constant but I found adjusting the Vy and in turn the max height I can increase accuracy from afar.
+  }
+
+  public double getBasicVy(double Dx){
+    return 6.2;
   }
 
   public double timeTillTarget(double Vy){
@@ -229,7 +248,7 @@ public class AutoAimCommand extends Command {
     double c = -(h-i);
     double Input = (b * b) - (4* a * c);
     if(Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
 
     return (-b) - Math.sqrt(Input);
@@ -242,7 +261,7 @@ public class AutoAimCommand extends Command {
     double c = -(h - i);
     double Input = (b * b) - 4*(a * c);
     if(Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
 
     return (2*(a)) / ((-b) - Math.sqrt(Input));
@@ -251,7 +270,7 @@ public class AutoAimCommand extends Command {
   public double CalculateVs(double Vx, double Vy, double Vrx){
     double Input = ((Vx - Vrx) * (Vx - Vrx)) + (Vy * Vy);
     if (Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
     return Math.sqrt(Input);
   }
@@ -260,10 +279,10 @@ public class AutoAimCommand extends Command {
     double HoodAngle = Vy/(Vx - Vrx);
 
     if(Vy/(Vx - Vrx) == (Math.PI/2)){
-      return 0;//Constant based on data
+      return 0;//TODO Constant based on data
     }
     else if( Vy/(Vx - Vrx) == (-Math.PI/2) ){
-      return 0;//Constant based on data
+      return 0;//TODO Constant based on data
     }
     else{
       return Math.toDegrees(Math.atan(HoodAngle));
