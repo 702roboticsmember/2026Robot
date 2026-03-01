@@ -275,51 +275,34 @@ public class Swerve extends SubsystemBase {
         }
 
         if (this.limelightMeasurementTurret != null){
-            SmartDashboard.putBoolean("local1", true);
-            
-             SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
-        // SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
-        // SmartDashboard.putNumber("llx", limelightMeasurementTurret.pose.getX());
-        // SmartDashboard.putNumber("lly", limelightMeasurementTurret.pose.getY());
-            if (limelightMeasurementTurret.tagCount >= 2) {
+                       if (limelightMeasurementTurret.tagCount >= 2) {
                 Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
-                SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
+                  // Only trust measurement if we see multiple tags
                 Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
                 Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
                     pose,
                     limelightMeasurementTurret.timestampSeconds
             );
             setHeading(pose.getRotation());
-            SmartDashboard.putNumber("limelight-duncanPosex", limelightMeasurementTurret.pose.getX());
-           SmartDashboard.putNumber("limelight-duncanPosey", limelightMeasurementTurret.pose.getY());
-           SmartDashboard.putNumber("limelight-duncanheading", limelightMeasurementTurret.pose.getRotation().getDegrees());
-//cpp is better
+          
             }
         }
     if (this.limelightMeasurement != null){
-                SmartDashboard.putBoolean("local1", true);
-                
-            //     SmartDashboard.putNumber("x", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getX());
-            // SmartDashboard.putNumber("y", Constants.Swerve.swervePoseEstimator.getEstimatedPosition().getY());
-            SmartDashboard.putNumber("llx", limelightMeasurement.pose.getX());
-            SmartDashboard.putNumber("lly", limelightMeasurement.pose.getY());
+               
+           
         if (limelightMeasurement.tagCount >= 2) {
-            SmartDashboard.putBoolean("local", true);  // Only trust measurement if we see multiple tags
+           
             Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(0.7, 0.7, 9999999));
             Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
                 limelightMeasurement.pose,
                 limelightMeasurement.timestampSeconds
         );
-           
-
-
+           setHeading(limelightMeasurement.pose.getRotation());
         }
     }
     Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
-    SmartDashboard.putNumber("turretPosex",  Constants.TurretConstants.turretPose2d.getX());
-           SmartDashboard.putNumber("turretPosey",  Constants.TurretConstants.turretPose2d.getY());
-           SmartDashboard.putNumber("tx test", LimelightHelpers.getTX("limelight"));
-    //SmartDashboard.putNumber("limelight");
+   
+   
     
 }
     
