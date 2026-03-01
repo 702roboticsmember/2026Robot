@@ -84,6 +84,9 @@ public class FloorIndexerSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("floorpos", getIndexerPos());
+    SmartDashboard.putNumber("floorvel", FloorIndexMotor.getVelocity().getValueAsDouble());
+
+
     // This method will be called once per scheduler run
   }
 }

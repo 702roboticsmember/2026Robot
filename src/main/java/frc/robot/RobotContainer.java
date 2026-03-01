@@ -144,7 +144,7 @@ public class RobotContainer {
     private Command Shoot() {
         return new ParallelCommandGroup(
             new InstantCommand(()->hoodUp = ()-> true),
-            new InstantCommand(()->i_IndexerSubsystem.setVelocity(92), i_IndexerSubsystem),
+            new InstantCommand(()->i_IndexerSubsystem.setVelocity(120), i_IndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
             new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0.5), f_FloorIndexerSubsystem)
            

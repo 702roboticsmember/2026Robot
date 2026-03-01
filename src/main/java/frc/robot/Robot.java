@@ -4,11 +4,16 @@
 
 package frc.robot;
 
+import java.lang.reflect.Field;
+
 // import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.TurretConstants;
 
 
 
@@ -26,6 +31,7 @@ public class Robot extends TimedRobot {
 
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  private final Field2d turretField = new Field2d();
   
 
   /**
@@ -36,6 +42,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
+    SmartDashboard.putData("turret field", turretField);
+
     // and put our
     // autonomous chooser on the dashboard.
     //CameraServer.startAutomaticCapture();
@@ -57,6 +65,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    turretField.setRobotPose(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
    
     // Runs the Scheduler. This is responsible for polling buttons, adding
     // newly-scheduled

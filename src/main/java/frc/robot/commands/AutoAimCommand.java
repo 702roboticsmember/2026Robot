@@ -4,11 +4,13 @@
 
 package frc.robot.commands;
 
+import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -20,7 +22,7 @@ import frc.robot.subsystems.TurretSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAimCommand extends Command {
-  private String limelightName = Constants.limelightConstants.limelightTurret;
+  
   private double txOffset;
  
   private TurretSubsystem t_TurretSubsystem ;
@@ -33,7 +35,6 @@ public class AutoAimCommand extends Command {
   private double i = Constants.PhysicsConstants.BallIntialHeight;
 
   private Translation2d poi;
-  public LimelightHelpers.PoseEstimate limelightMeasurement;
   private BooleanSupplier hoodUp;
  
   boolean angleRight;
@@ -97,12 +98,7 @@ public class AutoAimCommand extends Command {
     double vx = CalculateVx(distance, vy);
     double vs = CalculateVs(vx, vy, 0);
     double shootAngle = CalculateShootAngle(vx, vy, 0);
-    // if(turretangle > Constants.TurretConstants.forwardLimit){
-    //   turretangle =-360;
-    // }
-    // if(turretangle < Constants.TurretConstants.reverseLimit){
-    //   turretangle =+360;
-    // }
+  
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
     }
@@ -133,8 +129,6 @@ public class AutoAimCommand extends Command {
     else {h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
       s_ShooterSubsystem.setVelocity(0);
     }
-    //s_ShooterSubsystem.setVelocity(vs * 2.1492 + 0.56157);
-
   }
   
   // Called once the command ends or is interrupted.
@@ -262,7 +256,4 @@ public class AutoAimCommand extends Command {
   public double getIMUYaw(){
     return LimelightHelpers.getIMUData("limelight").gyroY;
   }
-
-  
-
 }
