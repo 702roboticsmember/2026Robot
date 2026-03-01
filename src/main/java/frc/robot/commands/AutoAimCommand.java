@@ -204,7 +204,13 @@ public class AutoAimCommand extends Command {
 
 
   public double CalculateOffset(double Vrz, double Dx, double t){
-    return Math.atan((Vrz* t)/Dx);
+    double Input = (Vrz* t)/Dx;
+
+    if (Double.isNaN(Input)){
+      Input = 0;//Constant based on data
+    }
+
+    return Math.atan(Input);
   }
 
   public double CalculateVy(double Dx){
@@ -215,13 +221,12 @@ public class AutoAimCommand extends Command {
     double a = -g * 0.5;
     double b = Vy;
     double c = -(h-i);
-    double output = (-b) - Math.sqrt((b * b) - (4* a * c));
-    
-    if(Double.isNaN(output)){
-      return 0;//TODO calculate max timeTill Target that would occur when NAN exists.
-    }else{
-    return output;
+    double Input = (b * b) - (4* a * c);
+    if(Double.isNaN(Input)){
+      Input = 0;//Constant based on data
     }
+
+    return (-b) - Math.sqrt(Input);
   }
 
 
@@ -229,20 +234,34 @@ public class AutoAimCommand extends Command {
     double a = -g * distance * distance * 0.5;
     double b = Vy*distance;
     double c = -(h - i);
-    double output = (2*(a)) / ((-b) - Math.sqrt((b * b) - 4*(a * c)));
-    if(Double.isNaN(output)){
-      return 0;
-    }else{
-      return output;
+    double Input = (b * b) - 4*(a * c);
+    if(Double.isNaN(Input)){
+      Input = 0;//Constant based on data
     }
+
+    return (2*(a)) / ((-b) - Math.sqrt(Input));
   }
 
   public double CalculateVs(double Vx, double Vy, double Vrx){
-    return Math.sqrt(((Vx - Vrx) * (Vx - Vrx)) + (Vy * Vy));
+    double Input = ((Vx - Vrx) * (Vx - Vrx)) + (Vy * Vy);
+    if (Double.isNaN(Input)){
+      Input = 0;//Constant based on data
+    }
+    return Math.sqrt(Input);
   }
 
   public double CalculateShootAngle(double Vx, double Vy, double Vrx){
-    return Math.toDegrees(Math.atan(Vy/(Vx - Vrx)));
+    double HoodAngle = Vy/(Vx - Vrx);
+
+    if(Vy/(Vx - Vrx) == (Math.PI/2)){
+      return 0;//Constant based on data
+    }
+    else if( Vy/(Vx - Vrx) == (-Math.PI/2) ){
+      return 0;//Constant based on data
+    }
+    else{
+      return Math.toDegrees(Math.atan(HoodAngle));
+    }
   }
 
   public double getVrz(Pose2d pose, double Vz){
