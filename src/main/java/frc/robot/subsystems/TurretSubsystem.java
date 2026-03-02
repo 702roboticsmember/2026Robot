@@ -59,6 +59,7 @@ public class TurretSubsystem extends SubsystemBase {
               s_slot0Configs.kP = 7.5; // An error of 1 rps results in 0.11 V output
               s_slot0Configs.kI = 0; // no output for integrated error
               s_slot0Configs.kD = 0.1; // no output for error derivative
+              
     
             var motionMagicConfigs = turretConfig.MotionMagic;
               motionMagicConfigs.MotionMagicCruiseVelocity = 40; // Target cruise velocity of 80 rps

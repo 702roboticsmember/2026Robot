@@ -22,8 +22,6 @@ import frc.robot.subsystems.TurretSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAimCommand extends Command {
-  
-  private double txOffset;
  
   private TurretSubsystem t_TurretSubsystem ;
   private HoodSubsystem h_HoodSubsystem;
@@ -38,15 +36,8 @@ public class AutoAimCommand extends Command {
   private BooleanSupplier hoodUp;
  
   boolean angleRight;
-  public void checkAngle (){
-   Pose2d pose = Constants.TurretConstants.turretPose2d;
-    double off = getAngleToHub(pose).getTan()*getDistance(pose);
-   if (off < 2 && off > -2){
-     this.angleRight = true;
-    }else{
-     this.angleRight = false;
-    }
-  }
+
+  
 
   
   /** Creates a new AutoAimCommand. */
@@ -90,15 +81,29 @@ public class AutoAimCommand extends Command {
     checkAngle();
     SmartDashboard.putBoolean("good to shoot", angleRight);
     
-    
-    double turretangle = getTurretAngleToHub(pose).getDegrees();
-    double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    // Stationary shoot code
+    double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
     double distance = getDistance(pose);
     double vy = CalculateVy(distance);
     double vx = CalculateVx(distance, vy);
     double vs = CalculateVs(vx, vy, 0);
     double shootAngle = CalculateShootAngle(vx, vy, 0);
-  
+
+    // Shoot on the move code
+    
+    // double Dx = getDistance(pose);
+    // double vy = CalculateVy(Dx);
+   
+    // double vrz = getVrz(pose);
+    // double vrx = getVrx(pose);
+    // double angleOffset = CalculateOffset(vrz, Dx, vrx);
+    // double distance = CalculateShotDistance(angleOffset, Dx);
+    // double vx = CalculateVx(distance, vy);
+    // double vs = CalculateVs(vx, vy, vrx);
+    // double shootAngle = CalculateShootAngle(vx, vy, vrx);
+    // double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    // RobotBasedAngle += angleOffset;
+
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
     }
@@ -113,7 +118,7 @@ public class AutoAimCommand extends Command {
     SmartDashboard.putNumber("shootSpeed", vs);
     SmartDashboard.putNumber("shootSpeedx", vx);
     SmartDashboard.putNumber("shootSpeedy", vy);
-    SmartDashboard.putNumber("poseturret angle", turretangle);
+    
     SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
     SmartDashboard.putNumber("poseturretdist", distance);
     SmartDashboard.putNumber("poitx", poi.getX());
@@ -121,14 +126,18 @@ public class AutoAimCommand extends Command {
     
     t_TurretSubsystem.goToAngle(RobotBasedAngle);
     if(hoodUp.getAsBoolean()){h_HoodSubsystem.goToAngle(shootAngle);
-      //s_ShooterSubsystem.setVelocity(vs * 2.2492 + 0.56157);
-      double output = vs * 2.2492 + 0.56157;
+      //Linear regression.
+      double output = vs * 2.2492 + 0.56157;//TODO Calibrate based on input velocity vs ball actual velocity
+      //Quartic regression
       //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
+
       s_ShooterSubsystem.setVelocity(output);
     }
     else {h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
       s_ShooterSubsystem.setVelocity(0);
     }
+    //s_ShooterSubsystem.setVelocity(vs * 2.1492 + 0.56157);
+
   }
   
   // Called once the command ends or is interrupted.
@@ -139,6 +148,19 @@ public class AutoAimCommand extends Command {
   @Override
     public boolean isFinished(){
     return false;
+  }
+
+  /**
+   * Checks if the shot is within tolerance to shoot a ball.
+   */
+  public void checkAngle (){//TODO Currently not accurate for shot on the move.
+   Pose2d pose = Constants.TurretConstants.turretPose2d;
+    double off = getAngleToHub(pose).getTan()*getDistance(pose);
+   if (off < 1.05 && off > -1.05){
+     this.angleRight = true;
+    }else{
+     this.angleRight = false;
+    }
   }
 
   private double getDistance(Pose2d Pose) {
@@ -160,15 +182,7 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrx(Pose2d pose){
-    LimelightHelpers.IMUData data = LimelightHelpers.getIMUData("limelight");
-    double gyrox = data.gyroX;
-    double gyroy = data.gyroY;
-    double gyroz = data.gyroZ;
-    double robotYaw = data.robotYaw;
-    Rotation2d angleToHub = getAngleToHub(pose);
-    double pitch = data.Pitch;
-    double roll = data.Roll;
-    double yaw = data.Yaw;
+    
     return 0;
   }
   
@@ -178,17 +192,14 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrz(Pose2d pose){
-    LimelightHelpers.IMUData data = LimelightHelpers.getIMUData("limelight");
-    double gyrox = data.gyroX;
-    double gyroy = data.gyroY;
-    double gyroz = data.gyroZ;
-    double robotYaw = data.robotYaw;
-    Rotation2d angleToHub = getAngleToHub(pose);
-    double pitch = data.Pitch;
-    double roll = data.Roll;
+   
     return 0;
   }
-
+  /**
+   * RobotPoseAdjustedTolimelightTurret
+   * @param pose the current position of the robot relative to the field(Blue-side relative)
+   * @return Position of the center of the turret relative to the field.
+   */
   public Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
@@ -202,19 +213,54 @@ public class AutoAimCommand extends Command {
         // return new Pose2d(pose.getX(), pose.getY(), swervePoseEstimator.getEstimatedPosition().getRotation());
     }
 
-
+  /**CalculateVy
+   * @param Vrz Robot velocity in z direction (direction perpendicular to hub)
+   * @param Dx (meters) value that is the distance from hub and not desired distance of shot.
+   * @param t time it takes for the ball to reach target
+   * @return angle offset of the turret.
+   */
   public double CalculateOffset(double Vrz, double Dx, double t){
     double Input = (Vrz* t)/Dx;
 
-    if (Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+    if (Double.isNaN(Math.atan(Input))){
+      Input = 0;//TODO Constant based on data
     }
 
     return Math.atan(Input);
   }
 
+  /**
+   * Calculates the new distance the robot has to shoot based on time it takes for the ball to reach target
+   * @param Vrz Robot velocity in z direction (direction perpendicular to hub)
+   * @param Dx (meters) value that is the distance from hub and not desired distance of shot.
+   * @param t time it takes for the ball to reach target
+   * @return the distance the ball must travel.
+   */
+  public double CalculateShotDistance(double Vrz, double Dx, double t){
+    double angle = CalculateOffset(Vrz, Dx, t);
+    return Math.cos(angle) * Dx;
+  }
+
+/**
+   * Calculates the new distance the robot has to shoot based on time it takes for the ball to reach target
+   * @param OffsetAngle
+   * @param Dx
+   * @return the distance the ball must travel.
+   */
+  public double CalculateShotDistance(double OffsetAngle, double Dx){
+    return Math.cos(OffsetAngle) * Dx;
+  }
+
+  /**CalculateVy
+   *  @param Dx psudo value that takes in distance from hub and not desired distance of shot.
+   * @return Vy (Vertical velocity) based on a preset formula to help reduce complexity.
+   */
   public double CalculateVy(double Dx){
-    return 0.098438*Dx + 5.81997;
+    return 0.098438*Dx + 5.81997;//Originally a constant but I found adjusting the Vy and in turn the max height I can increase accuracy from afar.
+  }
+
+  public double getBasicVy(){
+    return 6.2;
   }
 
   public double timeTillTarget(double Vy){
@@ -223,7 +269,7 @@ public class AutoAimCommand extends Command {
     double c = -(h-i);
     double Input = (b * b) - (4* a * c);
     if(Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
 
     return (-b) - Math.sqrt(Input);
@@ -236,7 +282,7 @@ public class AutoAimCommand extends Command {
     double c = -(h - i);
     double Input = (b * b) - 4*(a * c);
     if(Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
 
     return (2*(a)) / ((-b) - Math.sqrt(Input));
@@ -245,7 +291,7 @@ public class AutoAimCommand extends Command {
   public double CalculateVs(double Vx, double Vy, double Vrx){
     double Input = ((Vx - Vrx) * (Vx - Vrx)) + (Vy * Vy);
     if (Double.isNaN(Input)){
-      Input = 0;//Constant based on data
+      Input = 0;//TODO Constant based on data
     }
     return Math.sqrt(Input);
   }
@@ -254,18 +300,14 @@ public class AutoAimCommand extends Command {
     double HoodAngle = Vy/(Vx - Vrx);
 
     if(Vy/(Vx - Vrx) == (Math.PI/2)){
-      return 0;//Constant based on data
+      return 0;//TODO Constant based on data
     }
     else if( Vy/(Vx - Vrx) == (-Math.PI/2) ){
-      return 0;//Constant based on data
+      return 0;//TODO Constant based on data
     }
     else{
       return Math.toDegrees(Math.atan(HoodAngle));
     }
-  }
-
-  public double getVrz(Pose2d pose, double Vz){
-    return getTurretAngleToHub(pose).getCos() * Vz;
   }
 
   public Rotation2d getTurretAngle(Pose2d pose){
