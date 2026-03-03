@@ -509,10 +509,10 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
         //Floor Indexer Constants
         ///public static final int FloorID = 0;
-		public static final double FLOOR_STATOR_CURRENT_LIMIT = 0;
-        public static final double FLOOR_CURRENT_LIMIT = 0;
-        public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = false;
-        public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = false;
+		public static final double FLOOR_STATOR_CURRENT_LIMIT = 50;
+        public static final double FLOOR_CURRENT_LIMIT = 35;
+        public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = true;
+        public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = true;
         public static final double FloorSpeed = 0.3;
     }
 
