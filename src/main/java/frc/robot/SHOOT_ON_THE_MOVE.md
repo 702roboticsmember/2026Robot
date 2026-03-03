@@ -1,4 +1,4 @@
-# Shoot-on-the-Move Upgrade — Team 702
+# Shoot-on-the-Move Upgrade — Team 702 -
 
 **Status:** Not implemented
 **Priority:** Tier 1 — Pre-competition
