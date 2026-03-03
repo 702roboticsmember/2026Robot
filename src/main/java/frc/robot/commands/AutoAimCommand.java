@@ -183,7 +183,7 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrx(Pose2d pose){
-    Rotation2d angle = getAngleToHub(pose);
+    Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
     Translation2d vel = new Translation2d(
       Swerve.gyro.getRobotCentricVelocityX(),
       Swerve.gyro.getRobotCentricVelocityY());
@@ -198,7 +198,7 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrz(Pose2d pose){
-   Rotation2d angle = getAngleToHub(pose);
+   Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
     Translation2d vel = new Translation2d(
       Swerve.gyro.getRobotCentricVelocityX(),
       Swerve.gyro.getRobotCentricVelocityY());
@@ -237,7 +237,7 @@ public class AutoAimCommand extends Command {
       Input = 0;//TODO Constant based on data
     }
 
-    return Math.atan(Input);
+    return Math.toDegrees(Math.atan(Input));
   }
 
   /**
@@ -249,7 +249,7 @@ public class AutoAimCommand extends Command {
    */
   public double CalculateShotDistance(double Vrz, double Dx, double t){
     double angle = CalculateOffset(Vrz, Dx, t);
-    return Math.cos(angle) * Dx;
+    return Math.cos(Math.toRadians(angle)) * Dx;
   }
 
 /**
@@ -259,7 +259,7 @@ public class AutoAimCommand extends Command {
    * @return the distance the ball must travel.
    */
   public double CalculateShotDistance(double OffsetAngle, double Dx){
-    return Math.cos(OffsetAngle) * Dx;
+    return Math.cos(Math.toRadians(OffsetAngle)) * Dx;
   }
 
   /**CalculateVy
