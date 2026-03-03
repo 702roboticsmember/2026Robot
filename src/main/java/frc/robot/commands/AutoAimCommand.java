@@ -96,13 +96,14 @@ public class AutoAimCommand extends Command {
    
     // double vrz = getVrz(pose);
     // double vrx = getVrx(pose);
-    // double angleOffset = CalculateOffset(vrz, Dx, vrx);
+    // double t = timeTillTarget(vy);
+    // double angleOffset = CalculateOffset(vrz, Dx, t);
     // double distance = CalculateShotDistance(angleOffset, Dx);
     // double vx = CalculateVx(distance, vy);
     // double vs = CalculateVs(vx, vy, vrx);
     // double shootAngle = CalculateShootAngle(vx, vy, vrx);
     // double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
-    // RobotBasedAngle += angleOffset;
+    //RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;

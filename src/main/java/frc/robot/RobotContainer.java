@@ -353,7 +353,7 @@ public class RobotContainer {
      public Command getAutonomousCommand() {
         return new SequentialCommandGroup(new InstantCommand(() -> {
              s_Swerve.gyro.reset();
-
+            autoChooser.getSelected();
             // s_Swerve.zeroHeading();
         }));
      }
