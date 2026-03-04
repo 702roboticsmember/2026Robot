@@ -38,6 +38,13 @@ public final class Constants {
 
     }
 
+    public static Translation2d flipTranslation2d(Translation2d pose){
+        return pose.rotateAround(new Translation2d(8.270494, 4.034536), new Rotation2d(Math.toRadians(180)));
+    }
+    public static Pose2d flipPose2d(Pose2d pose){
+        return pose.rotateAround(new Translation2d(8.270494, 4.034536), new Rotation2d(Math.toRadians(180)));
+    }
+
      public enum Direction {
         UP(0), RIGHT(90), DOWN(180), LEFT(270);
 
@@ -54,7 +61,10 @@ public final class Constants {
         BLUERIGHT(new Translation2d(),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
         REDLEFT(new Translation2d(), "Red Alliance left side"),
-        REDRIGHT(new Translation2d(),  "Red Alliance right side");
+        REDRIGHT(new Translation2d(),  "Red Alliance right side"),
+        CENTER(new Translation2d(8.270494, 4.034536), "Center"),
+        BLUELT(new Translation2d(6, 7.4), "Blue Left Trench Entry"),
+        REDLT(flipTranslation2d(new Translation2d(6, 7.4)), "Red Left Trench Entry");
 
         public final Translation2d location;
         public final String label;
