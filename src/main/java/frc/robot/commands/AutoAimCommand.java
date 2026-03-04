@@ -87,8 +87,8 @@ public class AutoAimCommand extends Command {
     double distance = getDistance(pose);
     double vy = CalculateVy(distance);
     double vx = CalculateVx(distance, vy);
-    double vs = CalculateVs(vx, vy, 0);
-    double shootAngle = CalculateShootAngle(vx, vy, 0);
+    double vs = CalculateVs(vx, vy, 0, 0);
+    double shootAngle = CalculateShootAngle(vx, vy, 0, 0);
 
     // Shoot on the move code
     // double Dx = getDistance(pose);
@@ -100,10 +100,10 @@ public class AutoAimCommand extends Command {
     // double angleOffset = CalculateOffset(vrz, Dx, t);
     // double distance = CalculateShotDistance(angleOffset, Dx);
     // double vx = CalculateVx(distance, vy);
-    // double vs = CalculateVs(vx, vy, vrx);
-    // double shootAngle = CalculateShootAngle(vx, vy, vrx);
+    // double vs = CalculateVs(vx, vy, vrx, angleOffset);
+    // double shootAngle = CalculateShootAngle(vx, vy, vrx, angleOffset);
     // double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
-    //RobotBasedAngle += angleOffset;
+    // RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
@@ -184,9 +184,13 @@ public class AutoAimCommand extends Command {
    */
   public double getVrx(Pose2d pose){
     Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    double x = Swerve.gyro.getRobotCentricVelocityX();
+    double y = Swerve.gyro.getRobotCentricVelocityY();
     Translation2d vel = new Translation2d(
-      Swerve.gyro.getRobotCentricVelocityX(),
-      Swerve.gyro.getRobotCentricVelocityY());
+      x,
+      y);
+      SmartDashboard.putNumber("velx", x);
+      SmartDashboard.putNumber("vely", y);
     //Swerve.gyro.getRobotCentricVelocityX()
     //new Translation2d();
     return vel.rotateBy(angle).getX();
@@ -199,9 +203,11 @@ public class AutoAimCommand extends Command {
    */
   public double getVrz(Pose2d pose){
    Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    double x = Swerve.gyro.getRobotCentricVelocityX();
+    double y = Swerve.gyro.getRobotCentricVelocityY();
     Translation2d vel = new Translation2d(
-      Swerve.gyro.getRobotCentricVelocityX(),
-      Swerve.gyro.getRobotCentricVelocityY());
+      x,
+      y);
     //Swerve.gyro.getRobotCentricVelocityX()
     //new Translation2d();
     return vel.rotateBy(angle).getY();
@@ -234,7 +240,8 @@ public class AutoAimCommand extends Command {
     double Input = (Vrz* t)/Dx;
 
     if (Double.isNaN(Math.atan(Input))){
-      Input = 0;//TODO Constant based on data
+      return 0;
+      //TODO Constant based on data
     }
 
     return Math.toDegrees(Math.atan(Input));
@@ -249,7 +256,7 @@ public class AutoAimCommand extends Command {
    */
   public double CalculateShotDistance(double Vrz, double Dx, double t){
     double angle = CalculateOffset(Vrz, Dx, t);
-    return Math.cos(Math.toRadians(angle)) * Dx;
+    return Dx/Math.cos(Math.toRadians(angle)) ;
   }
 
 /**
@@ -259,7 +266,7 @@ public class AutoAimCommand extends Command {
    * @return the distance the ball must travel.
    */
   public double CalculateShotDistance(double OffsetAngle, double Dx){
-    return Math.cos(Math.toRadians(OffsetAngle)) * Dx;
+    return Dx/Math.cos(Math.toRadians(OffsetAngle));
   }
 
   /**CalculateVy
@@ -279,10 +286,9 @@ public class AutoAimCommand extends Command {
     double b = Vy;
     double c = -(h-i);
     double Input = (b * b) - (4* a * c);
-    if(Double.isNaN(Input)){
+    if(Input < 0){
       Input = 0;//TODO Constant based on data
     }
-
     return (-b) - Math.sqrt(Input);
   }
 
@@ -292,28 +298,30 @@ public class AutoAimCommand extends Command {
     double b = Vy*distance;
     double c = -(h - i);
     double Input = (b * b) - 4*(a * c);
-    if(Double.isNaN(Input)){
+    if(Input < 0){
       Input = 0;//TODO Constant based on data
     }
 
     return (2*(a)) / ((-b) - Math.sqrt(Input));
   }
 
-  public double CalculateVs(double Vx, double Vy, double Vrx){
-    double Input = ((Vx - Vrx) * (Vx - Vrx)) + (Vy * Vy);
-    if (Double.isNaN(Input)){
+  public double CalculateVs(double Vx, double Vy, double Vrx, double angleOffset){
+    double vrx = Vrx * Math.cos(angleOffset);
+    double Input = ((Vx - vrx) * (Vx - vrx)) + (Vy * Vy);
+    if (Input < 0){
       Input = 0;//TODO Constant based on data
     }
     return Math.sqrt(Input);
   }
 
-  public double CalculateShootAngle(double Vx, double Vy, double Vrx){
-    double HoodAngle = Vy/(Vx - Vrx);
+  public double CalculateShootAngle(double Vx, double Vy, double Vrx, double angleOffset){
+    double vrx = Vrx * Math.cos(angleOffset);
+    double HoodAngle = Vy/(Vx - vrx);
 
-    if(Vy/(Vx - Vrx) == (Math.PI/2)){
+    if(Vy/(Vx - vrx) == (Math.PI/2)){
       return 0;//TODO Constant based on data
     }
-    else if( Vy/(Vx - Vrx) == (-Math.PI/2) ){
+    else if( Vy/(Vx - vrx) == (-Math.PI/2) ){
       return 0;//TODO Constant based on data
     }
     else{

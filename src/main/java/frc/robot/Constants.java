@@ -34,7 +34,7 @@ public final class Constants {
     public static final class LEDConstants {
 
         public static final int LEDPort = 0;
-        public static final int BufferLength = 0;
+        public static final int BufferLength = 16;
 
     }
 
@@ -577,8 +577,8 @@ public final class Constants {
 
     }
     public static final class lidarConstants {
-        public static final int rampCounterID = 9;
-        public static final int tankCounterID = 0;
+        public static final int rampCounterID = 0;
+        public static final int tankCounterID = 1;
 		public static final double rampFullDistance = 40;
         public static final double tankFullDistance = 200;
 		public static final double rampEmptyTime = 2;
