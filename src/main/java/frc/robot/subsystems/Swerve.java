@@ -288,6 +288,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
             mt1.pose,
             mt1.timestampSeconds);
             SmartDashboard.putBoolean("ran", true);
+            SmartDashboard.putNumberArray("std", mt1.std);
       }
         }
     }
@@ -314,7 +315,6 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
     public void periodic() {
         limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         limelightMeasurementTurret =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
-        limelightMeasurementTurret2 =  LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
         Constants.Swerve.swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
        
 
@@ -330,17 +330,15 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         }
 
         if (this.limelightMeasurementTurret != null){
-            SmartDashboard.putBoolean("ran2", true);
              Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
              limelightMeasurementTurret.pose = pose;
              addmt1VisionMeasurement(limelightMeasurementTurret); 
            }
-        if (this.limelightMeasurementTurret2 != null){
-            SmartDashboard.putBoolean("ran3", true);
+      
+        
+        if (this.limelightMeasurement != null){   
+            addmt1VisionMeasurement(limelightMeasurement); 
         }
-    if (this.limelightMeasurement == null){   
-        addmt1VisionMeasurement(limelightMeasurement); 
-    }
     Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
  
 } 

@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -408,11 +409,7 @@ public class LimelightHelpersCameronEdition {
         @JsonProperty("t6c_rs")
         public double[] camerapose_robotspace;
 
-        @JsonProperty("stdev_mt1")
-        public double[] stdev_mt1;
 
-        @JsonProperty("stdev_mt2")
-        public double[] stdev_mt2;
 
         public Pose3d getBotPose3d() {
             return toPose3D(botpose);
@@ -459,8 +456,7 @@ public class LimelightHelpersCameronEdition {
             botpose_wpired = new double[6];
             botpose_wpiblue = new double[6];
             camerapose_robotspace = new double[6];
-            stdev_mt1 = new double[6];
-            stdev_mt2 = new double[6];
+
             targets_Retro = new LimelightTarget_Retro[0];
             targets_Fiducials = new LimelightTarget_Fiducial[0];
             targets_Classifier = new LimelightTarget_Classifier[0];
@@ -736,17 +732,15 @@ public class LimelightHelpersCameronEdition {
     private static PoseEstimate getBotPoseEstimate(String limelightName, String entryName, boolean isMegaTag2) {
         DoubleArrayEntry poseEntry = LimelightHelpersCameronEdition.getLimelightDoubleArrayEntry(limelightName, entryName);
         DoubleArrayEntry poseStdEntry;
-        if(isMegaTag2){
-            poseStdEntry = LimelightHelpersCameronEdition.getLimelightDoubleArrayEntry(limelightName, "stdev_mt2");
-        }else{
-            poseStdEntry = LimelightHelpersCameronEdition.getLimelightDoubleArrayEntry(limelightName, "stdev_mt1");
-        }
+        poseStdEntry = LimelightHelpersCameronEdition.getLimelightDoubleArrayEntry(limelightName, "stddevs");
+    
     
         TimestampedDoubleArray tsValue = poseEntry.getAtomic();
         TimestampedDoubleArray tsStdValue = poseStdEntry.getAtomic();
         double[] poseArray = tsValue.value;
         double[] poseStdArray = tsStdValue.value;
         long timestamp = tsValue.timestamp;
+        SmartDashboard.putNumberArray("stdl", poseStdArray);
         
         if (poseArray.length == 0) {
             // Handle the case where no data is available
@@ -755,11 +749,23 @@ public class LimelightHelpersCameronEdition {
 
         if (poseStdArray.length == 0) {
             // Handle the case where no data is available
-            return null; // or some default Std
+            poseStdArray = new double[12];// or some default PoseEstimate
         }
-    
+        double[] std;
         var pose = toPose2D(poseArray);
-        double[] std = toArray2D(poseStdArray);
+        if(isMegaTag2){
+            double[] array = {
+                            poseStdArray[6],
+                            poseStdArray[7],
+                            poseStdArray[8],
+                            poseStdArray[9],
+                            poseStdArray[10],
+                            poseStdArray[11]};
+            std = toArray2D(array);
+        }else{
+            std = toArray2D(poseStdArray);
+        }
+        
         double latency = extractArrayEntry(poseArray, 6);
         int tagCount = (int)extractArrayEntry(poseArray, 7);
         double tagSpan = extractArrayEntry(poseArray, 8);

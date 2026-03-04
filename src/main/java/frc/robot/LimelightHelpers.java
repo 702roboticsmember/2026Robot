@@ -730,6 +730,7 @@ public class LimelightHelpers {
 
         public RawFiducial[] rawFiducials; 
         public boolean isMegaTag2;
+        public double[] std;
 
         /**
          * Instantiates a PoseEstimate object with default values
@@ -744,6 +745,7 @@ public class LimelightHelpers {
             this.avgTagArea = 0;
             this.rawFiducials = new RawFiducial[]{};
             this.isMegaTag2 = false;
+            this.std = new double[3];
         }
 
         public PoseEstimate(Pose2d pose, double timestampSeconds, double latency, 
