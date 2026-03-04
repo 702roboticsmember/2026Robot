@@ -14,10 +14,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpersCameronEdition;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
 import frc.robot.subsystems.TurretSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -81,28 +82,28 @@ public class AutoAimCommand extends Command {
     checkAngle();
     SmartDashboard.putBoolean("good to shoot", angleRight);
     
-    // // Stationary shoot code
-    // double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
-    // double distance = getDistance(pose);
-    // double vy = CalculateVy(distance);
-    // double vx = CalculateVx(distance, vy);
-    // double vs = CalculateVs(vx, vy, 0);
-    // double shootAngle = CalculateShootAngle(vx, vy, 0);
-
-    //Shoot on the move code
-    
-    double Dx = getDistance(pose);
-    double vy = CalculateVy(Dx);
-   
-    double vrz = getVrz(pose);
-    double vrx = getVrx(pose);
-    double angleOffset = CalculateOffset(vrz, Dx, vrx);
-    double distance = CalculateShotDistance(angleOffset, Dx);
+    // Stationary shoot code
+    double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
+    double distance = getDistance(pose);
+    double vy = CalculateVy(distance);
     double vx = CalculateVx(distance, vy);
-    double vs = CalculateVs(vx, vy, vrx, angleOffset);
-    double shootAngle = CalculateShootAngle(vx, vy, vrx, 0);
-    double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
-    RobotBasedAngle += angleOffset;
+    double vs = CalculateVs(vx, vy, 0, 0);
+    double shootAngle = CalculateShootAngle(vx, vy, 0, 0);
+
+    // Shoot on the move code
+    // double Dx = getDistance(pose);
+    // double vy = CalculateVy(Dx);
+   
+    // double vrz = getVrz(Robotpose);
+    // double vrx = getVrx(Robotpose);
+    // double t = timeTillTarget(vy);
+    // double angleOffset = CalculateOffset(vrz, Dx, t);
+    // double distance = CalculateShotDistance(angleOffset, Dx);
+    // double vx = CalculateVx(distance, vy);
+    // double vs = CalculateVs(vx, vy, vrx, angleOffset);
+    // double shootAngle = CalculateShootAngle(vx, vy, vrx, angleOffset);
+    // double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    // RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
@@ -112,17 +113,17 @@ public class AutoAimCommand extends Command {
     }
     SmartDashboard.putNumber("shootAngle", shootAngle );
     SmartDashboard.putNumber("heading", Robotpose.getRotation().getDegrees());
-    SmartDashboard.putNumber("posex", Robotpose.getX());
-    SmartDashboard.putNumber("posey", Robotpose.getY());
-    SmartDashboard.putNumber("odtes", RobotBasedAngle);
-    SmartDashboard.putNumber("shootSpeed", vs);
-    SmartDashboard.putNumber("shootSpeedx", vx);
-    SmartDashboard.putNumber("shootSpeedy", vy);
+    // SmartDashboard.putNumber("posex", Robotpose.getX());
+    // SmartDashboard.putNumber("posey", Robotpose.getY());
+    // SmartDashboard.putNumber("odtes", RobotBasedAngle);
+    // SmartDashboard.putNumber("shootSpeed", vs);
+    // SmartDashboard.putNumber("shootSpeedx", vx);
+    // SmartDashboard.putNumber("shootSpeedy", vy);
     
-    SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
+    // SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
     SmartDashboard.putNumber("poseturretdist", distance);
-    SmartDashboard.putNumber("poitx", poi.getX());
-    SmartDashboard.putNumber("poity", poi.getY());
+    // SmartDashboard.putNumber("poitx", poi.getX());
+    // SmartDashboard.putNumber("poity", poi.getY());
     
     t_TurretSubsystem.goToAngle(RobotBasedAngle);
     if(hoodUp.getAsBoolean()){h_HoodSubsystem.goToAngle(shootAngle);
@@ -182,8 +183,17 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrx(Pose2d pose){
-    
-    return 0;
+    Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    double x = Swerve.gyro.getRobotCentricVelocityX();
+    double y = Swerve.gyro.getRobotCentricVelocityY();
+    Translation2d vel = new Translation2d(
+      x,
+      y);
+      SmartDashboard.putNumber("velx", x);
+      SmartDashboard.putNumber("vely", y);
+    //Swerve.gyro.getRobotCentricVelocityX()
+    //new Translation2d();
+    return vel.rotateBy(angle).getX();
   }
   
   /**
@@ -192,8 +202,15 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrz(Pose2d pose){
-   
-    return 0;
+   Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    double x = Swerve.gyro.getRobotCentricVelocityX();
+    double y = Swerve.gyro.getRobotCentricVelocityY();
+    Translation2d vel = new Translation2d(
+      x,
+      y);
+    //Swerve.gyro.getRobotCentricVelocityX()
+    //new Translation2d();
+    return vel.rotateBy(angle).getY();
   }
   /**
    * RobotPoseAdjustedTolimelightTurret
@@ -223,7 +240,8 @@ public class AutoAimCommand extends Command {
     double Input = (Vrz* t)/Dx;
 
     if (Double.isNaN(Math.atan(Input))){
-      Input = 0;//TODO Constant based on data
+      return 0;
+      //TODO Constant based on data
     }
 
     return Math.toDegrees(Math.atan(Input));
@@ -238,7 +256,7 @@ public class AutoAimCommand extends Command {
    */
   public double CalculateShotDistance(double Vrz, double Dx, double t){
     double angle = CalculateOffset(Vrz, Dx, t);
-    return Dx/Math.cos(angle) ;
+    return Dx/Math.cos(Math.toRadians(angle)) ;
   }
 
 /**
@@ -248,7 +266,7 @@ public class AutoAimCommand extends Command {
    * @return the distance the ball must travel.
    */
   public double CalculateShotDistance(double OffsetAngle, double Dx){
-    return Dx /Math.cos(Math.toDegrees(OffsetAngle));
+    return Dx/Math.cos(Math.toRadians(OffsetAngle));
   }
 
   /**CalculateVy
@@ -271,7 +289,6 @@ public class AutoAimCommand extends Command {
     if(Input < 0){
       Input = 0;//TODO Constant based on data
     }
-
     return (-b) - Math.sqrt(Input);
   }
 
@@ -301,9 +318,11 @@ public class AutoAimCommand extends Command {
     double vrx = Vrx* Math.cos(Math.toRadians(angleOffset));
     double HoodAngle = Vy/(Vx - vrx);
 
+   
     if(Vy/(Vx - vrx) == (Math.PI/2)){
       return 0;//TODO Constant based on data
     }
+   
     else if( Vy/(Vx - vrx) == (-Math.PI/2) ){
       return 0;//TODO Constant based on data
     }
@@ -317,6 +336,6 @@ public class AutoAimCommand extends Command {
   }
 
   public double getIMUYaw(){
-    return LimelightHelpers.getIMUData("limelight").gyroY;
+    return LimelightHelpersCameronEdition.getIMUData("limelight").gyroY;
   }
 }

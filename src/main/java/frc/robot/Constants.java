@@ -34,8 +34,15 @@ public final class Constants {
     public static final class LEDConstants {
 
         public static final int LEDPort = 0;
-        public static final int BufferLength = 0;
+        public static final int BufferLength = 16;
 
+    }
+
+    public static Translation2d flipTranslation2d(Translation2d pose){
+        return pose.rotateAround(new Translation2d(8.270494, 4.034536), new Rotation2d(Math.toRadians(180)));
+    }
+    public static Pose2d flipPose2d(Pose2d pose){
+        return pose.rotateAround(new Translation2d(8.270494, 4.034536), new Rotation2d(Math.toRadians(180)));
     }
 
      public enum Direction {
@@ -54,7 +61,10 @@ public final class Constants {
         BLUERIGHT(new Translation2d(),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
         REDLEFT(new Translation2d(), "Red Alliance left side"),
-        REDRIGHT(new Translation2d(),  "Red Alliance right side");
+        REDRIGHT(new Translation2d(),  "Red Alliance right side"),
+        CENTER(new Translation2d(8.270494, 4.034536), "Center"),
+        BLUELT(new Translation2d(6, 7.4), "Blue Left Trench Entry"),
+        REDLT(flipTranslation2d(new Translation2d(6, 7.4)), "Red Left Trench Entry");
 
         public final Translation2d location;
         public final String label;
@@ -509,10 +519,10 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
         //Floor Indexer Constants
         ///public static final int FloorID = 0;
-		public static final double FLOOR_STATOR_CURRENT_LIMIT = 0;
-        public static final double FLOOR_CURRENT_LIMIT = 0;
-        public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = false;
-        public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = false;
+		public static final double FLOOR_STATOR_CURRENT_LIMIT = 50;
+        public static final double FLOOR_CURRENT_LIMIT = 35;
+        public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = true;
+        public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = true;
         public static final double FloorSpeed = 0.3;
     }
 
@@ -577,8 +587,8 @@ public final class Constants {
 
     }
     public static final class lidarConstants {
-        public static final int rampCounterID = 9;
-        public static final int tankCounterID = 0;
+        public static final int rampCounterID = 0;
+        public static final int tankCounterID = 1;
 		public static final double rampFullDistance = 40;
         public static final double tankFullDistance = 200;
 		public static final double rampEmptyTime = 2;

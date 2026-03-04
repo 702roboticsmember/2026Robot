@@ -8,54 +8,54 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpersCameronEdition;
 
 public class LimelightSubsystem extends SubsystemBase {
   private String limelightName = "limelight";
   /** Creates a new LimelightSubsystem. */
   public double getTargetX() {
-    return LimelightHelpers.getTX(limelightName);
+    return LimelightHelpersCameronEdition.getTX(limelightName);
   }
 
   public double getTargetY() {
-    return LimelightHelpers.getTY(limelightName);
+    return LimelightHelpersCameronEdition.getTY(limelightName);
   }
 
   public double getTargetA() {
-    return LimelightHelpers.getTA(limelightName);
+    return LimelightHelpersCameronEdition.getTA(limelightName);
   }
 
   public boolean IsTargetAvailable() {
-    return LimelightHelpers.getTV(limelightName);
+    return LimelightHelpersCameronEdition.getTV(limelightName);
   }
 
   public void setPipeline(int value) {
-    LimelightHelpers.setPipelineIndex(limelightName, value);
+    LimelightHelpersCameronEdition.setPipelineIndex(limelightName, value);
   }
 
   public int getPipeline() {
-    return (int)Math.floor(LimelightHelpers.getCurrentPipelineIndex(limelightName));
+    return (int)Math.floor(LimelightHelpersCameronEdition.getCurrentPipelineIndex(limelightName));
   }
 
   public int getClassifier() {
     // return tclass.getNumber(0).intValue();
-    return LimelightHelpers.getClassifierClassIndex(limelightName);
+    return LimelightHelpersCameronEdition.getClassifierClassIndex(limelightName);
   }
 
   public double getBotPoseX() {
     // double pose[] = botpose.getDoubleArray(new double[6]);
-    double pose[] = LimelightHelpers.getBotPose(limelightName);
+    double pose[] = LimelightHelpersCameronEdition.getBotPose(limelightName);
     return pose[0];
   }
 
   public double getBotPoseY() {
     // double pose[] = botpose.getDoubleArray(new double[6]);
-    double pose[] = LimelightHelpers.getBotPose(limelightName);
+    double pose[] = LimelightHelpersCameronEdition.getBotPose(limelightName);
     return pose[1];
   }
 
   public double[] getBotPoseTeamRelative() {
-    return LimelightHelpers.getBotPose_wpiBlue(limelightName);
+    return LimelightHelpersCameronEdition.getBotPose_wpiBlue(limelightName);
     // var alliance = DriverStation.getAlliance();
     //   if (alliance.isPresent()) {
     //     if(alliance.get() == DriverStation.Alliance.Red){
@@ -79,7 +79,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return Returns a double array of 6 [tx, ty, tz, pitch, yaw, roll] (meters, degrees)
    */
   public double[] getBotPose_TargetSpace(){
-    double[] pose = LimelightHelpers.getBotPose_TargetSpace(limelightName);
+    double[] pose = LimelightHelpersCameronEdition.getBotPose_TargetSpace(limelightName);
     return pose;
   }
 
@@ -88,7 +88,7 @@ public class LimelightSubsystem extends SubsystemBase {
    * @return double but ID should be an integer if there is no value it will send -1.
    */
   public double getTid(){
-    return LimelightHelpers.getFiducialID(limelightName);
+    return LimelightHelpersCameronEdition.getFiducialID(limelightName);
   }
 
 
@@ -101,13 +101,13 @@ public class LimelightSubsystem extends SubsystemBase {
   
 
   public double getTargetPos(int value){
-    double pos[] = LimelightHelpers.getTargetPose_CameraSpace(limelightName);
+    double pos[] = LimelightHelpersCameronEdition.getTargetPose_CameraSpace(limelightName);
     //double posR[] = targetpose_cameraspace.getDoubleArray(new double[6]);
     return pos[value];
   }
 
   public double getCameraPos(int value){
-    double pos[] = LimelightHelpers.getCameraPose_TargetSpace(limelightName);
+    double pos[] = LimelightHelpersCameronEdition.getCameraPose_TargetSpace(limelightName);
     return pos[value];
   }
 

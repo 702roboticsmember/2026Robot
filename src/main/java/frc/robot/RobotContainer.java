@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 // import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Locations;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
@@ -105,6 +107,8 @@ public class RobotContainer {
 
     public static Locations currentPOI = Locations.BLUEHUB;
     private Field2d locField2d = new Field2d();
+    public static DigitalInput ClimbSwitch = new DigitalInput(2);
+    public static Trigger ClimbTrigger = new Trigger(()-> ClimbSwitch.get());
 
     public void debugLocations() {
         SmartDashboard.putString("Currently Aiming at",
@@ -121,6 +125,10 @@ public class RobotContainer {
     //         i_IntakeSubsystem.spin(() -> Constants.IntakeConstants.intakeMotor)
     //         );
     // }
+
+    private Command ArmOut(){
+        return Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem);
+    }
     
     private Command IntakeIn() {
         return new ParallelCommandGroup(
@@ -146,7 +154,7 @@ public class RobotContainer {
             new InstantCommand(()->hoodUp = ()-> true),
             new InstantCommand(()->i_IndexerSubsystem.setVelocity(120), i_IndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
-            new InstantCommand(()->f_FloorIndexerSubsystem.setFloorIndexSpeed(0.5), f_FloorIndexerSubsystem)
+            new InstantCommand(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
            
             );
         
@@ -189,14 +197,14 @@ public class RobotContainer {
     }
 
     private Command AimAtHub(){
-        if(Constants.getAlliance())return new AutoAimCommand(Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
-        else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
+        if(Constants.getAlliance())return new AutoAimCommand(Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> true);
+        else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true);
     }
 
     private Command ReleaseClimb(){
         return new InstantCommand(()->{
             c_ClimbSubsystem.goToPosOffset(1);
-            c_ClimbSubsystem.setServo(90);
+            c_ClimbSubsystem.setServo(0);
         }, c_ClimbSubsystem);
     }
 
@@ -215,6 +223,10 @@ public class RobotContainer {
         return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.retractedAngle), c_ClimbSubsystem);
     }
 
+    private Command HoodDown(){
+        return new InstantCommand(()-> h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit));
+    }
+
     private Command AutoShoot() {
         return new SequentialCommandGroup(Shoot(),
         new WaitUntilCommand(() -> !l_lidarSubsystem.indexer_full()),
@@ -225,12 +237,32 @@ public class RobotContainer {
         return new SequentialCommandGroup(ExtendClimb(), GrabClimb());
     }
 
+    public Command toPoint(Pose2d pose){
+        if(Constants.getAlliance()){
+            return new PointToPointPID(s_Swerve, pose);
+        }else{
+            return new PointToPointPID(s_Swerve, Constants.flipPose2d(pose));
+        }
+    }
 
+    public Command ClimbDeadline(){
+        return Commands.waitUntil(ClimbTrigger);
+    }
     // private Command AutoAim() {
     //     return new ParallelCommandGroup(
     //         new TurretRotatePIDCommand(t_TurretSubsytem, )
     //     )
     // }
+
+    public Command AutoIntake(){
+        return new AutoIntakeCommand(
+            ()->LimelightHelpersCameronEdition.getTX(Constants.limelightConstants.limelightFront),
+            ()->LimelightHelpersCameronEdition.getTA(Constants.limelightConstants.limelightFront), 
+            ()-> LimelightHelpersCameronEdition.getTV(Constants.limelightConstants.limelightFront), 
+            s_Swerve, 
+            0.3, 
+            i_IntakeSubsystem);
+    }
 
 
     /* Subsystems */
@@ -268,10 +300,13 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeNormal", IntakeIn());
         NamedCommands.registerCommand("StopIntake", IntakeStop());
         NamedCommands.registerCommand("IntakeOut", IntakeOut());
-        NamedCommands.registerCommand("AutoIntake", new AutoIntakeCommand(null, null, DOWN, s_Swerve, power, i_IntakeSubsystem));
+        NamedCommands.registerCommand("AutoIntake", AutoIntake());
         NamedCommands.registerCommand("Climb", ClimbAuto());
-
-        // NamedCommands.registerCommand("P2Ptop", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
+        NamedCommands.registerCommand("ArmOut", ArmOut());
+        NamedCommands.registerCommand("HoodDown", HoodDown());
+        NamedCommands.registerCommand("toLT", toPoint(new Pose2d(Constants.Locations.BLUELT.location, new Rotation2d(Math.toRadians(180)))));//left trench
+    
+        //NamedCommands.registerCommand("P2Ptop", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         // NamedCommands.registerCommand("P2Pbottom", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         
         //s_ShooterSubsystem.setDefaultCommand(s_ShooterSubsystem.runCmd(()-> codriver.getRawAxis(2) * 1));
@@ -302,6 +337,7 @@ public class RobotContainer {
         intakeIn.whileTrue(IntakeIn());//new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  
         intakeIn.onFalse(IntakeStop());
         autoAimHUB.whileTrue(AimAtHub());
+        autoAimHUB.whileFalse(HoodDown());
         
         // climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         // climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
@@ -316,12 +352,14 @@ public class RobotContainer {
         DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
         RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));
         LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
-        armOut.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem));
+        armOut.onTrue(ArmOut());
 
         grabClimb.onTrue(GrabClimb());
         releaseClimb.onTrue(ReleaseClimb());
         extendClimb.onTrue(ExtendClimb());
         retractClimb.onTrue(RetractClimb());
+        ClimbTrigger.whileTrue(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", true)));
+        ClimbTrigger.whileFalse(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", false)));
         
         
         // armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
@@ -353,7 +391,7 @@ public class RobotContainer {
      public Command getAutonomousCommand() {
         return new SequentialCommandGroup(new InstantCommand(() -> {
              s_Swerve.gyro.reset();
-
+            autoChooser.getSelected();
             // s_Swerve.zeroHeading();
         }));
      }
