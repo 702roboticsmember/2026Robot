@@ -312,7 +312,7 @@ public class Swerve extends SubsystemBase {
         limelightMeasurementTurret =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
         Constants.Swerve.swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
        
-        
+        SmartDashboard.putNumber("gyro", getHeading().getDegrees() );
         
         SmartDashboard.putNumber("Acc",this.getAcc());
         for (SwerveModule mod : swerveModules) {
