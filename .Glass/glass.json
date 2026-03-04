@@ -1,8 +1,5 @@
 {
   "NetworkTables": {
-    "Persistent Values": {
-      "open": false
-    },
     "transitory": {
       "CameraPublisher": {
         "limelight-duncan": {
@@ -22,9 +19,6 @@
       },
       "SmartDashboard": {
         "open": true
-      },
-      "limelight-duncan": {
-        "open": true
       }
     },
     "types": {
@@ -33,7 +27,8 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/Team Chooser": "String Chooser",
-      "/SmartDashboard/current location": "Field2d"
+      "/SmartDashboard/current location": "Field2d",
+      "/SmartDashboard/turret field": "Field2d"
     },
     "windows": {
       "/SmartDashboard/Auto Chooser": {
@@ -49,6 +44,7 @@
         "left": 245,
         "right": 3942,
         "top": 118,
+        "units": "meters",
         "width": 16.54119300842285,
         "window": {
           "name": "2026 Rebuilt",
