@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpersCameronEdition;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.HoodSubsystem;
 import frc.robot.subsystems.ShooterSubsystem;
@@ -111,8 +111,8 @@ public class AutoAimCommand extends Command {
     if(RobotBasedAngle < Constants.TurretConstants.reverseLimit){
       RobotBasedAngle +=360;
     }
-    // SmartDashboard.putNumber("shootAngle", shootAngle );
-    // SmartDashboard.putNumber("heading", Robotpose.getRotation().getDegrees());
+    SmartDashboard.putNumber("shootAngle", shootAngle );
+    SmartDashboard.putNumber("heading", Robotpose.getRotation().getDegrees());
     // SmartDashboard.putNumber("posex", Robotpose.getX());
     // SmartDashboard.putNumber("posey", Robotpose.getY());
     // SmartDashboard.putNumber("odtes", RobotBasedAngle);
@@ -121,7 +121,7 @@ public class AutoAimCommand extends Command {
     // SmartDashboard.putNumber("shootSpeedy", vy);
     
     // SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
-    // SmartDashboard.putNumber("poseturretdist", distance);
+    SmartDashboard.putNumber("poseturretdist", distance);
     // SmartDashboard.putNumber("poitx", poi.getX());
     // SmartDashboard.putNumber("poity", poi.getY());
     
@@ -334,6 +334,6 @@ public class AutoAimCommand extends Command {
   }
 
   public double getIMUYaw(){
-    return LimelightHelpers.getIMUData("limelight").gyroY;
+    return LimelightHelpersCameronEdition.getIMUData("limelight").gyroY;
   }
 }

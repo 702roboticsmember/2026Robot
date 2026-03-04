@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.lib.math.Conversions;
 import frc.robot.Constants;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpersCameronEdition;
 import frc.robot.Robot;
 
 import java.util.function.DoubleSupplier;
@@ -134,7 +134,7 @@ public class TurretSubsystem extends SubsystemBase {
 
   
   public double getLimelightYaw(){
-    double limelightMeasurement = LimelightHelpers.getIMUData("limelight").robotYaw;
+    double limelightMeasurement = LimelightHelpersCameronEdition.getIMUData("limelight").robotYaw;
     
     return limelightMeasurement;
   }

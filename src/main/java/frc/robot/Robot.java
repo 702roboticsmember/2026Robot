@@ -47,7 +47,7 @@ public class Robot extends TimedRobot {
     // and put our
     // autonomous chooser on the dashboard.
     //CameraServer.startAutomaticCapture();
-    LimelightHelpers.SetIMUMode(Constants.limelightConstants.limelightTurret, 3);
+    LimelightHelpersCameronEdition.SetIMUMode(Constants.limelightConstants.limelightTurret, 3);
     robotContainer = new RobotContainer();
     
   }
