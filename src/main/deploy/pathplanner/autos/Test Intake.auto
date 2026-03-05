@@ -27,6 +27,12 @@
           "data": {
             "name": "StopIntake"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New Path"
+          }
         }
       ]
     }

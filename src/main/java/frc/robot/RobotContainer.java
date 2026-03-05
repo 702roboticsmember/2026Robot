@@ -127,9 +127,14 @@ public class RobotContainer {
     //         );
     // }
 
+    // private Command ArmOut(){
+    //     return Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem);
+    // }
+
     private Command ArmOut(){
-        return Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem);
+        return Commands.run(()->i_IntakeArmSubsystem.goToAngle(100), i_IntakeArmSubsystem).withDeadline(new WaitCommand(0.3));
     }
+    
     
     private Command IntakeIn() {
         return new ParallelCommandGroup(
@@ -391,12 +396,10 @@ public class RobotContainer {
 
     
      public Command getAutonomousCommand() {
-        return new SequentialCommandGroup(new InstantCommand(() -> {
-             s_Swerve.gyro.reset();
+        return 
             autoChooser.getSelected();
             // s_Swerve.zeroHeading();
-        }));
-     }
+          }
     }
      
 
