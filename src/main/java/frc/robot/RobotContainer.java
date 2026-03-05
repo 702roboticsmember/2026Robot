@@ -73,8 +73,8 @@ public class RobotContainer {
    // private final JoystickButton pointPID = new JoystickButton(driver, XboxController.Button.kStart.value);
 
     //private final JoystickButton flywheel = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton climbUp = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
-    private final JoystickButton climbDown = new JoystickButton(driver, XboxController.Axis.kRightTrigger.value);
+    private final JoystickButton climbUp = new JoystickButton(codriver, XboxController.Axis.kLeftTrigger.value);
+    private final JoystickButton climbDown = new JoystickButton(codriver, XboxController.Axis.kRightTrigger.value);
     private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
     private final JoystickButton releaseClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
     private final JoystickButton grabClimb = new JoystickButton(codriver, XboxController.Button.kA.value);
@@ -85,7 +85,7 @@ public class RobotContainer {
     
    // private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton autoAimHUB = new JoystickButton(driver, XboxController.Button.kStart.value);
-    private final JoystickButton autoAimCo = new JoystickButton(codriver, XboxController.Button.kY.value);
+    //private final JoystickButton autoAimCo = new JoystickButton(codriver, XboxController.Button.kY.value);
     
     private final JoystickButton Nest = new JoystickButton(codriver, 0);
     private final POVButton UP = new POVButton(driver, Constants.Direction.UP.direction);
@@ -109,6 +109,7 @@ public class RobotContainer {
     private Field2d locField2d = new Field2d();
     public static DigitalInput ClimbSwitch = new DigitalInput(2);
     public static Trigger ClimbTrigger = new Trigger(()-> ClimbSwitch.get());
+    
 
     public void debugLocations() {
         SmartDashboard.putString("Currently Aiming at",
@@ -152,9 +153,9 @@ public class RobotContainer {
     private Command Shoot() {
         return new ParallelCommandGroup(
             new InstantCommand(()->hoodUp = ()-> true),
-            new InstantCommand(()->i_IndexerSubsystem.setVelocity(120), i_IndexerSubsystem),
+            new InstantCommand(()->i_IndexerSubsystem.setVelocity(140), i_IndexerSubsystem),
             new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),   
-            new InstantCommand(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
+            new InstantCommand(()->f_FloorIndexerSubsystem.setVelocity(100), f_FloorIndexerSubsystem)
            
             );
         
@@ -202,10 +203,10 @@ public class RobotContainer {
     }
 
     private Command ReleaseClimb(){
-        return new InstantCommand(()->{
-            c_ClimbSubsystem.goToPosOffset(1);
-            c_ClimbSubsystem.setServo(0);
-        }, c_ClimbSubsystem);
+        return Commands.run(()->{
+            c_ClimbSubsystem.goToPosOffset(-1);
+            c_ClimbSubsystem.setServo(180);
+        }, c_ClimbSubsystem).withDeadline(new WaitCommand(0.4));
     }
 
     private Command GrabClimb(){
@@ -216,11 +217,11 @@ public class RobotContainer {
     }
 
     private Command ExtendClimb(){
-        return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.extendedAngle), c_ClimbSubsystem);
+        return Commands.run(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.extendedAngle), c_ClimbSubsystem);
     }
 
     private Command RetractClimb(){
-        return new InstantCommand(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.retractedAngle), c_ClimbSubsystem);
+        return Commands.run(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.retractedAngle), c_ClimbSubsystem);
     }
 
     private Command HoodDown(){
@@ -284,6 +285,7 @@ public class RobotContainer {
         });
 
         t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
+        c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(codriver.getLeftTriggerAxis() - codriver.getRightTriggerAxis()), c_ClimbSubsystem));
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> -driver.getRawAxis(1) * power, 
@@ -347,7 +349,7 @@ public class RobotContainer {
         shoot.onFalse(ShootOff());
 
         //autoAim.whileTrue(AutoAim());
-        autoAimCo.whileTrue(AutoAim());
+        //autoAimCo.whileTrue(AutoAim());
         UP.onTrue(wrapLocationChange(()-> nextAllianceLocation()));
         DOWN.onTrue(wrapLocationChange(()-> prevAllianceLocation()));
         RIGHT.onTrue(wrapLocationChange(()-> nextLocation()));

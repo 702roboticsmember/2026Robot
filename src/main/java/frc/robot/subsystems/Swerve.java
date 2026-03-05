@@ -334,12 +334,15 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
              limelightMeasurementTurret.pose = pose;
              addmt1VisionMeasurement(limelightMeasurementTurret); 
            }
-      
-        
+           ChassisSpeeds speed = getRobotRelativeSpeeds();
+           Constants.Swerve.speeds = speed;
+        SmartDashboard.putNumber("chassisx", speed.vxMetersPerSecond);
+        SmartDashboard.putNumber("chassisy", speed.vyMetersPerSecond);
         if (this.limelightMeasurement != null){   
             addmt1VisionMeasurement(limelightMeasurement); 
         }
     Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
+    
  
 } 
     

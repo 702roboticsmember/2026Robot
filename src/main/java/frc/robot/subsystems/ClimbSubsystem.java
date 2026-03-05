@@ -51,6 +51,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     var motorOutput = config.MotorOutput;
     motorOutput.Inverted =InvertedValue.Clockwise_Positive;
+    motorOutput.NeutralMode = Constants.ClimbConstants.mode;
 
     talonFXConfigurator.apply(config);
   }
@@ -76,6 +77,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("ClimbAngle", getClimbAngle());
     // This method will be called once per scheduler run
   }
 

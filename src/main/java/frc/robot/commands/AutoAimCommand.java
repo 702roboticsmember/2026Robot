@@ -10,6 +10,7 @@ import java.util.function.BooleanSupplier;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -72,7 +73,7 @@ public class AutoAimCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.poi = RobotContainer.currentPOI.location;
+    //this.poi = RobotContainer.currentPOI.location;
     
     
     Pose2d Robotpose = Constants.Swerve.swervePoseEstimator.getEstimatedPosition();
@@ -83,27 +84,27 @@ public class AutoAimCommand extends Command {
     SmartDashboard.putBoolean("good to shoot", angleRight);
     
     // Stationary shoot code
-    double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
-    double distance = getDistance(pose);
-    double vy = CalculateVy(distance);
-    double vx = CalculateVx(distance, vy);
-    double vs = CalculateVs(vx, vy, 0, 0);
-    double shootAngle = CalculateShootAngle(vx, vy, 0, 0);
+    // double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
+    // double distance = getDistance(pose);
+    // double vy = CalculateVy(distance);
+    // double vx = CalculateVx(distance, vy);
+    // double vs = CalculateVs(vx, vy, 0, 0);
+    // double shootAngle = CalculateShootAngle(vx, vy, 0, 0);
 
     // Shoot on the move code
-    // double Dx = getDistance(pose);
-    // double vy = CalculateVy(Dx);
+    double Dx = getDistance(pose);
+    double vy = CalculateVy(Dx);
    
-    // double vrz = getVrz(Robotpose);
-    // double vrx = getVrx(Robotpose);
-    // double t = timeTillTarget(vy);
-    // double angleOffset = CalculateOffset(vrz, Dx, t);
-    // double distance = CalculateShotDistance(angleOffset, Dx);
-    // double vx = CalculateVx(distance, vy);
-    // double vs = CalculateVs(vx, vy, vrx, angleOffset);
-    // double shootAngle = CalculateShootAngle(vx, vy, vrx, angleOffset);
-    // double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
-    // RobotBasedAngle += angleOffset;
+    double vrz = getVrz(pose);
+    double vrx = getVrx(pose);
+    double t = timeTillTarget(vy);
+    double angleOffset = CalculateOffset(vrz, Dx, t);
+    double distance = CalculateShotDistance(angleOffset, Dx);
+    double vx = CalculateVx(distance, vy);
+    double vs = CalculateVs(vx, vy, vrx, angleOffset);
+    double shootAngle = CalculateShootAngle(vx, vy, vrx, angleOffset);
+    double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
       RobotBasedAngle -=360;
@@ -119,6 +120,10 @@ public class AutoAimCommand extends Command {
     // SmartDashboard.putNumber("shootSpeed", vs);
     // SmartDashboard.putNumber("shootSpeedx", vx);
     // SmartDashboard.putNumber("shootSpeedy", vy);
+    SmartDashboard.putNumber("vrx", vrx);
+    SmartDashboard.putNumber("vrz", vrz);
+     SmartDashboard.putNumber("t", t);
+    
     
     // SmartDashboard.putNumber("poseturretangle2", pose.getRotation().getDegrees());
     SmartDashboard.putNumber("poseturretdist", distance);
@@ -126,7 +131,7 @@ public class AutoAimCommand extends Command {
     // SmartDashboard.putNumber("poity", poi.getY());
     
     t_TurretSubsystem.goToAngle(RobotBasedAngle);
-    if(hoodUp.getAsBoolean()){h_HoodSubsystem.goToAngle(shootAngle);
+    if(true){h_HoodSubsystem.goToAngle(shootAngle);
       //Linear regression.
       double output = vs * 2.2492 + 0.56157;//TODO Calibrate based on input velocity vs ball actual velocity
       //Quartic regression
@@ -183,15 +188,23 @@ public class AutoAimCommand extends Command {
    * @return nothing right now.
    */
   public double getVrx(Pose2d pose){
-    Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
-    double x = Swerve.gyro.getRobotCentricVelocityX();
-    double y = Swerve.gyro.getRobotCentricVelocityY();
+    
+    Rotation2d angle = getTurretAngleToHub(pose).plus(new Rotation2d());
+    ChassisSpeeds speed = Constants.Swerve.speeds;
+    double x = speed.vxMetersPerSecond;
+    double y = speed.vyMetersPerSecond;
     Translation2d vel = new Translation2d(
       x,
       y);
-      SmartDashboard.putNumber("velx", x);
-      SmartDashboard.putNumber("vely", y);
-    //Swerve.gyro.getRobotCentricVelocityX()
+      
+    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
+    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
+    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
+    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
+    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
+    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
+    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
+    // //Swerve.gyro.getRobotCentricVelocityX()
     //new Translation2d();
     return vel.rotateBy(angle).getX();
   }
@@ -201,16 +214,26 @@ public class AutoAimCommand extends Command {
    *  unfinished 
    * @return nothing right now.
    */
+
   public double getVrz(Pose2d pose){
-   Rotation2d angle = getAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
-    double x = Swerve.gyro.getRobotCentricVelocityX();
-    double y = Swerve.gyro.getRobotCentricVelocityY();
+    Rotation2d angle = getTurretAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    ChassisSpeeds speed = Constants.Swerve.speeds;
+    double x = speed.vxMetersPerSecond;
+    double y = speed.vyMetersPerSecond;
     Translation2d vel = new Translation2d(
       x,
       y);
-    //Swerve.gyro.getRobotCentricVelocityX()
+      
+    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
+    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
+    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
+    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
+    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
+    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
+    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
+    // //Swerve.gyro.getRobotCentricVelocityX()
     //new Translation2d();
-    return vel.rotateBy(angle).getY();
+    return -vel.rotateBy(angle).getY();
   }
   /**
    * RobotPoseAdjustedTolimelightTurret
@@ -289,7 +312,7 @@ public class AutoAimCommand extends Command {
     if(Input < 0){
       Input = 0;//TODO Constant based on data
     }
-    return (-b) - Math.sqrt(Input);
+    return ((-b) - Math.sqrt(Input))/ (2*a);
   }
 
 

@@ -3,6 +3,7 @@ package frc.robot;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 // import com.revrobotics.spark.SparkBase.PersistMode;
@@ -16,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 // import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.Angle;
@@ -202,6 +204,7 @@ public final class Constants {
 
     public static final class Swerve {
         public static SwerveDrivePoseEstimator swervePoseEstimator;
+        public static ChassisSpeeds speeds = new ChassisSpeeds();
         public static boolean BLUE_ALLIANCE = getAlliance();
         public static final boolean INVERT_GYRO = true;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
@@ -446,28 +449,30 @@ public final class Constants {
         public static final int climbMotor = 19;
 
         public static final double CLIMB_GEAR_RATIO = 45;
-        public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 35;//35
-        public static final int CURRENT_THRESHOLD = 50;//60
+        public static final int STATOR_CURRENT_LIMIT = 100;
+        public static final int CURRENT_LIMIT = 70;//35
+        public static final int CURRENT_THRESHOLD = 70;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
 
-        public static final double extendedAngle = 0;
+        public static final double extendedAngle = 40;
 
         public static final double kP = 0;
         public static final double kI = 0;
         public static final double kD = 0;
 
-        public static final boolean softLimitEnable = false;
+        public static final boolean softLimitEnable = true;
 
-        public static final double forwardLimit = 0;
+        public static final double forwardLimit = 40;
 
         public static final double reverseLimit = 0;
 
-        public static final double retractedAngle = 0;
+        public static final double retractedAngle = 0.1;
 
-        public static final double climbExtendAngle = 0;
+        public static final double climbExtendAngle = 40;
+
+        public static final NeutralModeValue mode = NeutralModeValue.Brake;
 
     }
 
@@ -502,8 +507,8 @@ public final class Constants {
         public static final int indexMotorFeeder = 20;
         public static final int indexMotorTurret1 = 21;
         public static final int indexMotorTurret2 = 22;
-        public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 35;//35
+        public static final int STATOR_CURRENT_LIMIT = 70;
+        public static final int CURRENT_LIMIT = 50;//35
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
