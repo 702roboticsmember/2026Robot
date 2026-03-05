@@ -36,6 +36,7 @@ public class AutoAimCommand extends Command {
 
   private Translation2d poi;
   private BooleanSupplier hoodUp;
+  private boolean isFixed;
  
   boolean angleRight;
 
@@ -50,6 +51,7 @@ public class AutoAimCommand extends Command {
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     this.poi = poi;
     this.hoodUp = hoodUp;
+    this.isFixed = true;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -60,6 +62,7 @@ public class AutoAimCommand extends Command {
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     this.poi = RobotContainer.currentPOI.location;
     this.hoodUp = hoodUp;
+    this.isFixed = false;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -73,8 +76,9 @@ public class AutoAimCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //this.poi = RobotContainer.currentPOI.location;
-    
+    if(!isFixed){
+    this.poi = RobotContainer.currentPOI.location;
+    }
     
     Pose2d Robotpose = Constants.Swerve.swervePoseEstimator.getEstimatedPosition();
     Pose2d pose = RobotPoseAdjustedTolimelightTurret(Robotpose);

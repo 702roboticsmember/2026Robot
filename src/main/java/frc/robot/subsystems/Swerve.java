@@ -110,10 +110,14 @@ public class Swerve extends SubsystemBase {
     }
 
     private void resetPose(Pose2d startingPosition) {
+        SmartDashboard.putNumber("xi", startingPosition.getX());
+        SmartDashboard.putNumber("yi", startingPosition.getY());
+        SmartDashboard.putNumber("ai", startingPosition.getRotation().getDegrees());
         Constants.Swerve.swervePoseEstimator.resetPosition(
                 new Rotation2d(Math.toRadians(gyro.getAngle())),
                 this.getModulePositions(),
                 startingPosition);
+                
     }
 
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
@@ -321,6 +325,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
 
 
         SmartDashboard.putNumber("gyro", getHeading().getDegrees() );
+        
         
         SmartDashboard.putNumber("Acc",this.getAcc());
         for (SwerveModule mod : swerveModules) {
