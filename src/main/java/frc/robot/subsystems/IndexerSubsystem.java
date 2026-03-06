@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
@@ -25,6 +26,7 @@ public class IndexerSubsystem extends SubsystemBase {
   TalonFX indexMotorSecondary = new TalonFX(Constants.IndexerConstants.indexMotorTurret2);
 
   private MotionMagicVelocityVoltage velControl = new MotionMagicVelocityVoltage(0);
+  private MotionMagicVoltage motionMagic = new MotionMagicVoltage(0);
 
   public double speed;
 
@@ -108,6 +110,10 @@ public class IndexerSubsystem extends SubsystemBase {
 
   public void setVelocity(double vel){
     indexMotorPrimary.setControl(velControl.withVelocity(vel));
+    indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
+  }
+  public void setpose(double pos){
+    indexMotorPrimary.setControl(motionMagic.withPosition(pos));
     indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
   }
     //FlywheelMotor2.setControl(velControl.withVelocity(rps));
