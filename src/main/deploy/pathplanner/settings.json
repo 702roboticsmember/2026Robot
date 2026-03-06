@@ -1,9 +1,12 @@
 {
   "robotWidth": 1.022,
-  "robotLength": 0.718,
+  "robotLength": 0.938,
   "holonomicMode": true,
   "pathFolders": [],
-  "autoFolders": [],
+  "autoFolders": [
+    "not Tested",
+    "test"
+  ],
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
@@ -26,7 +29,7 @@
   "blModuleY": 0.352,
   "brModuleX": -0.2,
   "brModuleY": -0.352,
-  "bumperOffsetX": 0.0,
+  "bumperOffsetX": 0.13,
   "bumperOffsetY": 0.0,
   "robotFeatures": []
 }

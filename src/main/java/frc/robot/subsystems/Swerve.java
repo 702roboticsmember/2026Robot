@@ -284,6 +284,10 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       {
         doRejectUpdate = true;
       }
+      if(mt1.avgTagDist > 110)
+      {
+        doRejectUpdate = true;
+      }
 
       if(!doRejectUpdate)
       {
@@ -293,6 +297,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
             mt1.timestampSeconds);
             SmartDashboard.putBoolean("ran", true);
             SmartDashboard.putNumberArray("std", mt1.std);
+             SmartDashboard.putNumber("dist",  mt1.avgTagDist);
       }
         }
     }

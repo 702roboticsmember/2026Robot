@@ -178,6 +178,13 @@ public class RobotContainer {
         
     }
 
+    private Command ShootDeadline(){
+        return Commands.waitUntil(()-> !l_lidarSubsystem.indexer_full());
+    }
+
+    private Command ShootDeadlineTime(){
+        return new SequentialCommandGroup(new WaitCommand(1), ShootDeadline());
+    }
     
     private Command ShootOff() {
         return new ParallelCommandGroup(
@@ -194,16 +201,6 @@ public class RobotContainer {
     private Command AutoAim() {
         SmartDashboard.putBoolean("autorun", true);
         return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp, false);
-    }
-    
-    private Command AimAndShoot() {
-        return new ParallelCommandGroup(
-            new InstantCommand(() ->AutoAim()),
-            new InstantCommand(() ->AimAtHub()), 
-            new InstantCommand(() ->Shoot()),
-            new WaitCommand(3),
-            new InstantCommand(() ->ShootOff())
-        );
     }
 
     private Command Nest() {
@@ -331,6 +328,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ClimbDeadline", ClimbDeadline());
         NamedCommands.registerCommand("ClimbGrab", GrabClimb());
         NamedCommands.registerCommand("ClimbRetract", RetractClimb());
+        NamedCommands.registerCommand("ShootDeadline", ShootDeadlineTime());
         //ClimbGrab
         NamedCommands.registerCommand("ArmOut", ArmOut());
         NamedCommands.registerCommand("HoodDown", HoodDown());

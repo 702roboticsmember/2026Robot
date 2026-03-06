@@ -23,19 +23,19 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Left-start-middle-deadcollect"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "DeadCollectLeft-trenchshot"
+                  "pathName": "Right-start-middle-deadcollect"
                 }
               },
               {
                 "type": "named",
                 "data": {
                   "name": "StopIntake"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DeadCollectRight-trenchshot"
                 }
               },
               {

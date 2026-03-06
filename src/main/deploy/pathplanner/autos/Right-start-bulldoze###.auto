@@ -92,6 +92,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "not Tested",
   "choreoAuto": false
 }
