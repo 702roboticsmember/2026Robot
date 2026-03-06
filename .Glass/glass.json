@@ -1,10 +1,19 @@
 {
   "NetworkTables": {
+    "retained": {
+      "SmartDashboard": {
+        "open": true
+      }
+    },
     "transitory": {
       "CameraPublisher": {
-        "limelight-duncan": {
-          "open": true
-        }
+        "limelight-mega": {
+          "open": true,
+          "string[]##v_/CameraPublisher/limelight-mega/streams": {
+            "open": true
+          }
+        },
+        "open": true
       },
       "LiveWindow": {
         ".status": {
@@ -37,15 +46,12 @@
         }
       },
       "/SmartDashboard/Field": {
-        "bottom": 1914,
-        "builtin": "",
-        "height": 8.069275856018066,
-        "image": "C:\\Users\\Team 702\\Downloads\\2026-field.png",
-        "left": 245,
-        "right": 3942,
-        "top": 118,
-        "units": "meters",
-        "width": 16.54119300842285,
+        "bottom": 1638,
+        "height": 8.051901817321777,
+        "left": 534,
+        "right": 3466,
+        "top": 291,
+        "width": 17.54825210571289,
         "window": {
           "visible": true
         }

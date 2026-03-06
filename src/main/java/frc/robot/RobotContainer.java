@@ -12,6 +12,7 @@ import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.AnalogTrigger;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -107,8 +108,9 @@ public class RobotContainer {
 
     public static Locations currentPOI = Locations.BLUEHUB;
     private Field2d locField2d = new Field2d();
-    public static DigitalInput ClimbSwitch = new DigitalInput(2);
+    public static DigitalInput ClimbSwitch = new DigitalInput(6);
     public static Trigger ClimbTrigger = new Trigger(()-> ClimbSwitch.get());
+    //public static AnalogTrigger ClimbSwitch = new AnalogTrigger(0);
     
 
     public void debugLocations() {
@@ -261,13 +263,14 @@ public class RobotContainer {
     // }
 
     public Command AutoIntake(){
-        return new AutoIntakeCommand(
+        return new ParallelCommandGroup(new AutoIntakeCommand(
             ()->LimelightHelpersCameronEdition.getTX(Constants.limelightConstants.limelightFront),
             ()->LimelightHelpersCameronEdition.getTA(Constants.limelightConstants.limelightFront), 
             ()-> LimelightHelpersCameronEdition.getTV(Constants.limelightConstants.limelightFront), 
             s_Swerve, 
             0.3, 
-            i_IntakeSubsystem);
+            i_IntakeSubsystem),
+            IntakeIn());
     }
 
 
@@ -367,6 +370,7 @@ public class RobotContainer {
         retractClimb.onTrue(RetractClimb());
         ClimbTrigger.whileTrue(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", true)));
         ClimbTrigger.whileFalse(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", false)));
+       
         
         
         // armIn.onTrue(Commands.runOnce(()->i_IntakeArmSubsystem.goToAngle(7), i_IntakeArmSubsystem));
@@ -396,9 +400,11 @@ public class RobotContainer {
 
     
      public Command getAutonomousCommand() {
-        return 
-            autoChooser.getSelected();
-            // s_Swerve.zeroHeading();
+
+        return new ParallelCommandGroup(
+            new InstantCommand(()->Swerve.gyro.reset()),
+            autoChooser.getSelected());
+            
           }
     }
      
