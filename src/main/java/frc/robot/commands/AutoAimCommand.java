@@ -193,7 +193,7 @@ public class AutoAimCommand extends Command {
    */
   public double getVrx(Pose2d pose){
     
-    Rotation2d angle = getTurretAngleToHub(pose).plus(new Rotation2d());
+    Rotation2d angle = new Rotation2d(Math.toRadians(360)).minus(getTurretAngleToHub(pose));
     ChassisSpeeds speed = Constants.Swerve.speeds;
     double x = speed.vxMetersPerSecond;
     double y = speed.vyMetersPerSecond;
@@ -220,7 +220,7 @@ public class AutoAimCommand extends Command {
    */
 
   public double getVrz(Pose2d pose){
-    Rotation2d angle = getTurretAngleToHub(pose).plus(new Rotation2d(Math.toRadians(0)));
+    Rotation2d angle = new Rotation2d(Math.toRadians(360)).minus(getTurretAngleToHub(pose));
     ChassisSpeeds speed = Constants.Swerve.speeds;
     double x = speed.vxMetersPerSecond;
     double y = speed.vyMetersPerSecond;

@@ -141,19 +141,19 @@ public class RobotContainer {
     private Command IntakeIn() {
         return new ParallelCommandGroup(
             
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.5))
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem)
         );
     }
     private Command IntakeOut() {
         return new ParallelCommandGroup(
-            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(-0.3)),
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(-0.5))
+            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(-0.3), f_FloorIndexerSubsystem),
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(-0.5), i_IntakeArmSubsystem)
         );
     }
     private Command IntakeStop() {
         return new ParallelCommandGroup(
-            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(0)),
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))
+            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem),
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem)
         );
     }
 
@@ -269,8 +269,7 @@ public class RobotContainer {
             ()-> LimelightHelpersCameronEdition.getTV(Constants.limelightConstants.limelightFront), 
             s_Swerve, 
             0.3, 
-            i_IntakeSubsystem),
-            IntakeIn());
+            i_IntakeSubsystem));
     }
 
 
@@ -299,7 +298,7 @@ public class RobotContainer {
         ()-> -driver.getRawAxis(1) * power, 
         ()-> -driver.getRawAxis(0) * power,
         ()-> -driver.getRawAxis(4) * power, 
-        ()->robotCentric));
+        ()->false));
 
         // driver.setRumble(RumbleType.kBothRumble, 0.2);
 
