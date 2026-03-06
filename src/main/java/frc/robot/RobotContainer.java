@@ -147,7 +147,7 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             
             new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem)
-        );
+        ).withDeadline(new WaitCommand(0.3));
     }
     private Command IntakeOut() {
         return new ParallelCommandGroup(
@@ -164,15 +164,10 @@ public class RobotContainer {
 
     private Command Shoot() {
         return new ParallelCommandGroup(
-            new InstantCommand(()->hoodUp = ()-> true),
-            // new RepeatCommand(new SequentialCommandGroup(
-            //     //new InstantCommand(()->f_FloorIndexerSubsystem.move(-2), f_FloorIndexerSubsystem),
-            //      new WaitCommand(0.3),
-            //      new InstantCommand(()->f_FloorIndexerSubsystem.move(10), f_FloorIndexerSubsystem)
-            // )),
-            new InstantCommand(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
-            new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),  
-           new InstantCommand(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
+           Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
+           Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),
+           Commands.run(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
+            
            
             );
         
