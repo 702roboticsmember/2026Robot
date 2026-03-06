@@ -62,7 +62,7 @@ public class RobotContainer {
     //driver buttons
     //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
    // private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
+    //private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -78,14 +78,16 @@ public class RobotContainer {
     private final JoystickButton climbDown = new JoystickButton(codriver, XboxController.Axis.kRightTrigger.value);
     private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
     private final JoystickButton releaseClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
-    private final JoystickButton grabClimb = new JoystickButton(codriver, XboxController.Button.kA.value);
-    private final JoystickButton retractClimb = new JoystickButton(codriver, XboxController.Button.kB.value);
+    private final JoystickButton grabClimb = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton retractClimb = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton AutoIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
     //private final  servoEngage = new POVButton(driver, Constants.Direction.UP.direction);
 
     
     
    // private final JoystickButton autoAim = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton autoAimHUB = new JoystickButton(driver, XboxController.Button.kStart.value);
+    private final JoystickButton autoAimPASS = new JoystickButton(driver, XboxController.Button.kBack.value);
     //private final JoystickButton autoAimCo = new JoystickButton(codriver, XboxController.Button.kY.value);
     
     private final JoystickButton Nest = new JoystickButton(codriver, 0);
@@ -119,6 +121,8 @@ public class RobotContainer {
                 locField2d.setRobotPose(new Pose2d(currentPOI.location, new Rotation2d(0)));
         SmartDashboard.putData("current location", locField2d);
     }
+
+    
     
 
     // private Command IntakeOut() {
@@ -181,7 +185,7 @@ public class RobotContainer {
 
     private Command AutoAim() {
         SmartDashboard.putBoolean("autorun", true);
-        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp, false);
     }
     
     private Command AimAndShoot() {
@@ -207,6 +211,11 @@ public class RobotContainer {
     private Command AimAtHub(){
         if(Constants.getAlliance())return new AutoAimCommand(Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> true);
         else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true);
+    }
+
+    private Command PASS(){
+      
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true, true);
     }
 
     private Command ReleaseClimb(){
@@ -242,7 +251,7 @@ public class RobotContainer {
     }
 
     public Command ClimbAuto() {
-        return new SequentialCommandGroup(ExtendClimb(), GrabClimb());
+        return new SequentialCommandGroup(ExtendClimb());
     }
 
     public Command toPoint(Pose2d pose){
@@ -292,7 +301,7 @@ public class RobotContainer {
         });
 
         t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
-        c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(codriver.getLeftTriggerAxis() - codriver.getRightTriggerAxis()), c_ClimbSubsystem));
+        c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()), c_ClimbSubsystem));
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> -driver.getRawAxis(1) * power, 
@@ -311,6 +320,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("IntakeOut", IntakeOut());
         NamedCommands.registerCommand("AutoIntake", AutoIntake());
         NamedCommands.registerCommand("Climb", ClimbAuto());
+        NamedCommands.registerCommand("ClimbDeadline", ClimbDeadline());
+        NamedCommands.registerCommand("ClimbGrab", GrabClimb());
+        NamedCommands.registerCommand("ClimbRetract", RetractClimb());
+        //ClimbGrab
         NamedCommands.registerCommand("ArmOut", ArmOut());
         NamedCommands.registerCommand("HoodDown", HoodDown());
         NamedCommands.registerCommand("toLT", toPoint(new Pose2d(Constants.Locations.BLUELT.location, new Rotation2d(Math.toRadians(180)))));//left trench
@@ -338,22 +351,25 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         //zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
-        speedToggle.toggleOnTrue(new InstantCommand(() -> RobotContainer.power = .25));
-        speedToggle.toggleOnFalse(new InstantCommand(() -> RobotContainer.power = 1));
+        // speedToggle.toggleOnTrue(new InstantCommand(() -> RobotContainer.power = .25));
+        // speedToggle.toggleOnFalse(new InstantCommand(() -> RobotContainer.power = 1));
         
         intakeOut.whileTrue(IntakeOut()); 
         intakeOut.onFalse(IntakeStop()); 
         intakeIn.whileTrue(IntakeIn());//new ParallelCommandGroup(new IntakeArmPID(0, i_IntakeArmSubsystem), new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0))));  
         intakeIn.onFalse(IntakeStop());
         autoAimHUB.whileTrue(AimAtHub());
-        autoAimHUB.whileFalse(HoodDown());
+        autoAimHUB.onFalse(HoodDown());
+        autoAimPASS.whileTrue(PASS());
+        autoAimPASS.onFalse(HoodDown());
         
         // climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         // climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
        //shoot.onTrue(new InstantCommand(()-> f_FloorIndexerSubsystem.move(5), f_FloorIndexerSubsystem));
-        shoot.whileTrue(Shoot());
+        shoot.whileTrue(Shoot().onlyWhile(Constants.Swerve.good));
         //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         shoot.onFalse(ShootOff());
+        AutoIntake.whileTrue(AutoIntake());
 
         //autoAim.whileTrue(AutoAim());
         //autoAimCo.whileTrue(AutoAim());

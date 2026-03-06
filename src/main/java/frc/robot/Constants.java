@@ -27,6 +27,8 @@ import frc.lib.util.SwerveModuleConstants;
 
 import static frc.lib.util.COTSTalonFXSwerveConstants.SDS.MK4i.*;
 
+import java.util.function.BooleanSupplier;
+
 //public final class constants
 //this is for the constants
 //for your information
@@ -59,11 +61,11 @@ public final class Constants {
 
     public enum Locations {
         BLUEHUB(new Translation2d(4.620419, 4.034631), "Blue Alliance Hub"),
-        BLUELEFT(new Translation2d(), "Blue Alliance left side"),
-        BLUERIGHT(new Translation2d(),  "Blue Alliance right side"),
+        BLUELEFT(new Translation2d(2, 6.4), "Blue Alliance left side"),
+        BLUERIGHT(new Translation2d(2, 1.8),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
-        REDLEFT(new Translation2d(), "Red Alliance left side"),
-        REDRIGHT(new Translation2d(),  "Red Alliance right side"),
+        REDLEFT(flipTranslation2d(new Translation2d(2, 6.4)), "Red Alliance left side"),
+        REDRIGHT(flipTranslation2d(new Translation2d(2, 1.8)),  "Red Alliance right side"),
         CENTER(new Translation2d(8.270494, 4.034536), "Center"),
         BLUELT(new Translation2d(6, 7.4), "Blue Left Trench Entry"),
         REDLT(flipTranslation2d(new Translation2d(6, 7.4)), "Red Left Trench Entry");
@@ -211,6 +213,7 @@ public final class Constants {
         public static final double ANGLE_GEAR_RATIO = 18.75;
         public static final double LIMELIGHT_TURRET_POSE_Y = -0.238;
         public static final double LIMELIGHT_TURRET_POSE_X = -0.087;
+        public static BooleanSupplier good = ()-> false;
 
         public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(DRIVE_GEAR_RATIO);
         /**
@@ -288,7 +291,7 @@ public final class Constants {
 
         public static final PIDConstants ANGLE_PID = new PIDConstants(FALCON_500_CONSTANTS.angleKP,
                 FALCON_500_CONSTANTS.angleKI, FALCON_500_CONSTANTS.angleKD);
-        public static final PIDConstants DRIVE_PID = new PIDConstants(0.5, 0.0, 0.0);
+        public static final PIDConstants DRIVE_PID = new PIDConstants(0.12, 0, 0.0);
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double DRIVE_KS = 0.32;//.32
@@ -345,7 +348,7 @@ public final class Constants {
                     canCoderID, angleOffset);
         }
         public static final PPHolonomicDriveController PATHPLANNER_FOLLOWER_CONFIG = new PPHolonomicDriveController(
-                new PIDConstants(5, 0, 0), 
+                new PIDConstants(6, 0, 0), 
                 new PIDConstants(3, 0, 0)
                 // MAX_SPEED,
                 // DRIVEBASE_RADIUS,
@@ -425,12 +428,12 @@ public final class Constants {
         public static final int shooterMotor2 = 17;
         public static final double conversion = 1.5;
      
-        public static final int STATOR_CURRENT_LIMIT = 60;
+        public static final int STATOR_CURRENT_LIMIT = 40;
         public static final int CURRENT_LIMIT = 40;//35
         public static final int CURRENT_THRESHOLD = 40;//60
-        public static final double CURRENT_THRESHOLD_TIME = 0.1;
+        public static final double CURRENT_THRESHOLD_TIME = 1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
 
         public static final double CruiseVelocity = 0;
         public static final double Acceleration = 0;
@@ -464,7 +467,7 @@ public final class Constants {
 
         public static final boolean softLimitEnable = true;
 
-        public static final double forwardLimit = 40;
+        public static final double forwardLimit = 60;
 
         public static final double reverseLimit = 0;
 
@@ -569,7 +572,7 @@ public final class Constants {
     public static final double kI = 0;
     public static final double kD = 0;   
 
-    public static final double AutoFollowPIDSetpoint = 6;   
+    public static final double AutoFollowPIDSetpoint = 70;   
     public static final double AutoFollowPIDTolerance = 0;   
     public static final double AutoAimPIDSetpoint = 0;   
     public static final double AutoAimPIDTolerance = 0;   

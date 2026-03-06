@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,6 +38,7 @@ public class AutoAimCommand extends Command {
   private Translation2d poi;
   private BooleanSupplier hoodUp;
   private boolean isFixed;
+  private boolean passing;
  
   boolean angleRight;
 
@@ -55,16 +57,23 @@ public class AutoAimCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp) {
+  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp, boolean passing) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
-    this.poi = RobotContainer.currentPOI.location;
+    
     this.hoodUp = hoodUp;
     this.isFixed = false;
+    this.passing = passing;
+    if(passing)
+    this.poi = Constants.getAlliance()? Constants.Locations.BLUELEFT.location: Constants.Locations.REDLEFT.location;
+    else this.poi = RobotContainer.currentPOI.location;
     // Use addRequirements() here to declare subsystem dependencies.
   }
+
+  
+  
 
   // Called when the command is initially scheduled.
   @Override
@@ -79,6 +88,8 @@ public class AutoAimCommand extends Command {
     if(!isFixed){
     this.poi = RobotContainer.currentPOI.location;
     }
+
+    
     
     Pose2d Robotpose = Constants.Swerve.swervePoseEstimator.getEstimatedPosition();
     Pose2d pose = RobotPoseAdjustedTolimelightTurret(Robotpose);
@@ -86,6 +97,22 @@ public class AutoAimCommand extends Command {
 
     checkAngle();
     SmartDashboard.putBoolean("good to shoot", angleRight);
+    //Constants.Swerve.good = ()-> Good();
+
+    if(passing){
+      if(Constants.getAlliance()){
+        if(pose.getY() > Constants.Locations.CENTER.location.getY())
+        this.poi = Constants.Locations.BLUELEFT.location;
+        else
+        this.poi = Constants.Locations.BLUERIGHT.location;
+      }else{
+        if(pose.getY() > Constants.Locations.CENTER.location.getY())
+        this.poi = Constants.Locations.REDRIGHT.location;
+        else
+        this.poi = Constants.Locations.REDLEFT.location;
+
+      }
+    }
     
     // Stationary shoot code
     // double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
@@ -135,17 +162,24 @@ public class AutoAimCommand extends Command {
     // SmartDashboard.putNumber("poity", poi.getY());
     
     t_TurretSubsystem.goToAngle(RobotBasedAngle);
-    if(true){h_HoodSubsystem.goToAngle(shootAngle);
+    double offby = t_TurretSubsystem.getAngleAsDouble() - RobotBasedAngle;
+    if(Math.abs(offby) > 3){
+      Constants.Swerve.good = ()-> false;
+    }else{
+      Constants.Swerve.good = ()-> true;
+    }
+    
       //Linear regression.
-      double output = vs * 2.2492 + 0.56157;//TODO Calibrate based on input velocity vs ball actual velocity
+      double output = vs * 2.3492 + 0.26157;//TODO Calibrate based on input velocity vs ball actual velocity
+      //2.2492 + 0.56157
       //Quartic regression
-      //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
 
+
+      //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
+      SmartDashboard.putNumber("output", output);
       s_ShooterSubsystem.setVelocity(output);
-    }
-    else {h_HoodSubsystem.goToAngle(Constants.HoodConstants.forwardLimit);
-      s_ShooterSubsystem.setVelocity(0);
-    }
+    
+    
     //s_ShooterSubsystem.setVelocity(vs * 2.1492 + 0.56157);
 
   }
@@ -164,6 +198,16 @@ public class AutoAimCommand extends Command {
    * Checks if the shot is within tolerance to shoot a ball.
    */
   public void checkAngle (){//TODO Currently not accurate for shot on the move.
+   Pose2d pose = Constants.TurretConstants.turretPose2d;
+    double off = getAngleToHub(pose).getTan()*getDistance(pose);
+   if (off < 1.05 && off > -1.05){
+     this.angleRight = true;
+    }else{
+     this.angleRight = false;
+    }
+  }
+
+  public void Good (){//TODO Currently not accurate for shot on the move.
    Pose2d pose = Constants.TurretConstants.turretPose2d;
     double off = getAngleToHub(pose).getTan()*getDistance(pose);
    if (off < 1.05 && off > -1.05){
@@ -301,7 +345,7 @@ public class AutoAimCommand extends Command {
    * @return Vy (Vertical velocity) based on a preset formula to help reduce complexity.
    */
   public double CalculateVy(double Dx){
-    return 0.098438*Dx + 5.81997;//Originally a constant but I found adjusting the Vy and in turn the max height I can increase accuracy from afar.
+    return MathUtil.clamp(0.098438*Dx + 5.81997, 5.8, 1000);//Originally a constant but I found adjusting the Vy and in turn the max height I can increase accuracy from afar.
   }
 
   public double getBasicVy(){

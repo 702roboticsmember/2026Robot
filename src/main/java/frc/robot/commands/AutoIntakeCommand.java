@@ -63,6 +63,7 @@ public class AutoIntakeCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //if(Constants.Swerve.swervePoseEstimator.getEstimatedPosition().)
 
     double a = ta.getAsDouble();
     boolean Target = tv.getAsBoolean();

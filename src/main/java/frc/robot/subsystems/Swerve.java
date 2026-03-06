@@ -287,7 +287,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
 
       if(!doRejectUpdate)
       {
-        Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0], mt1.std[1], mt1.std[2]));
+        Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] , mt1.std[1], mt1.std[2]));
         Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
