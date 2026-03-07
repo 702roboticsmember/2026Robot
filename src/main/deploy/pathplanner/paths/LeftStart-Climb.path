@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9044888888888893,
+        "x": 4.003294,
         "y": 7.406577777777777
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.793622222222222,
+        "x": 2.892427333333333,
         "y": 7.3675999999999995
       },
       "isLocked": false,
@@ -32,15 +32,15 @@
     },
     {
       "anchor": {
-        "x": 2.8326000000020595,
+        "x": 2.162952924393723,
         "y": 4.668842363303288
       },
       "prevControl": {
-        "x": 3.542266073771039,
+        "x": 2.872618998162703,
         "y": 4.668842363303288
       },
       "nextControl": {
-        "x": 2.13100000000206,
+        "x": 1.4613529243937236,
         "y": 4.668842363303288
       },
       "isLocked": false,
@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 1.1175777777798372,
+        "x": 1.0114122681883024,
         "y": 4.668842363303288
       },
       "prevControl": {
-        "x": 1.6730111111131705,
+        "x": 1.5668456015216357,
         "y": 4.71756458552551
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LeftClimb"
     }
   ],
   "rotationTargets": [
@@ -69,10 +69,10 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.0294964028776894,
+      "minWaypointRelativePos": 2.4401709401709324,
       "maxWaypointRelativePos": 3.0,
       "constraints": {
-        "maxVelocity": 0.7,
+        "maxVelocity": 0.3,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
