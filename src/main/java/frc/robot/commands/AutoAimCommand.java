@@ -178,6 +178,7 @@ public class AutoAimCommand extends Command {
       //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
       SmartDashboard.putNumber("output", output);
       s_ShooterSubsystem.setVelocity(output);
+      h_HoodSubsystem.goToAngle(shootAngle);
     
     
     //s_ShooterSubsystem.setVelocity(vs * 2.1492 + 0.56157);
