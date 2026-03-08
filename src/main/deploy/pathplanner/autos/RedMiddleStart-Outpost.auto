@@ -17,7 +17,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightTrench-Outpost"
+                  "pathName": "Middle-Outpost"
                 }
               }
             ]
@@ -30,7 +30,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAtHub"
+                  "name": "AimAtHubRed"
                 }
               },
               {
@@ -61,7 +61,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAtHub"
+                  "name": "AimAtHubRed"
                 }
               }
             ]
@@ -71,6 +71,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "test",
+  "folder": "RED",
   "choreoAuto": false
 }

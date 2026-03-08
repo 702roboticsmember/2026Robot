@@ -23,13 +23,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right-start-middle-deadcollect"
+                  "pathName": "Left-start-middle-deadcollect"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "DeadCollectRight-trenchshot"
+                  "pathName": "DeadCollectLeft-trenchshot"
                 }
               },
               {
@@ -48,7 +48,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAtHub"
+                  "name": "AimAtHubRed"
                 }
               },
               {
@@ -67,7 +67,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 5.0
+                  "waitTime": 10.0
                 }
               },
               {
@@ -79,22 +79,16 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AimAtHub"
+                  "name": "AimAtHubRed"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeNormal"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "test",
+  "folder": "RED",
   "choreoAuto": false
 }

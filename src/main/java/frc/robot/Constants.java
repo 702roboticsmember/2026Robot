@@ -205,9 +205,9 @@ public final class Constants {
     }
 
     public static final class Swerve {
-        public static SwerveDrivePoseEstimator swervePoseEstimator;
+        public static Pose2d Robotpose = new Pose2d();
         public static ChassisSpeeds speeds = new ChassisSpeeds();
-        public static boolean BLUE_ALLIANCE = getAlliance();
+        public static boolean BLUE_ALLIANCE = true;
         public static final boolean INVERT_GYRO = true;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
         public static final double ANGLE_GEAR_RATIO = 18.75;
@@ -270,10 +270,10 @@ public final class Constants {
 
         public static final int DRIVE_STATOR_CURRENT_LIMIT = 50;
         public static final int DRIVE_CURRENT_LIMIT = 35;//35
-        public static final int DRIVE_CURRENT_THRESHOLD = 50;//60
+        public static final int DRIVE_CURRENT_THRESHOLD = 35;//60
         public static final double DRIVE_CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean DRIVE_ENABLE_CURRENT_LIMIT = true;
-        public static final boolean DRIVE_ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final boolean DRIVE_ENABLE_STATOR_CURRENT_LIMIT = true;
 
 
 /*
@@ -415,7 +415,7 @@ public final class Constants {
 
         public static final double reverseLimit = -85;
         
-        public static Pose2d turretPose2d = new Pose2d();
+        //public static Pose2d turretPose2d = new Pose2d();
 
         public static final double TurretConversionRate = (50.0/14.0)*(130.0/20.0);
         public static final Angle initialAngle = null;
@@ -432,8 +432,8 @@ public final class Constants {
         public static final int shooterMotor2 = 17;
         public static final double conversion = 1.5;
      
-        public static final int STATOR_CURRENT_LIMIT = 40;
-        public static final int CURRENT_LIMIT = 40;//35
+        public static final int STATOR_CURRENT_LIMIT = 70;
+        public static final int CURRENT_LIMIT = 50;//35
         public static final int CURRENT_THRESHOLD = 40;//60
         public static final double CURRENT_THRESHOLD_TIME = 1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;

@@ -51,7 +51,10 @@
         "left": 534,
         "right": 3466,
         "top": 291,
-        "width": 17.54825210571289
+        "width": 17.54825210571289,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/current location": {
         "bottom": 1914,
@@ -63,7 +66,8 @@
         "units": "meters",
         "width": 16.54119300842285,
         "window": {
-          "name": "2026 Rebuilt"
+          "name": "2026 Rebuilt",
+          "visible": true
         }
       },
       "/SmartDashboard/turret field": {

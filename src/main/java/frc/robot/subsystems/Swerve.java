@@ -43,6 +43,7 @@ public class Swerve extends SubsystemBase {
     public LimelightHelpersCameronEdition.PoseEstimate limelightMeasurementTurret;
      public LimelightHelpers.PoseEstimate limelightMeasurementTurret2;
     public TurretSubsystem t_Subsystem;
+    public static SwerveDrivePoseEstimator swervePoseEstimator;
     
 
 
@@ -66,8 +67,11 @@ public class Swerve extends SubsystemBase {
         };
 
         
-    
-        Constants.Swerve.swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
+        if(gyro.isConnected() && !gyro.isCalibrating()){
+            swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
+        }else{
+            swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, new Rotation2d(Math.toRadians(0)), getModulePositions(), new Pose2d());
+        }
         
         AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -84,8 +88,8 @@ public class Swerve extends SubsystemBase {
                     var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
                         if(alliance.get() == DriverStation.Alliance.Red){
-                            Constants.Swerve.BLUE_ALLIANCE = false;}else{
-                                Constants.Swerve.BLUE_ALLIANCE = true;
+                            }else{
+                                
                             }
                       return alliance.get() == DriverStation.Alliance.Red;
                     }
@@ -113,7 +117,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("xi", startingPosition.getX());
         SmartDashboard.putNumber("yi", startingPosition.getY());
         SmartDashboard.putNumber("ai", startingPosition.getRotation().getDegrees());
-        Constants.Swerve.swervePoseEstimator.resetPosition(
+        swervePoseEstimator.resetPosition(
                 new Rotation2d(Math.toRadians(gyro.getAngle())),
                 this.getModulePositions(),
                 startingPosition);
@@ -182,11 +186,11 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return Constants.Swerve.swervePoseEstimator.getEstimatedPosition();
+        return swervePoseEstimator.getEstimatedPosition();
     }
 
     public void setPose(Pose2d pose) {
-        Constants.Swerve.swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
+        swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 
     public Rotation2d getHeading() {
@@ -194,16 +198,17 @@ public class Swerve extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading) {
-        Constants.Swerve.swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
+        swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
                 new Pose2d(getPose().getTranslation(), heading));
     }
 
     public void zeroHeading() {
-        Constants.Swerve.swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
+        swervePoseEstimator.resetPosition(getGyroYaw(), getModulePositions(),
                 new Pose2d(getPose().getTranslation(), new Rotation2d()));
     }
 
     public Rotation2d getGyroYaw() {
+       
         return (Constants.Swerve.INVERT_GYRO) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
                 : Rotation2d.fromDegrees(gyro.getYaw());
     }
@@ -259,12 +264,12 @@ public class Swerve extends SubsystemBase {
     //     setHeading(rotate);
     //     }
     // }
-    public void setposetoField(){
+    // public void setposetoField(){
         
-        if (this.limelightMeasurement != null){
-        setPose(limelightMeasurement.pose);
-        }
-    }
+    //     if (this.limelightMeasurement != null){
+    //     setPose(limelightMeasurement.pose);
+    //     }
+    // }
 
 public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate mt1){
         boolean doRejectUpdate = false;
@@ -291,8 +296,8 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
 
       if(!doRejectUpdate)
       {
-        Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] , mt1.std[1], mt1.std[2]));
-        Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
+        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] , mt1.std[1], mt1.std[2]));
+        swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
             SmartDashboard.putBoolean("ran", true);
@@ -302,21 +307,21 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         }
     }
 
-    public void addmt2VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate mt2){
-        if (mt2 != null){
-            if (mt2.tagCount >= 2) {
+    // public void addmt2VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate mt2){
+    //     if (mt2 != null){
+    //         if (mt2.tagCount >= 2) {
             
             
-                Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt2.std[0], mt2.std[1], mt2.std[2]));
-                Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
-                    mt2.pose,
-                    mt2.timestampSeconds
-            );
+    //             Constants.Swerve.swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt2.std[0], mt2.std[1], mt2.std[2]));
+    //             Constants.Swerve.swervePoseEstimator.addVisionMeasurement(
+    //                 mt2.pose,
+    //                 mt2.timestampSeconds
+    //         );
             
-            }
-        }
+    //         }
+    //     }
     
-    }
+    // }
 
 
 
@@ -324,7 +329,8 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
     public void periodic() {
         limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         limelightMeasurementTurret =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
-        Constants.Swerve.swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
+        if(gyro.isConnected() && !gyro.isCalibrating())swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
+        
        
 
 
@@ -351,7 +357,8 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         if (this.limelightMeasurement != null){   
             addmt1VisionMeasurement(limelightMeasurement); 
         }
-    Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(Constants.Swerve.swervePoseEstimator.getEstimatedPosition());
+    // Constants.Swerve.Robotpose = swervePoseEstimator.getEstimatedPosition();
+    // Constants.TurretConstants.turretPose2d = RobotPoseAdjustedTolimelightTurret(swervePoseEstimator.getEstimatedPosition());
     
  
 } 

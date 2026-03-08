@@ -68,13 +68,13 @@ public class RobotContainer {
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton armOut = new JoystickButton(driver, XboxController.Button.kX.value);
-    private final JoystickButton armIn = new JoystickButton(driver, XboxController.Button.kB.value);
+    
     
     private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickButton releaseClimb = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton grabClimb = new JoystickButton(driver, XboxController.Button.kA.value);
     
-    private final JoystickButton AutoIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
+    //private final JoystickButton AutoIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
     
    // private final JoystickButton pointPID = new JoystickButton(driver, XboxController.Button.kStart.value);
 
@@ -107,8 +107,10 @@ public class RobotContainer {
     private final POVButton CORIGHT = new POVButton(codriver, Constants.Direction.RIGHT.direction);
 
     private final JoystickButton COSTART = new JoystickButton(codriver, XboxController.Button.kStart.value);
+    private final JoystickButton COBACK = new JoystickButton(codriver, XboxController.Button.kBack.value);
     private final JoystickButton COLEFTBUMPER = new JoystickButton(codriver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton CORIGHTBUMPER = new JoystickButton(codriver, XboxController.Button.kRightBumper.value);
+    //private final JoystickButton armIn = new JoystickButton(codriver, XboxController.Button.kBack.value);
     
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
@@ -178,7 +180,7 @@ public class RobotContainer {
     private Command Shoot() {
         return new ParallelCommandGroup(
            Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
-           Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),
+           //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
            Commands.run(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
             
            
@@ -209,19 +211,16 @@ public class RobotContainer {
     
     private Command ShootOff() {
         return new ParallelCommandGroup(
-            new SequentialCommandGroup(new InstantCommand(()->i_IndexerSubsystem.setVelocity(-10), i_IndexerSubsystem),
-            new WaitCommand(0.5),
-            new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem)),
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem),
-            new InstantCommand(()->i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem),   
-           // new InstantCommand(()->s_ShooterSubsystem.setVelocity(0), s_ShooterSubsystem),
-            new InstantCommand(()->hoodUp = ()-> false));
+            
+            new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem),
+            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem)
+           );
         
     }
 
     private Command AutoAim() {
         SmartDashboard.putBoolean("autorun", true);
-        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, hoodUp, false);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, false);
     }
 
     private Command Nest() {
@@ -235,13 +234,36 @@ public class RobotContainer {
     }
 
     private Command AimAtHub(){
-        if(Constants.getAlliance())return new AutoAimCommand(Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> true);
-        else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true);
+        if(Constants.Swerve.BLUE_ALLIANCE){
+            return new AutoAimCommand(Constants.Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+        }else{
+            return new AutoAimCommand(Constants.Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+        }
+            //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     }
+
+    private Command AimAtHubBlue(){
+        
+            return new AutoAimCommand(Constants.Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+        
+            //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+    }
+
+    private Command AimAtHubRed(){
+            
+            return new AutoAimCommand(Constants.Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+        
+            //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+    }
+
+    //  private Command AimAtHub(){
+    //     if(Constants.getAlliance())return new AutoAimCommand(Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> true);
+    //     else return new AutoAimCommand(Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true);
+    // }
 
     private Command PASS(){
       
-        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()->true, true);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, true);
     }
 
     private Command ReleaseClimb(){
@@ -280,13 +302,13 @@ public class RobotContainer {
         return new SequentialCommandGroup(ExtendClimb());
     }
 
-    public Command toPoint(Pose2d pose){
-        if(Constants.getAlliance()){
-            return new PointToPointPID(s_Swerve, pose);
-        }else{
-            return new PointToPointPID(s_Swerve, Constants.flipPose2d(pose));
-        }
-    }
+    // public Command toPoint(Pose2d pose){
+    //     if(Constants.getAlliance()){
+    //         return new PointToPointPID(s_Swerve, pose);
+    //     }else{
+    //         return new PointToPointPID(s_Swerve, Constants.flipPose2d(pose));
+    //     }
+    // }
 
     public Command ClimbDeadline(){
         return Commands.waitUntil(ClimbTrigger);
@@ -312,7 +334,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve(t_TurretSubsystem);
 
     public RobotContainer() {
-        Constants.Swerve.BLUE_ALLIANCE = Constants.getAlliance();
+        
         
         Field2d field = new Field2d();
         SmartDashboard.putData("Field", field);
@@ -335,11 +357,16 @@ public class RobotContainer {
         ()-> -driver.getRawAxis(4) * power, 
         ()->false));
 
+        s_ShooterSubsystem.setDefaultCommand(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(codriver.getLeftTriggerAxis()* 0.4) , s_ShooterSubsystem));
+
         // driver.setRumble(RumbleType.kBothRumble, 0.2);
 
        
         NamedCommands.registerCommand("Shoot", AutoShoot());
         NamedCommands.registerCommand("AimAtHub", AimAtHub());
+        NamedCommands.registerCommand("AimAtHubBlue", AimAtHubBlue());
+        NamedCommands.registerCommand("AimAtHubRed", AimAtHubRed());
+
         // NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
         NamedCommands.registerCommand("IntakeNormal", IntakeIn());
         NamedCommands.registerCommand("StopIntake", IntakeStop());
@@ -353,7 +380,7 @@ public class RobotContainer {
         //ClimbGrab
         NamedCommands.registerCommand("ArmOut", ArmOut());
         NamedCommands.registerCommand("HoodDown", HoodDown());
-        NamedCommands.registerCommand("toLT", toPoint(new Pose2d(Constants.Locations.BLUELT.location, new Rotation2d(Math.toRadians(180)))));//left trench
+        //NamedCommands.registerCommand("toLT", toPoint(new Pose2d(Constants.Locations.BLUELT.location, new Rotation2d(Math.toRadians(180)))));//left trench
     
         //NamedCommands.registerCommand("P2Ptop", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         // NamedCommands.registerCommand("P2Pbottom", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
@@ -396,7 +423,7 @@ public class RobotContainer {
         shoot.whileTrue(Shoot().onlyWhile(Constants.Swerve.good));
         //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         shoot.onFalse(ShootOff());
-        AutoIntake.whileTrue(AutoIntake());
+        //AutoIntake.whileTrue(AutoIntake());
 
         //autoAim.whileTrue(AutoAim());
         //autoAimCo.whileTrue(AutoAim());
@@ -423,19 +450,30 @@ public class RobotContainer {
          CODOWN.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(180), t_TurretSubsystem));
          COLEFT.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(90), t_TurretSubsystem));
          CORIGHT.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(-85), t_TurretSubsystem));
-        COSTART.whileTrue((new TeleopSwerve(s_Swerve, 
-        ()-> -driver.getRawAxis(1) * power, 
-        ()-> -driver.getRawAxis(0) * power,
-        ()-> -driver.getRawAxis(4) * power, 
-        ()-> true)));
+        // COSTART.whileTrue((new TeleopSwerve(s_Swerve, 
+        // ()-> -driver.getRawAxis(1) * power, 
+        // ()-> -driver.getRawAxis(0) * power,
+        // ()-> -driver.getRawAxis(4) * power, 
+        // ()-> true)));
+        
         extendClimb.onTrue(ExtendClimb());
         retractClimb.onTrue(RetractClimb());
+        // CORIGHTBUMPER.whileTrue(Shoot());
+        // //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
+        // CORIGHTBUMPER.onFalse(ShootOff());
+
+
+        // COSTART.whileTrue(AimAtHub());
+        // COSTART.onFalse(HoodDown());
+        // COBACK.whileTrue(PASS());
+        // COBACK.onFalse(HoodDown());
+        
 
         cograbClimb.onTrue(GrabClimb());
         coreleaseClimb.onTrue(ReleaseClimb());
-        COLEFTBUMPER.whileTrue(new ShootDistCommand(3.3, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
-        CORIGHTBUMPER.whileTrue(new ShootDistCommand(8, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
-        
+        // COLEFTBUMPER.whileTrue(new ShootDistCommand(3.3, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
+        // CORIGHTBUMPER.whileTrue(new ShootDistCommand(8, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
+
     }
 
 
@@ -460,7 +498,7 @@ public class RobotContainer {
      public Command getAutonomousCommand() {
 
         return new ParallelCommandGroup(
-            new InstantCommand(()->Swerve.gyro.reset()),
+            //new InstantCommand(()->Swerve.gyro.reset()),
             autoChooser.getSelected());
             
           }

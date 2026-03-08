@@ -36,9 +36,11 @@ public class AutoAimCommand extends Command {
   private double i = Constants.PhysicsConstants.BallIntialHeight;
 
   private Translation2d poi;
-  private BooleanSupplier hoodUp;
+
   private boolean isFixed;
   private boolean passing;
+  private boolean Alliance;
+  private boolean Hub;
  
   boolean angleRight;
 
@@ -46,39 +48,52 @@ public class AutoAimCommand extends Command {
 
   
   /** Creates a new AutoAimCommand. */
-  public AutoAimCommand(Translation2d poi, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp) {
+  public AutoAimCommand(Translation2d poi, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     this.poi = poi;
-    this.hoodUp = hoodUp;
     this.isFixed = true;
+    this.Hub = false;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier hoodUp, boolean passing) {
+  public AutoAimCommand(boolean Hub, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem) {
+    this.t_TurretSubsystem = t_TurretSubsystem;
+    this.s_ShooterSubsystem = s_ShooterSubsystem;
+    this.h_HoodSubsystem = h_HoodSubsystem;
+    addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+    this.isFixed = true;
+    this.poi = Constants.Swerve.BLUE_ALLIANCE? Constants.Locations.BLUEHUB.location: Constants.Locations.REDHUB.location;
+    this.Hub = Hub;
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, boolean passing) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     
-    this.hoodUp = hoodUp;
+   
     this.isFixed = false;
     this.passing = passing;
-    if(passing)
-    this.poi = Constants.getAlliance()? Constants.Locations.BLUELEFT.location: Constants.Locations.REDLEFT.location;
+    if(passing){
+    this.poi = Constants.Swerve.BLUE_ALLIANCE? Constants.Locations.BLUELEFT.location: Constants.Locations.REDLEFT.location;
+    this.h = 0;
+    }
     else this.poi = RobotContainer.currentPOI.location;
+    this.Hub = false;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   
-  
 
-  // Called when the command is initially scheduled.
+// Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    Alliance = Constants.Swerve.BLUE_ALLIANCE;
     
   }
 
@@ -91,16 +106,16 @@ public class AutoAimCommand extends Command {
 
     
     
-    Pose2d Robotpose = Constants.Swerve.swervePoseEstimator.getEstimatedPosition();
+    Pose2d Robotpose = Swerve.swervePoseEstimator.getEstimatedPosition();
     Pose2d pose = RobotPoseAdjustedTolimelightTurret(Robotpose);
     //limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
 
-    checkAngle();
-    SmartDashboard.putBoolean("good to shoot", angleRight);
+    //checkAngle();
+    //SmartDashboard.putBoolean("good to shoot", angleRight);
     //Constants.Swerve.good = ()-> Good();
 
     if(passing){
-      if(Constants.getAlliance()){
+      if(Alliance){
         if(pose.getY() > Constants.Locations.CENTER.location.getY())
         this.poi = Constants.Locations.BLUELEFT.location;
         else
@@ -112,6 +127,13 @@ public class AutoAimCommand extends Command {
         this.poi = Constants.Locations.REDLEFT.location;
 
       }
+    }
+    if(Hub){
+    if(Alliance){
+      this.poi = Constants.Locations.BLUEHUB.location;
+    }else{
+      this.poi = Constants.Locations.REDHUB.location;
+    }
     }
     
     // Stationary shoot code
@@ -170,13 +192,14 @@ public class AutoAimCommand extends Command {
     }
     
       //Linear regression.
-      double output = vs * 2.3492 + 0.26157;//TODO Calibrate based on input velocity vs ball actual velocity
+      double output = vs * 2.2492 + 0;//TODO Calibrate based on input velocity vs ball actual velocity
       //2.2492 + 0.56157
       //Quartic regression
 
 
       //double output = 0.00918838 * Math.pow(vs, 4) - 0.199587 * Math.pow(vs, 3) + 1.45776*Math.pow(vs, 2) - 2.20965* vs+ 5.3498;
       SmartDashboard.putNumber("output", output);
+      SmartDashboard.putNumber("vs", vs);
       s_ShooterSubsystem.setVelocity(output);
       h_HoodSubsystem.goToAngle(shootAngle);
     
@@ -187,7 +210,9 @@ public class AutoAimCommand extends Command {
   
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    s_ShooterSubsystem.setVelocity(0);
+  }
 
   // Returns true when the command should end.
   @Override
@@ -198,25 +223,25 @@ public class AutoAimCommand extends Command {
   /**
    * Checks if the shot is within tolerance to shoot a ball.
    */
-  public void checkAngle (){//TODO Currently not accurate for shot on the move.
-   Pose2d pose = Constants.TurretConstants.turretPose2d;
-    double off = getAngleToHub(pose).getTan()*getDistance(pose);
-   if (off < 1.05 && off > -1.05){
-     this.angleRight = true;
-    }else{
-     this.angleRight = false;
-    }
-  }
+  // public void checkAngle (){//TODO Currently not accurate for shot on the move.
+  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
+  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
+  //  if (off < 1.05 && off > -1.05){
+  //    this.angleRight = true;
+  //   }else{
+  //    this.angleRight = false;
+  //   }
+  // }
 
-  public void Good (){//TODO Currently not accurate for shot on the move.
-   Pose2d pose = Constants.TurretConstants.turretPose2d;
-    double off = getAngleToHub(pose).getTan()*getDistance(pose);
-   if (off < 1.05 && off > -1.05){
-     this.angleRight = true;
-    }else{
-     this.angleRight = false;
-    }
-  }
+  // public void Good (){//TODO Currently not accurate for shot on the move.
+  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
+  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
+  //  if (off < 1.05 && off > -1.05){
+  //    this.angleRight = true;
+  //   }else{
+  //    this.angleRight = false;
+  //   }
+  // }
 
   private double getDistance(Pose2d Pose) {
     return Pose.getTranslation().getDistance(poi);

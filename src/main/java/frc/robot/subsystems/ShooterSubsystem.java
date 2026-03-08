@@ -82,6 +82,7 @@ public class ShooterSubsystem extends SubsystemBase {
     limits2.SupplyCurrentLimit = Constants.ShooterConstants.CURRENT_LIMIT;
     limits2.StatorCurrentLimitEnable = Constants.ShooterConstants.ENABLE_STATOR_CURRENT_LIMIT;
     limits2.SupplyCurrentLimitEnable = Constants.ShooterConstants.ENABLE_CURRENT_LIMIT;
+   
 
     var motionMagicConfigs2 = talonFXConfigs2.MotionMagic;
     motionMagicConfigs2.MotionMagicAcceleration = 400; // Target acceleration of 400 rps/s (0.25 seconds to max)
@@ -93,7 +94,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     FlywheelMotor1.getConfigurator().apply(talonFXConfigs);
     FlywheelMotor2.getConfigurator().apply(talonFXConfigs2);
-   FlywheelMotor1.setControl(new Follower(Constants.ShooterConstants.shooterMotor2, MotorAlignmentValue.Aligned));
+  FlywheelMotor1.setControl(new Follower(Constants.ShooterConstants.shooterMotor2, MotorAlignmentValue.Opposed));
     
   }
 
