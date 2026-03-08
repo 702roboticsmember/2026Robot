@@ -215,9 +215,9 @@ public final class Constants {
         public static final double LIMELIGHT_TURRET_POSE_X = -0.087;
         public static BooleanSupplier good = ()-> false;
 
-        public static boolean getGood(){
-            return good.getAsBoolean();
-        }
+        // public static boolean getGood(){
+        //     return good.getAsBoolean();
+        // }
 
         public static final COTSTalonFXSwerveConstants FALCON_500_CONSTANTS = Falcon500(DRIVE_GEAR_RATIO);
         /**
@@ -359,7 +359,7 @@ public final class Constants {
                 // new ReplanningConfig()
                 );
 
-        public static final String ODOMETRY_LIMELIGHT_NAME = null;
+      
        
 
     }
@@ -368,18 +368,18 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
-        public static final int STATOR_CURRENT_LIMIT = 40;
-        public static final int CURRENT_LIMIT = 35;//35
+        public static final int STATOR_CURRENT_LIMIT = 60;
+        public static final int CURRENT_LIMIT = 45;//35
         public static final int CURRENT_THRESHOLD = 35;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
-        public static final boolean ENABLE_CURRENT_LIMIT = false;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = false;
+        public static final boolean ENABLE_CURRENT_LIMIT = true;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final int STATOR_CURRENT_LIMIT2 = 50;//50
         public static final int CURRENT_LIMIT2 = 35;//35
         public static final int CURRENT_THRESHOLD2 = 60;//60
         public static final double CURRENT_THRESHOLD_TIME2 = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT2 = true;
-        public static final boolean ENABLE_STATOR_CURRENT_LIMIT2 = false;
+        public static final boolean ENABLE_STATOR_CURRENT_LIMIT2 = true;
 		public static final double kP = 0;
         public static final double kI = 0;
 		public static double kD;

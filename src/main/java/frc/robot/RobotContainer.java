@@ -293,9 +293,10 @@ public class RobotContainer {
     }
 
     private Command AutoShoot() {
-        return new SequentialCommandGroup(Shoot(),
-        new WaitUntilCommand(() -> !l_lidarSubsystem.indexer_full()),
-        ShootOff());
+        return Shoot();
+        // return new SequentialCommandGroup(Shoot(),
+        // new WaitUntilCommand(() -> !l_lidarSubsystem.indexer_full()),
+        // ShootOff());
     }
 
     public Command ClimbAuto() {
