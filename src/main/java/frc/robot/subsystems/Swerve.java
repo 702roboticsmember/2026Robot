@@ -42,13 +42,13 @@ public class Swerve extends SubsystemBase {
     public LimelightHelpersCameronEdition.PoseEstimate limelightMeasurement;
     public LimelightHelpersCameronEdition.PoseEstimate limelightMeasurementTurret;
      public LimelightHelpers.PoseEstimate limelightMeasurementTurret2;
-    public TurretSubsystem t_Subsystem;
+    
     public static SwerveDrivePoseEstimator swervePoseEstimator;
     
 
 
-    public Swerve(TurretSubsystem t_Subsystem) {
-        this.t_Subsystem = t_Subsystem;
+    public Swerve() {
+      
         //limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         gyro = new AHRS( NavXComType.kMXP_SPI);
         gyro.reset();
@@ -234,9 +234,10 @@ public class Swerve extends SubsystemBase {
     }
 
     public Pose2d limelightTurretPoseAdjustedToRobot(Pose2d pose){
+        //Pose2d pose2 = null;
         double y = Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  -Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
-        Rotation2d a = pose.getRotation().minus(t_Subsystem.getAngle());
+        Rotation2d a = pose.getRotation().minus(new Rotation2d(Math.toRadians(Constants.TurretConstants.angle)));
         
        Pose2d returnpose = new Pose2d(pose.getX() + (a.getCos()* x) - (a.getSin() * y ), pose.getY() + (a.getCos()* y) - (a.getSin() * x ), a);
        SmartDashboard.putNumber("ogPosex", pose.getX());
@@ -289,13 +290,17 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       {
         doRejectUpdate = true;
       }
-      if(mt1.avgTagDist > 2.3)
+      if(mt1.avgTagDist > 3.5)
       {
         doRejectUpdate = true;
       }
+      if(Double.isNaN(mt1.std[0]) || Double.isNaN(mt1.std[1]) || Double.isNaN(mt1.std[2])){
+            doRejectUpdate = true;
+        }
 
       if(!doRejectUpdate)
       {
+        
         swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] , mt1.std[1], mt1.std[2]));
         swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
@@ -327,6 +332,9 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
 
     @Override
     public void periodic() {
+        if(Double.isNaN(swervePoseEstimator.getEstimatedPosition().getX())){
+            swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
+        }
         limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         limelightMeasurementTurret =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
         if(gyro.isConnected() && !gyro.isCalibrating())swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
@@ -346,9 +354,13 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         }
 
         if (this.limelightMeasurementTurret != null){
-             Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
-             limelightMeasurementTurret.pose = pose;
+            if(limelightMeasurementTurret.pose != null && limelightMeasurementTurret.pose.getRotation() != null){
+              Pose2d pose = limelightTurretPoseAdjustedToRobot(limelightMeasurementTurret.pose);
+              
+              limelightMeasurementTurret.pose = pose;
              addmt1VisionMeasurement(limelightMeasurementTurret); 
+              
+            }
            }
            ChassisSpeeds speed = getRobotRelativeSpeeds();
            Constants.Swerve.speeds = speed;

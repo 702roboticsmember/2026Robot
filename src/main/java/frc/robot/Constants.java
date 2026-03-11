@@ -423,6 +423,7 @@ public final class Constants {
         // public static final int forwardSoftLimit = 0;
         // public static final int reverseSoftLimit = 0;
         public static final int angleMotor = 0;
+        public static double angle = 0;
 
     }
 
@@ -432,8 +433,8 @@ public final class Constants {
         public static final int shooterMotor2 = 17;
         public static final double conversion = 1.5;
      
-        public static final int STATOR_CURRENT_LIMIT = 70;
-        public static final int CURRENT_LIMIT = 50;//35
+        public static final int STATOR_CURRENT_LIMIT = 120;
+        public static final int CURRENT_LIMIT = 70;//35
         public static final int CURRENT_THRESHOLD = 40;//60
         public static final double CURRENT_THRESHOLD_TIME = 1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;

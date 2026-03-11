@@ -79,8 +79,9 @@ public class TurretSubsystem extends SubsystemBase {
     
     SmartDashboard.putNumber("turretangle", getAngleAsDouble());
     
-    SmartDashboard.putNumber("limelightrobotyaw", getLimelightYaw());
+    // SmartDashboard.putNumber("limelightrobotyaw", getLimelightYaw());
     SmartDashboard.putNumber("turretAngleTicks", getAngleAsTicks());
+    Constants.TurretConstants.angle = getAngleAsDouble();
 
    
     // This method will be called once per scheduler run

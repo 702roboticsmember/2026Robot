@@ -332,7 +332,7 @@ public class RobotContainer {
 
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve(t_TurretSubsystem);
+    private final Swerve s_Swerve = new Swerve();
 
     public RobotContainer() {
         
@@ -387,7 +387,7 @@ public class RobotContainer {
         // NamedCommands.registerCommand("P2Pbottom", new PointToPointPID(s_Swerve, new Pose2d(null, null, null)));
         
         //s_ShooterSubsystem.setDefaultCommand(s_ShooterSubsystem.runCmd(()-> codriver.getRawAxis(2) * 1));
-        t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)));
+        t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)* 0.4));
         //i_IndexerSubsystem.setDefaultCommand(i_IndexerSubsystem.spin(()-> codriver.getRawAxis(0) * 0.5));
         //f_FloorIndexerSubsystem.setDefaultCommand(f_FloorIndexerSubsystem.spin(()-> codriver.getRawAxis(0) * 0.5));
 
@@ -421,7 +421,7 @@ public class RobotContainer {
         // climbUp.whileTrue(new ClimbPIDCommand(0, c_ClimbSubsystem));
         // climbDown.whileTrue(new ClimbPIDCommand(Constants.ClimbConstants.extendedAngle, c_ClimbSubsystem));
        //shoot.onTrue(new InstantCommand(()-> f_FloorIndexerSubsystem.move(5), f_FloorIndexerSubsystem));
-        shoot.whileTrue(Shoot().onlyWhile(Constants.Swerve.good));
+        shoot.whileTrue(Shoot());
         //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         shoot.onFalse(ShootOff());
         //AutoIntake.whileTrue(AutoIntake());
