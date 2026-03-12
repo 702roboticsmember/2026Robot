@@ -63,7 +63,7 @@ public class RobotContainer {
     //driver buttons
     //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
    // private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
-    //private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
     //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
@@ -115,10 +115,11 @@ public class RobotContainer {
     //codriver buttons
     // private final JoystickButton Intake = new JoystickButton(codriver, XboxController.Button.kA.value);
 
-        //TODO still have the capability to move turret without auto aim
         //Intake left bumper, shoot right bumper, flywheel on andd off x, fast mode toggle on a, climber up left trigger, climber down right trigger, y be outtake, turn it on with the flywheel, x toggles on the passing shot, 
     
     public static double power = 1;
+    public static double TurretGoal = 0;
+    public static double CurrentAngle = 0;
     public BooleanSupplier hoodUp = ()-> true;
     public static boolean robotCentric = false;
     private final SendableChooser<Command> autoChooser;
@@ -179,13 +180,26 @@ public class RobotContainer {
 
     private Command Shoot() {
         return new ParallelCommandGroup(
-           Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
-           //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
-           Commands.run(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
-            
-           
-            );
-        
+            Commands.run(
+                ()->{
+                    if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                        i_IndexerSubsystem.setVelocity(100);
+                    }
+                    else {
+                        i_IndexerSubsystem.setVelocity(0);
+                    }
+                }, i_IndexerSubsystem
+            ),
+            //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
+            Commands.run(()->{
+                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                    f_FloorIndexerSubsystem.setVelocity(80);
+                } else {
+                    f_FloorIndexerSubsystem.setVelocity(0);
+                }
+            }, f_FloorIndexerSubsystem),
+            new InstantCommand(() -> power = 0.5)
+                );
     }
 
     private Command ShootOG() {
@@ -213,7 +227,9 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             
             new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem),
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem)
+            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem),
+            new InstantCommand(() -> power = 1)
+
            );
         
     }
@@ -406,8 +422,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         /* Driver Buttons */
         //zeroGyro.onTrue(new ParallelCommandGroup(new InstantCommand(() -> s_Swerve.zeroHeading()), new InstantCommand(()->s_Swerve.gyro.reset())));
-        // speedToggle.toggleOnTrue(new InstantCommand(() -> RobotContainer.power = .25));
-        // speedToggle.toggleOnFalse(new InstantCommand(() -> RobotContainer.power = 1));
+         speedToggle.toggleOnTrue(Commands.runEnd(() -> power = 0.5, () -> power = 1));
         
         intakeOut.whileTrue(IntakeOut()); 
         intakeOut.onFalse(IntakeStop()); 

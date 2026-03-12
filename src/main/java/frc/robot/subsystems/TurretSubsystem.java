@@ -19,6 +19,7 @@ import frc.lib.math.Conversions;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpersCameronEdition;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 
 import java.util.function.DoubleSupplier;
 
@@ -76,8 +77,9 @@ public class TurretSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    
-    SmartDashboard.putNumber("turretangle", getAngleAsDouble());
+    double angle = getAngleAsDouble();
+    SmartDashboard.putNumber("turretangle", angle);
+    RobotContainer.CurrentAngle = angle;
     
     // SmartDashboard.putNumber("limelightrobotyaw", getLimelightYaw());
     SmartDashboard.putNumber("turretAngleTicks", getAngleAsTicks());
@@ -144,7 +146,7 @@ public class TurretSubsystem extends SubsystemBase {
     if(angle > Constants.TurretConstants.forwardLimit)angle = Constants.TurretConstants.forwardLimit;
     if(angle < Constants.TurretConstants.reverseLimit)angle = Constants.TurretConstants.reverseLimit;
     Motor.setControl(motionMagic.withPosition(getDegreesToticks(angle)));
-    
+    RobotContainer.TurretGoal = angle;
   }
 
   public void goToAngleOffset(double angleOffset){

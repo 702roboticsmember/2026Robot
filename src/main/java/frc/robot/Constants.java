@@ -214,6 +214,7 @@ public final class Constants {
         public static final double LIMELIGHT_TURRET_POSE_Y = -0.238;
         public static final double LIMELIGHT_TURRET_POSE_X = -0.087;
         public static BooleanSupplier good = ()-> false;
+    
 
         // public static boolean getGood(){
         //     return good.getAsBoolean();
@@ -424,6 +425,8 @@ public final class Constants {
         // public static final int reverseSoftLimit = 0;
         public static final int angleMotor = 0;
         public static double angle = 0;
+        
+        public static double allowedShootingTolerance = 15;
 
     }
 
