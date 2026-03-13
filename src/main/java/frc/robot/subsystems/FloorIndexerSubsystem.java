@@ -74,6 +74,10 @@ public class FloorIndexerSubsystem extends SubsystemBase {
     return tickToDeg(FloorIndexMotor.getPosition().getValueAsDouble());
   }
 
+  public void goTo(double val){
+    FloorIndexMotor.setControl(motionMagic.withPosition( val));
+  }
+
   public void move(double val){
     FloorIndexMotor.setControl(motionMagic.withPosition(getIndexerPos() + val));
   }

@@ -1,5 +1,9 @@
 {
   "NetworkTables": {
+    "SmartDashboard": {
+      "open": true
+    },
+    "combined": true,
     "retained": {
       "SmartDashboard": {
         "open": true
@@ -12,19 +16,12 @@
           "string[]##v_/CameraPublisher/limelight-mega/streams": {
             "open": true
           }
-        },
-        "open": true
+        }
       },
       "LiveWindow": {
         ".status": {
           "open": true
         }
-      },
-      "PathPlanner": {
-        "open": true
-      },
-      "Shuffleboard": {
-        "open": true
       },
       "SmartDashboard": {
         "open": true

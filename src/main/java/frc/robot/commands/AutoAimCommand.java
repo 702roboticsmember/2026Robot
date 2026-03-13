@@ -314,7 +314,7 @@ public class AutoAimCommand extends Command {
    * @param pose the current position of the robot relative to the field(Blue-side relative)
    * @return Position of the center of the turret relative to the field.
    */
-  public Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
+  public static Pose2d RobotPoseAdjustedTolimelightTurret(Pose2d pose){
         double y = -Constants.Swerve.LIMELIGHT_TURRET_POSE_Y;
         double x =  Constants.Swerve.LIMELIGHT_TURRET_POSE_X;
         Rotation2d a = pose.getRotation();

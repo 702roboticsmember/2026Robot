@@ -207,7 +207,7 @@ public final class Constants {
     public static final class Swerve {
         public static Pose2d Robotpose = new Pose2d();
         public static ChassisSpeeds speeds = new ChassisSpeeds();
-        public static boolean BLUE_ALLIANCE = true;
+        public static boolean BLUE_ALLIANCE = false;
         public static final boolean INVERT_GYRO = true;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
         public static final double ANGLE_GEAR_RATIO = 18.75;
@@ -426,7 +426,7 @@ public final class Constants {
         public static final int angleMotor = 0;
         public static double angle = 0;
         
-        public static double allowedShootingTolerance = 15;
+        public static double allowedShootingTolerance = 10;
 
     }
 

@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -68,8 +69,8 @@ public class RobotContainer {
     
     
     private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton releaseClimb = new JoystickButton(driver, XboxController.Button.kB.value);
-    private final JoystickButton grabClimb = new JoystickButton(driver, XboxController.Button.kA.value);
+    // private final JoystickButton releaseClimb = new JoystickButton(driver, XboxController.Button.kB.value);
+    // private final JoystickButton grabClimb = new JoystickButton(driver, XboxController.Button.kA.value);
     
     //private final JoystickButton AutoIntake = new JoystickButton(codriver, XboxController.Button.kStart.value);
     
@@ -115,6 +116,7 @@ public class RobotContainer {
         //Intake left bumper, shoot right bumper, flywheel on andd off x, fast mode toggle on a, climber up left trigger, climber down right trigger, y be outtake, turn it on with the flywheel, x toggles on the passing shot, 
     
     public static double power = 1;
+    public static double max = 1;
     public static double TurretGoal = 0;
     public static double CurrentAngle = 0;
     public BooleanSupplier hoodUp = ()-> true;
@@ -192,10 +194,10 @@ public class RobotContainer {
                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
                     f_FloorIndexerSubsystem.setVelocity(80);
                 } else {
-                    f_FloorIndexerSubsystem.setVelocity(0);
+                    f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
                 }
             }, f_FloorIndexerSubsystem),
-            new InstantCommand(() -> power = 0.5)
+                new InstantCommand(() -> max = 0.2)
                 );
     }
 
@@ -224,8 +226,9 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             
             new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem),
-            new InstantCommand(()->f_FloorIndexerSubsystem.move(-4), f_FloorIndexerSubsystem),
-            new InstantCommand(() -> power = 1)
+            new FloorOffset(f_FloorIndexerSubsystem, -4),
+            new InstantCommand(() -> power = 1),
+            new InstantCommand(() -> max = 1)
 
            );
         
@@ -366,9 +369,9 @@ public class RobotContainer {
         c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()), c_ClimbSubsystem));
 
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
-        ()-> -driver.getRawAxis(1) * power, 
-        ()-> -driver.getRawAxis(0) * power,
-        ()-> -driver.getRawAxis(4) * power, 
+        ()-> MathUtil.clamp(-driver.getRawAxis(1) * power, -max, max), 
+        ()-> MathUtil.clamp(-driver.getRawAxis(0) * power, -max, max),
+        ()-> MathUtil.clamp(-driver.getRawAxis(4) * power, -max, max), 
         ()->false));
 
         s_ShooterSubsystem.setDefaultCommand(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(codriver.getLeftTriggerAxis()* 0.4) , s_ShooterSubsystem));
@@ -446,8 +449,8 @@ public class RobotContainer {
         LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
         armOut.onTrue(ArmOut());
 
-        grabClimb.onTrue(GrabClimb());
-        releaseClimb.onTrue(ReleaseClimb());
+        // grabClimb.onTrue(GrabClimb());
+        // releaseClimb.onTrue(ReleaseClimb());
         
         ClimbTrigger.whileTrue(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", true)));
         ClimbTrigger.whileFalse(new InstantCommand(()->SmartDashboard.putBoolean("Climb Contact", false)));
