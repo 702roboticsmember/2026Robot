@@ -53,6 +53,7 @@ public class RobotContainer {
     private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final TurretSubsystem t_TurretSubsystem = new TurretSubsystem();
     private final HoodSubsystem h_HoodSubsystem = new HoodSubsystem();
+    private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final LIDARSubsystem l_lidarSubsystem = new LIDARSubsystem();
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
@@ -282,19 +283,19 @@ public class RobotContainer {
         return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, true);
     }
 
-    private Command ReleaseClimb(){
-        return Commands.run(()->{
-            c_ClimbSubsystem.goToPosOffset(-1);
-            c_ClimbSubsystem.setServo(180);
-        }, c_ClimbSubsystem).withDeadline(new WaitCommand(0.4));
-    }
+    // private Command ReleaseClimb(){
+    //     return Commands.run(()->{
+    //         c_ClimbSubsystem.goToPosOffset(-1);
+    //         c_ClimbSubsystem.setServo(180);
+    //     }, c_ClimbSubsystem).withDeadline(new WaitCommand(0.4));
+    // }
 
-    private Command GrabClimb(){
-        return new InstantCommand(()->{
-            //c_ClimbSubsystem.goToPosOffset(1);
-            c_ClimbSubsystem.setServo(90);
-        }, c_ClimbSubsystem);
-    }
+    // private Command GrabClimb(){
+    //     return new InstantCommand(()->{
+    //         //c_ClimbSubsystem.goToPosOffset(1);
+    //         c_ClimbSubsystem.setServo(90);
+    //     }, c_ClimbSubsystem);
+    // }
 
     private Command ExtendClimb(){
         return Commands.run(()->c_ClimbSubsystem.goToPos(Constants.ClimbConstants.extendedAngle), c_ClimbSubsystem);
@@ -367,7 +368,19 @@ public class RobotContainer {
 
         t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
         c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()), c_ClimbSubsystem));
+        l_LEDSubsystem.setDefaultCommand(
+        new InstantCommand(()->
+        {
+            l_LEDSubsystem.DoTheRainbow(false);
+            l_LEDSubsystem.LEDScroll(8,0,true);
+            l_LEDSubsystem.LEDScroll(8, 8, false);
+            
 
+        }
+        , l_LEDSubsystem));
+        
+        
+        
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
         ()-> MathUtil.clamp(-driver.getRawAxis(1) * power, -max, max), 
         ()-> MathUtil.clamp(-driver.getRawAxis(0) * power, -max, max),
@@ -391,7 +404,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoIntake", AutoIntake());
         NamedCommands.registerCommand("Climb", ClimbAuto());
         NamedCommands.registerCommand("ClimbDeadline", ClimbDeadline());
-        NamedCommands.registerCommand("ClimbGrab", GrabClimb());
+        //NamedCommands.registerCommand("ClimbGrab", GrabClimb());
         NamedCommands.registerCommand("ClimbRetract", RetractClimb());
         NamedCommands.registerCommand("ShootDeadline", ShootDeadlineTime());
         //ClimbGrab
@@ -485,8 +498,8 @@ public class RobotContainer {
         // COBACK.onFalse(HoodDown());
         
 
-        cograbClimb.onTrue(GrabClimb());
-        coreleaseClimb.onTrue(ReleaseClimb());
+        // cograbClimb.onTrue(GrabClimb());
+        // coreleaseClimb.onTrue(ReleaseClimb());
         // COLEFTBUMPER.whileTrue(new ShootDistCommand(3.3, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
         // CORIGHTBUMPER.whileTrue(new ShootDistCommand(8, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem));
 

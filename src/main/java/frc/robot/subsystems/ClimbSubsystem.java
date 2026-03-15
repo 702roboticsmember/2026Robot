@@ -17,7 +17,7 @@ import frc.robot.Constants;
 
 public class ClimbSubsystem extends SubsystemBase {
   private TalonFX motor = new TalonFX(Constants.ClimbConstants.climbMotor);
-  private Servo ratchetServo = new Servo(0);
+  //private Servo ratchetServo = new Servo(0);
   private MotionMagicVoltage motionMagic = new MotionMagicVoltage(0);
   /** Creates a new ClimbSubsystem. */
   public ClimbSubsystem() {
@@ -71,9 +71,9 @@ public class ClimbSubsystem extends SubsystemBase {
   public void setSpeed(double speed){
     motor.set(speed);
   }
-  public void setServo(double angle){
-    ratchetServo.setAngle(angle);
- }
+//   public void setServo(double angle){
+//     ratchetServo.setAngle(angle);
+//  }
 
   @Override
   public void periodic() {

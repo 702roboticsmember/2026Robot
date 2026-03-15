@@ -5,33 +5,101 @@
 package frc.robot.subsystems;
 
 
-
-import edu.wpi.first.wpilibj.util.Color;
-
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 
 public class LEDSubsystem extends SubsystemBase {
-  private AddressableLED LED = new AddressableLED(Constants.LEDConstants.LEDPort);
-  private AddressableLEDBuffer buffer = new AddressableLEDBuffer(Constants.LEDConstants.BufferLength);
-  /** Creates a new LEDSubsystem. */
+  /** Creates a new LimitSwitch. */
+  private AddressableLED led1 = new AddressableLED(Constants.LEDConstants.LEDPort);
+  private AddressableLEDBuffer buffer1 = new AddressableLEDBuffer(Constants.LEDConstants.BufferLength);
+  private int m_rainbowFirstPixelHue = 0;
+  private boolean do_the_rainbow = true;
+  private int m_bagelbow_first_index = 0;
+
   public LEDSubsystem() {
-    LED.start();
-    
+    led1.setLength(Constants.LEDConstants.BufferLength);
+    led1.setData(buffer1);
+    led1.start();
+    bagelbow();
   }
+  
+   public void setColor(Color color) {
+    do_the_rainbow = false;
+    for(int i = 0; i < buffer1.getLength(); ++i) {
+        buffer1.setLED(i, color);
+    }
+    led1.setData(buffer1);}
+
+    public void DoTheRainbow(boolean val) {
+    do_the_rainbow = val;
+    
+   }
+
+   public void bagelbow() {
+   
+    for(var i = 0; i < 8; i++) {
+
+
+      
+      buffer1.setLED((m_bagelbow_first_index + i)%16 , Color.kBlue);
+      //buffer1.setLED((m_bagelbow_first_index + i) , Color.kBlue);
+      buffer1.setLED((m_bagelbow_first_index + i + 8)%16 , Color.kYellow);
+      //buffer1.setLED((m_bagelbow_first_index + i + 8), Color.kYellow);
+      
+    }
+
+
+    
+  
+    m_bagelbow_first_index = (int)(Timer.getFPGATimestamp()* 8) % 16;
+    led1.setData(buffer1);
+
+   }
+
+   public void LEDScroll(int length, int start, boolean isForwards){//technically doesn't actually scroll
+    if(isForwards){
+        for(var i = start; i < length/2 + start; i++) {
+          buffer1.setLED(((m_bagelbow_first_index%length) + i) % length + start, Color.kBlue);
+          buffer1.setLED(((m_bagelbow_first_index%length) + i + length/2) % length + start, Color.kYellow);
+        }
+    }else{
+      for(var i = length + start ; i >= length/2 + start; i--) {
+        buffer1.setLED((-m_bagelbow_first_index%length + i) % length + start, Color.kBlue);
+        buffer1.setLED((-m_bagelbow_first_index%length + i + length/2) % length + start, Color.kYellow);
+      }
+    }
+    m_bagelbow_first_index = (int)(Timer.getFPGATimestamp()* 8) % 16;
+    led1.setData(buffer1);
+   }
+ 
+   public void rainbow(){
+    // For every pixel
+    for (var i = 0; i < 14; i++) {
+      // Calculate the hue - hue is easier for rainbows because the color
+      // shape is a circle so only one value needs to precess
+      final var hue = (m_rainbowFirstPixelHue + (i * 180 / 16)) % 180;
+      // Set the value
+      buffer1.setHSV(i, hue, 255, 128);
+      buffer1.setHSV(i+14, hue, 255, 128);
+    }
+    led1.setData(buffer1);
+    // Increase by to make the rainbow "move"
+    m_rainbowFirstPixelHue += 3;
+    // Check bounds
+    m_rainbowFirstPixelHue %= 180;
+   }
 
   @Override
   public void periodic() {
-    for (int i = 0; i < buffer.getLength(); i++) {
-      buffer.setLED(i, Color.kRed);
-    }
-    
-    
-    
-    LED.setData(buffer);
     // This method will be called once per scheduler run
+    if (do_the_rainbow) {
+      bagelbow();
+    }
   }
 }
