@@ -183,7 +183,7 @@ public class RobotContainer {
             Commands.run(
                 ()->{
                     if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
-                        i_IndexerSubsystem.setVelocity(100);
+                        i_IndexerSubsystem.setVelocity(140);
                     }
                     else {
                         i_IndexerSubsystem.setVelocity(0);
@@ -193,7 +193,7 @@ public class RobotContainer {
             //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
             Commands.run(()->{
                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
-                    f_FloorIndexerSubsystem.setVelocity(80);
+                    f_FloorIndexerSubsystem.setVelocity(90);
                 } else {
                     f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
                 }

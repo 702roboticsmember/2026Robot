@@ -369,7 +369,7 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
-        public static final int STATOR_CURRENT_LIMIT = 60;
+        public static final int STATOR_CURRENT_LIMIT = 80;
         public static final int CURRENT_LIMIT = 45;//35
         public static final int CURRENT_THRESHOLD = 35;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
