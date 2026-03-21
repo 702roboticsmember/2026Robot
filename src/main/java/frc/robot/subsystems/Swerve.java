@@ -281,7 +281,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         {
           doRejectUpdate = true;
         }
-        if(mt1.rawFiducials[0].distToCamera > 2)
+        if(mt1.rawFiducials[0].distToCamera > 1.5)
         {
           doRejectUpdate = true;
         }
@@ -290,7 +290,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       {
         doRejectUpdate = true;
       }
-      if(mt1.avgTagDist > 3.5)
+      if(mt1.avgTagDist > 4)
       {
         doRejectUpdate = true;
       }
