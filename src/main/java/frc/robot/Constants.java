@@ -359,6 +359,7 @@ public final class Constants {
                 // DRIVEBASE_RADIUS,
                 // new ReplanningConfig()
                 );
+        public static final int GyroId = 0;
 
       
        

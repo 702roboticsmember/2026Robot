@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.RobotConfig;
 
@@ -37,7 +38,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Swerve extends SubsystemBase {
     
     public SwerveModule[] swerveModules;
-    public static AHRS gyro;
+    public static Pigeon2 gyro;
     public  RobotConfig config;
     public LimelightHelpersCameronEdition.PoseEstimate limelightMeasurement;
     public LimelightHelpersCameronEdition.PoseEstimate limelightMeasurementTurret;
@@ -50,7 +51,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {
       
         //limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
-        gyro = new AHRS( NavXComType.kMXP_SPI);
+        gyro = new Pigeon2(Constants.Swerve.GyroId, "rio");;
         gyro.reset();
         try {
             config = RobotConfig.fromGUISettings();
@@ -67,7 +68,7 @@ public class Swerve extends SubsystemBase {
         };
 
         
-        if(gyro.isConnected() && !gyro.isCalibrating()){
+        if(gyro.isConnected()){
             swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, getGyroYaw(), getModulePositions(), new Pose2d());
         }else{
             swervePoseEstimator = new SwerveDrivePoseEstimator(Constants.Swerve.KINEMATICS, new Rotation2d(Math.toRadians(0)), getModulePositions(), new Pose2d());
@@ -118,7 +119,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("yi", startingPosition.getY());
         SmartDashboard.putNumber("ai", startingPosition.getRotation().getDegrees());
         swervePoseEstimator.resetPosition(
-                new Rotation2d(Math.toRadians(gyro.getAngle())),
+                new Rotation2d(Math.toRadians(gyro.getYaw().getValueAsDouble())),
                 this.getModulePositions(),
                 startingPosition);
                 
@@ -209,13 +210,13 @@ public class Swerve extends SubsystemBase {
 
     public Rotation2d getGyroYaw() {
        
-        return (Constants.Swerve.INVERT_GYRO) ? Rotation2d.fromDegrees(360 - gyro.getYaw())
-                : Rotation2d.fromDegrees(gyro.getYaw());
+        return (Constants.Swerve.INVERT_GYRO) ? Rotation2d.fromDegrees(360 - gyro.getYaw().getValueAsDouble())
+                : Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
     }
 
-    public double getAcc() {
-        return gyro.getAccelFullScaleRangeG();
-    }
+    // public double getAcc() {
+    //     return gyro.getAccelFullScaleRangeG();
+    // }
 
     public void resetModulesToAbsolute() {
         for (SwerveModule mod : swerveModules) {
@@ -223,15 +224,16 @@ public class Swerve extends SubsystemBase {
         }
     }
 
-    public double getGyroVelX(){
-        return gyro.getRobotCentricVelocityX();
-    }
-    public double getGyroVelY(){
-        return gyro.getRobotCentricVelocityY();
-    }
-    public double getGyroVelZ(){
-        return gyro.getRobotCentricVelocityZ();
-    }
+
+    // public double getGyroVelX(){
+    //     return gyro.getAccel;
+    // }
+    // public double getGyroVelY(){
+    //     return gyro.getRobotCentricVelocityY();
+    // }
+    // public double getGyroVelZ(){
+    //     return gyro.getRobotCentricVelocityZ();
+    // }
 
     public Pose2d limelightTurretPoseAdjustedToRobot(Pose2d pose){
         //Pose2d pose2 = null;
@@ -337,7 +339,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         }
         limelightMeasurement =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightBack);
         limelightMeasurementTurret =  LimelightHelpersCameronEdition.getBotPoseEstimate_wpiBlue(Constants.limelightConstants.limelightTurret);
-        if(gyro.isConnected() && !gyro.isCalibrating())swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
+        if(gyro.isConnected())swervePoseEstimator.updateWithTime(Timer.getFPGATimestamp(), getGyroYaw(), getModulePositions());
         
        
 
@@ -346,7 +348,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         SmartDashboard.putNumber("gyro", getHeading().getDegrees() );
         
         
-        SmartDashboard.putNumber("Acc",this.getAcc());
+        //SmartDashboard.putNumber("Acc",this.getAcc());
         for (SwerveModule mod : swerveModules) {
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " Angle", mod.getPosition().angle.getDegrees());
