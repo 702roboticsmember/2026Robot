@@ -208,7 +208,7 @@ public final class Constants {
         public static Pose2d Robotpose = new Pose2d();
         public static ChassisSpeeds speeds = new ChassisSpeeds();
         public static boolean BLUE_ALLIANCE = false;
-        public static final boolean INVERT_GYRO = true;
+        public static final boolean INVERT_GYRO = false;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
         public static final double ANGLE_GEAR_RATIO = 18.75;
         public static final double LIMELIGHT_TURRET_POSE_Y = -0.238;
@@ -359,7 +359,7 @@ public final class Constants {
                 // DRIVEBASE_RADIUS,
                 // new ReplanningConfig()
                 );
-        public static final int GyroId = 0;
+        public static final int GyroId = 24;
 
       
        
@@ -370,9 +370,9 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
-        public static final int STATOR_CURRENT_LIMIT = 80;
-        public static final int CURRENT_LIMIT = 45;//35
-        public static final int CURRENT_THRESHOLD = 35;//60
+        public static final int STATOR_CURRENT_LIMIT = 100;
+        public static final int CURRENT_LIMIT = 60;//35
+        public static final int CURRENT_THRESHOLD = 40;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;

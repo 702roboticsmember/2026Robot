@@ -139,7 +139,7 @@ public class RobotContainer {
     }
 
     private Command ArmPartial(){
-        return Commands.run(()->i_IntakeArmSubsystem.goToAngle(80), i_IntakeArmSubsystem).withDeadline(new WaitCommand(0.3));
+        return Commands.run(()->i_IntakeArmSubsystem.goToAngle(60), i_IntakeArmSubsystem).withDeadline(new WaitCommand(0.3));
     }
     
     
@@ -177,7 +177,7 @@ public class RobotContainer {
             //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
             Commands.run(()->{
                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
-                    f_FloorIndexerSubsystem.setVelocity(90);
+                    f_FloorIndexerSubsystem.setVelocity(70);
                 } else {
                     f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
                 }
@@ -211,7 +211,7 @@ public class RobotContainer {
         return new ParallelCommandGroup(
             
             new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem),
-            new FloorOffset(f_FloorIndexerSubsystem, -4),
+            new FloorOffset(f_FloorIndexerSubsystem, -10),
             new InstantCommand(() -> power = 1),
             new InstantCommand(() -> max = 1)
 
@@ -309,6 +309,7 @@ public class RobotContainer {
     private final Swerve s_Swerve = new Swerve();
 
     public RobotContainer() {
+       
         
         
         Field2d field = new Field2d();
@@ -366,6 +367,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("ShootDeadline", ShootDeadlineTime());
         //ClimbGrab
         NamedCommands.registerCommand("ArmOut", ArmOut());
+        NamedCommands.registerCommand("ArmPartial", ArmPartial());
         NamedCommands.registerCommand("HoodDown", HoodDown());
 
         t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)* 0.4));
@@ -397,7 +399,7 @@ public class RobotContainer {
         armin.whileTrue(ArmIn());
         
         armPartial.whileTrue(ArmPartial());
-        armPartial.onFalse(IntakeOut());
+        armPartial.onFalse(ArmOut());
         
       
         shoot.whileTrue(Shoot());

@@ -31,12 +31,6 @@
                 "data": {
                   "pathName": "DeadCollectLeft-trenchshot"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "StopIntake"
-                }
               }
             ]
           }
@@ -55,6 +49,12 @@
                 "type": "wait",
                 "data": {
                   "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ArmPartial"
                 }
               }
             ]
