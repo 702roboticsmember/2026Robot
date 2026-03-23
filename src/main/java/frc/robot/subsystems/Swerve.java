@@ -297,7 +297,9 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         doRejectUpdate = true;
       }
       if(Double.isNaN(mt1.std[0]) || Double.isNaN(mt1.std[1]) || Double.isNaN(mt1.std[2])){
-            doRejectUpdate = true;
+            mt1.std[0] = .5;
+            mt1.std[1] =.5;
+            mt1.std[2] = 9999999;
         }
 
       if(!doRejectUpdate)
