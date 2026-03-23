@@ -112,6 +112,10 @@ public class IndexerSubsystem extends SubsystemBase {
     indexMotorPrimary.setControl(velControl.withVelocity(vel));
     indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));
   }
+
+  public double getVelocity(){
+    return indexMotorPrimary.getVelocity().getValueAsDouble();
+  }
   public void setpose(double pos){
     indexMotorPrimary.setControl(motionMagic.withPosition(pos));
     indexMotorSecondary.setControl(new Follower(Constants.IndexerConstants.indexMotorTurret1, MotorAlignmentValue.Aligned));

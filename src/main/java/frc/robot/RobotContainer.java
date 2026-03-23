@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -163,25 +164,36 @@ public class RobotContainer {
     }
 
     private Command Shoot() {
+        double jamtime;
+        jamtime = Timer.getFPGATimestamp();
         return new ParallelCommandGroup(
-            Commands.run(
-                ()->{
-                    if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+            //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
+            Commands.run(()->{
+                double jamTime = jamtime;
+                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
                         i_IndexerSubsystem.setVelocity(140);
                     }
                     else {
                         i_IndexerSubsystem.setVelocity(0);
                     }
-                }, i_IndexerSubsystem
-            ),
-            //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
-            Commands.run(()->{
-                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
-                    f_FloorIndexerSubsystem.setVelocity(70);
-                } else {
-                    f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
+                if(i_IndexerSubsystem.getVelocity() < 10 || (f_FloorIndexerSubsystem.getVelocity() < 10 && f_FloorIndexerSubsystem.getVelocity() > 0)){
+                    
+                }else{
+                    jamTime = Timer.getFPGATimestamp();
                 }
-            }, f_FloorIndexerSubsystem),
+                    if(Timer.getFPGATimestamp() - jamTime < 0.5 ){
+                    if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                        f_FloorIndexerSubsystem.setVelocity(70);
+                    } else {
+                        f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
+                    }
+                }else{
+                    f_FloorIndexerSubsystem.setVelocity(-17);
+        
+                }
+                
+
+            }, f_FloorIndexerSubsystem, i_IndexerSubsystem),
                 new InstantCommand(() -> max = 0.2)
                 );
     }
