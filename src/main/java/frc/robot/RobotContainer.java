@@ -136,7 +136,9 @@ public class RobotContainer {
     }
 
     private Command ArmIn(){
-        return Commands.run(()->i_IntakeArmSubsystem.goToAngle(5), i_IntakeArmSubsystem).withDeadline(new WaitCommand(0.3));
+        return new ParallelCommandGroup(Commands.run(()->i_IntakeArmSubsystem.goToAngle(5), i_IntakeArmSubsystem).withDeadline(new WaitCommand(0.3)), 
+        HoodDown(), 
+        Commands.run(()-> t_TurretSubsystem.goToAngle(0), t_TurretSubsystem)).withDeadline(new WaitCommand(1));
     }
 
     private Command ArmPartial(){
@@ -147,7 +149,7 @@ public class RobotContainer {
     private Command IntakeIn() {
         return new ParallelCommandGroup(
             
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem)
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.65), i_IntakeSubsystem)
         ).withDeadline(new WaitCommand(0.3));
     }
     private Command IntakeOut() {
@@ -158,7 +160,13 @@ public class RobotContainer {
     }
     private Command IntakeStop() {
         return new ParallelCommandGroup(
-            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem),
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem),
+            new InstantCommand(() -> f_FloorIndexerSubsystem.setFloorIndexSpeed(0), f_FloorIndexerSubsystem)
+        );
+    }
+
+    private Command IntakeOff() {
+        return new ParallelCommandGroup(
             new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0), i_IntakeSubsystem)
         );
     }
@@ -166,7 +174,30 @@ public class RobotContainer {
     private Command Shoot() {
         double jamtime;
         jamtime = Timer.getFPGATimestamp();
-        return new ParallelCommandGroup(
+        return new SequentialCommandGroup(
+            Commands.run(()->{
+                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                        i_IndexerSubsystem.setVelocity(140);
+                        f_FloorIndexerSubsystem.setVelocity(0);
+                    }
+                    else {
+                        i_IndexerSubsystem.setVelocity(0);
+                        f_FloorIndexerSubsystem.setVelocity(0);
+                    }
+             }, i_IndexerSubsystem, f_FloorIndexerSubsystem).withDeadline(new WaitCommand(0.1)),
+             new WaitCommand(0.1),
+             Commands.run(()->{
+                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                        i_IndexerSubsystem.setVelocity(140);
+                        f_FloorIndexerSubsystem.setVelocity(70);
+                    }
+                    else {
+                        i_IndexerSubsystem.setVelocity(0);
+                        f_FloorIndexerSubsystem.setVelocity(0);
+                    }
+             }, i_IndexerSubsystem, f_FloorIndexerSubsystem).withDeadline(new WaitCommand(0.1)),
+             new WaitCommand(0.1),
+            new ParallelCommandGroup(
             //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
             Commands.run(()->{
                 double jamTime = jamtime;
@@ -176,26 +207,26 @@ public class RobotContainer {
                     else {
                         i_IndexerSubsystem.setVelocity(0);
                     }
-                if(i_IndexerSubsystem.getVelocity() < 10 || (f_FloorIndexerSubsystem.getVelocity() < 10 && f_FloorIndexerSubsystem.getVelocity() > 0)){
+                if(i_IndexerSubsystem.getVelocity() < 5 || (f_FloorIndexerSubsystem.getVelocity() < 5 && f_FloorIndexerSubsystem.getVelocity() > 0)){
                     
                 }else{
                     jamTime = Timer.getFPGATimestamp();
                 }
-                    if(Timer.getFPGATimestamp() - jamTime < 0.5 ){
+                    if(Timer.getFPGATimestamp() - jamTime < 1 ){
                     if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
                         f_FloorIndexerSubsystem.setVelocity(70);
                     } else {
                         f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
                     }
                 }else{
-                    f_FloorIndexerSubsystem.setVelocity(-17);
+                    f_FloorIndexerSubsystem.setVelocity(-40);
         
                 }
                 
 
             }, f_FloorIndexerSubsystem, i_IndexerSubsystem),
                 new InstantCommand(() -> max = 0.2)
-                );
+                ));
     }
 
     private Command ShootOG() {
@@ -220,14 +251,21 @@ public class RobotContainer {
     }
     
     private Command ShootOff() {
-        return new ParallelCommandGroup(
+        return new SequentialCommandGroup(new ParallelCommandGroup(
             
-            new InstantCommand(()->i_IndexerSubsystem.setVelocity(0), i_IndexerSubsystem),
+            new InstantCommand(()->i_IndexerSubsystem.setVelocity(-10), i_IndexerSubsystem),
+            new FloorOffset(f_FloorIndexerSubsystem, -20),
+            new InstantCommand(() -> power = 1),
+            new InstantCommand(() -> max = 1)
+
+           ).withDeadline(new WaitCommand(0.1)), new WaitCommand(0.1), new ParallelCommandGroup(
+            
+            new InstantCommand(()->i_IndexerSubsystem.setVelocity(-0), i_IndexerSubsystem),
             new FloorOffset(f_FloorIndexerSubsystem, -10),
             new InstantCommand(() -> power = 1),
             new InstantCommand(() -> max = 1)
 
-           );
+           ));
         
     }
 
@@ -363,6 +401,7 @@ public class RobotContainer {
 
        
         NamedCommands.registerCommand("Shoot", AutoShoot());
+        NamedCommands.registerCommand("ShootOff", ShootOff());
         NamedCommands.registerCommand("AimAtHub", AimAtHub());
         NamedCommands.registerCommand("AimAtHubBlue", AimAtHubBlue());
         NamedCommands.registerCommand("AimAtHubRed", AimAtHubRed());
@@ -408,7 +447,7 @@ public class RobotContainer {
         autoAimHUB.onFalse(HoodDown());
         autoAimPASS.whileTrue(PASS());
         autoAimPASS.onFalse(HoodDown());
-        armin.whileTrue(ArmIn());
+        armin.onTrue(ArmIn());
         
         armPartial.whileTrue(ArmPartial());
         armPartial.onFalse(ArmOut());
@@ -477,7 +516,7 @@ public class RobotContainer {
 
         return new ParallelCommandGroup(
             //new InstantCommand(()->Swerve.gyro.reset()),
-            autoChooser.getSelected());
+            autoChooser.getSelected()).andThen(new ParallelCommandGroup(ShootOff(), ArmOut(), IntakeOff()).withDeadline(new WaitCommand(1)));
             
           }
     }
