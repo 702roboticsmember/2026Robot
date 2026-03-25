@@ -149,7 +149,7 @@ public class RobotContainer {
     private Command IntakeIn() {
         return new ParallelCommandGroup(
             
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.65), i_IntakeSubsystem)
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.55), i_IntakeSubsystem)
         ).withDeadline(new WaitCommand(0.3));
     }
     private Command IntakeOut() {
@@ -261,7 +261,6 @@ public class RobotContainer {
            ).withDeadline(new WaitCommand(0.1)), new WaitCommand(0.1), new ParallelCommandGroup(
             
             new InstantCommand(()->i_IndexerSubsystem.setVelocity(-0), i_IndexerSubsystem),
-            new FloorOffset(f_FloorIndexerSubsystem, -10),
             new InstantCommand(() -> power = 1),
             new InstantCommand(() -> max = 1)
 

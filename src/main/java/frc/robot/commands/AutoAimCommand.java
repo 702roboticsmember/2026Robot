@@ -192,7 +192,8 @@ public class AutoAimCommand extends Command {
     }
     
       //Linear regression.
-      double output = vs * 2.3292 + 0;//TODO Calibrate based on input velocity vs ball actual velocity
+      double output = vs * 2.00429 + 1.91073;//TODO Calibrate based on input velocity vs ball actual velocity
+      //double output = 1.87524 * Math.pow(vs, 3) - 39.35572 * Math.pow(vs, 2) + 275.95178* vs-  630.54614;
       //2.2492 + 0.56157
       //Quartic regression
 

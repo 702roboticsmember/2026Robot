@@ -71,7 +71,7 @@ public class FloorIndexerSubsystem extends SubsystemBase {
     return deg/Constants.IndexerConstants.gearingMultiplier;
   }
   public double getIndexerPos() {
-    return tickToDeg(FloorIndexMotor.getPosition().getValueAsDouble());
+    return FloorIndexMotor.getPosition().getValueAsDouble();
   }
 
   public double getVelocity(){

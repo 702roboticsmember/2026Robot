@@ -306,7 +306,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       if(!doRejectUpdate)
       {
         
-        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] , mt1.std[1], mt1.std[2]));
+        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Math.sqrt( mt1.std[0]) * 10, Math.sqrt(mt1.std[1])* 10, Math.sqrt(mt1.std[2] ) * 10));
         swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
