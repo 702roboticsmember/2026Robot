@@ -64,8 +64,8 @@ public final class Constants {
         BLUELEFT(new Translation2d(2, 6.4), "Blue Alliance left side"),
         BLUERIGHT(new Translation2d(2, 1.8),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
-        REDLEFT(flipTranslation2d(new Translation2d(2, 6.4)), "Red Alliance left side"),
-        REDRIGHT(flipTranslation2d(new Translation2d(2, 1.8)),  "Red Alliance right side"),
+        REDLEFT(flipTranslation2d(new Translation2d(0.25, 6.4)), "Red Alliance left side"),//(2,6.4)
+        REDRIGHT(flipTranslation2d(new Translation2d(0.25, 1.8)),  "Red Alliance right side"),//(2,1.8)
         CENTER(new Translation2d(8.270494, 4.034536), "Center"),
         BLUELT(new Translation2d(6, 7.4), "Blue Left Trench Entry"),
         REDLT(flipTranslation2d(new Translation2d(6, 7.4)), "Red Left Trench Entry");
@@ -241,7 +241,7 @@ public final class Constants {
          */
         public static final double DRIVEBASE_RADIUS = DRIVEBASE_DIAMETER / 2f;
 
-        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.048;
+        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.0508;
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
@@ -371,13 +371,13 @@ public final class Constants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
         public static final int STATOR_CURRENT_LIMIT = 100;
-        public static final int CURRENT_LIMIT = 60;//35
-        public static final int CURRENT_THRESHOLD = 40;//60
+        public static final int CURRENT_LIMIT = 100;//35
+        public static final int CURRENT_THRESHOLD = 60;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT = true;
-        public static final int STATOR_CURRENT_LIMIT2 = 50;//50
-        public static final int CURRENT_LIMIT2 = 35;//35
+        public static final int STATOR_CURRENT_LIMIT2 = 100;//50
+        public static final int CURRENT_LIMIT2 = 60;//35
         public static final int CURRENT_THRESHOLD2 = 60;//60
         public static final double CURRENT_THRESHOLD_TIME2 = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT2 = true;

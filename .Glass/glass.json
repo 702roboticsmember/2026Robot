@@ -48,10 +48,7 @@
         "left": 534,
         "right": 3466,
         "top": 291,
-        "width": 17.54825210571289,
-        "window": {
-          "visible": true
-        }
+        "width": 17.54825210571289
       },
       "/SmartDashboard/current location": {
         "bottom": 1914,
@@ -92,12 +89,14 @@
         "open": true
       },
       "open": true
-    },
-    "visible": true
+    }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
     "serverTeam": "702",
+    "visible": false
+  },
+  "NetworkTables View": {
     "visible": false
   },
   "Plots": {
