@@ -18,6 +18,7 @@ public class LIDARSubsystem extends SubsystemBase {
   double ramp_dist;
   double tank_dist;
   double empty_time;
+  double time;
 
   public LIDARSubsystem() {
     
@@ -30,6 +31,7 @@ public class LIDARSubsystem extends SubsystemBase {
     m_TANK_LIDAR.setMaxPeriod(1.00);
     m_TANK_LIDAR.setSemiPeriodMode(true);
     m_TANK_LIDAR.reset();
+    time = Timer.getFPGATimestamp();
   }
   @Override
   public void periodic() {
@@ -39,7 +41,7 @@ public class LIDARSubsystem extends SubsystemBase {
       ramp_dist = 0;
     } else {
       ramp_dist = (m_RAMP_LIDAR.getPeriod()*1000000.0/10.0) - Constants.lidarConstants.LIDAROffset;
-      SmartDashboard.putNumber("Distance", ramp_dist);
+      SmartDashboard.putNumber("DistanceRamp", ramp_dist);
     }
 
     if(ramp_dist < Constants.lidarConstants.rampFullDistance) {
@@ -55,6 +57,7 @@ public class LIDARSubsystem extends SubsystemBase {
 
     SmartDashboard.putBoolean("indexer_full", indexer_full());
     SmartDashboard.putNumber("tank_full", get_tank_percentFull());
+    SmartDashboard.putBoolean("Jam", jam());
     
     
   }
@@ -62,6 +65,26 @@ public class LIDARSubsystem extends SubsystemBase {
   public boolean indexer_full() {
     return (Timer.getFPGATimestamp() - empty_time) < Constants.lidarConstants.rampEmptyTime;
   }
+
+  public boolean jam(){
+    
+     if (m_RAMP_LIDAR.get() < 1){
+      ramp_dist = 0;
+      return false;
+    } else {
+      ramp_dist = (m_RAMP_LIDAR.getPeriod()*1000000.0/10.0) - Constants.lidarConstants.LIDAROffset;
+      SmartDashboard.putNumber("DistanceRamp", ramp_dist);
+      if(ramp_dist > 30 || ramp_dist < 6){
+        time = Timer.getFPGATimestamp();
+      }
+      if(Timer.getFPGATimestamp() - time > 0.1){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  
 
   public double get_tank_percentFull() {
     return 1 - (tank_dist / Constants.lidarConstants.tankFullDistance); 

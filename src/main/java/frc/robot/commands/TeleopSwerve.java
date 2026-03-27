@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Swerve;
 
 import java.util.function.BooleanSupplier;
@@ -9,6 +10,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.util.datalog.BooleanArrayLogEntry;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopSwerve extends Command {
@@ -17,25 +19,32 @@ public class TeleopSwerve extends Command {
     private DoubleSupplier strafeSupplier;
     private DoubleSupplier rotationSupplier;
     private BooleanSupplier robotCentricSupplier;
+    private BooleanSupplier BlueAlliance;
      Rotation2d offset;
 
     public TeleopSwerve(Swerve s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup,
-            DoubleSupplier rotationSup, BooleanSupplier robotCentricSup) {
+            DoubleSupplier rotationSup, BooleanSupplier robotCentricSup, BooleanSupplier BlueAlliance) {
         this.swerveSubsystem = s_Swerve;
         addRequirements(s_Swerve);
+        this.BlueAlliance = BlueAlliance;
 
         this.translationSupplier = translationSup;
         this.strafeSupplier = strafeSup;
         this.rotationSupplier = rotationSup;
         this.robotCentricSupplier = robotCentricSup;
-        if(Constants.Swerve.BLUE_ALLIANCE)
+        if(BlueAlliance.getAsBoolean())
                 offset = new Rotation2d(Math.toRadians(0));
-                else offset = new Rotation2d(Math.toRadians(180));
+        else 
+                offset = new Rotation2d(Math.toRadians(180));
     }
 
     @Override
     public void initialize(){
-        
+        if(BlueAlliance.getAsBoolean())
+                offset = new Rotation2d(Math.toRadians(0));
+        else 
+                offset = new Rotation2d(Math.toRadians(180));
+    
     }
 
     @Override

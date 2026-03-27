@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -31,8 +32,22 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Locations;
-import frc.robot.commands.*;
-import frc.robot.subsystems.*;
+import frc.robot.commands.AutoAimCommand;
+import frc.robot.commands.AutoIntakeCommand;
+import frc.robot.commands.FloorOffset;
+import frc.robot.commands.TeleopSwerve;
+import frc.robot.commands.TurretRotateManualCommand;
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.FloorIndexerSubsystem;
+import frc.robot.subsystems.HoodSubsystem;
+import frc.robot.subsystems.IndexerSubsystem;
+import frc.robot.subsystems.IntakeArmSubsytem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LEDSubsystem;
+import frc.robot.subsystems.LIDARSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
+import frc.robot.subsystems.Swerve;
+import frc.robot.subsystems.TurretSubsystem;
 
 
 /**
@@ -45,7 +60,8 @@ import frc.robot.subsystems.*;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-    // private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+   
+    //Subsystems
     private final IntakeSubsystem i_IntakeSubsystem = new IntakeSubsystem();
     private final ShooterSubsystem s_ShooterSubsystem = new ShooterSubsystem();
     private final ClimbSubsystem c_ClimbSubsystem = new ClimbSubsystem();
@@ -60,49 +76,45 @@ public class RobotContainer {
     private final XboxController codriver = new XboxController(1);
 
 
-    //driver buttons
-    //private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-   // private final JoystickButton fastMode = new JoystickButton(driver, XboxController.Button.kB.value);
-    //private final JoystickButton speedToggle = new JoystickButton(driver, XboxController.Button.kA.value);
-    //private final JoystickButton intake = new JoystickButton(driver, XboxController.Axis.kLeftTrigger.value);
+
+
+    //Driver Buttons
     private final JoystickButton armin = new JoystickButton(driver, XboxController.Button.kB.value);
     private final JoystickButton armPartial = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton intakeOut = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton intakeIn = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton armOut = new JoystickButton(driver, XboxController.Button.kX.value);
-    
-    
     private final JoystickButton shoot = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
-    private final JoystickButton retractClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
-  
-    
-  
-
-    
-    
-  
     private final JoystickButton autoAimHUB = new JoystickButton(driver, XboxController.Button.kStart.value);
     private final JoystickButton autoAimPASS = new JoystickButton(driver, XboxController.Button.kBack.value);
-  
     
-    private final JoystickButton Nest = new JoystickButton(codriver, 0);
     private final POVButton UP = new POVButton(driver, Constants.Direction.UP.direction);
     private final POVButton DOWN = new POVButton(driver, Constants.Direction.DOWN.direction);
     private final POVButton LEFT = new POVButton(driver, Constants.Direction.LEFT.direction);
     private final POVButton RIGHT = new POVButton(driver, Constants.Direction.RIGHT.direction);
-
-    private final POVButton COUP = new POVButton(codriver, Constants.Direction.UP.direction);
-    private final POVButton CODOWN = new POVButton(codriver, Constants.Direction.DOWN.direction);
-    private final POVButton COLEFT = new POVButton(codriver, Constants.Direction.LEFT.direction);
-    private final POVButton CORIGHT = new POVButton(codriver, Constants.Direction.RIGHT.direction);
-
+    
+    
+    
+    
+    //Co-driver Buttons
+    private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
+    private final JoystickButton retractClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
+    private final JoystickButton Nest = new JoystickButton(codriver, 0);
     private final JoystickButton COSTART = new JoystickButton(codriver, XboxController.Button.kStart.value);
     private final JoystickButton COBACK = new JoystickButton(codriver, XboxController.Button.kBack.value);
     private final JoystickButton COLEFTBUMPER = new JoystickButton(codriver, XboxController.Button.kLeftBumper.value);
     private final JoystickButton CORIGHTBUMPER = new JoystickButton(codriver, XboxController.Button.kRightBumper.value);
-   
+  
+    private final POVButton COUP = new POVButton(codriver, Constants.Direction.UP.direction);
+    private final POVButton CODOWN = new POVButton(codriver, Constants.Direction.DOWN.direction);
+    private final POVButton COLEFT = new POVButton(codriver, Constants.Direction.LEFT.direction);
+    private final POVButton CORIGHT = new POVButton(codriver, Constants.Direction.RIGHT.direction);
     
+
+    
+   
+    //Variables
+    public static boolean BLUE_ALLIANCE = false;
     public static double power = 1;
     public static double max = 1;
     public static double TurretGoal = 0;
@@ -126,9 +138,21 @@ public class RobotContainer {
         SmartDashboard.putData("current location", locField2d);
     }
 
-    
-    
 
+    public static boolean getAlliance(){
+        var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        if(alliance.get() == DriverStation.Alliance.Red){
+                            BLUE_ALLIANCE = false;
+                            return false;
+                        }else{
+                                BLUE_ALLIANCE = true;
+                                return true;
+                            }
+                      
+                    }
+                    return false;
+    }
 
 
     private Command ArmOut(){
@@ -173,7 +197,9 @@ public class RobotContainer {
 
     private Command Shoot() {
         double jamtime;
+        double reset;
         jamtime = Timer.getFPGATimestamp();
+        reset = 0;
         return new SequentialCommandGroup(
             Commands.run(()->{
                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
@@ -187,9 +213,9 @@ public class RobotContainer {
              }, i_IndexerSubsystem, f_FloorIndexerSubsystem).withDeadline(new WaitCommand(0.1)),
              new WaitCommand(0.1),
              Commands.run(()->{
-                if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
+                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
                         i_IndexerSubsystem.setVelocity(140);
-                        f_FloorIndexerSubsystem.setVelocity(70);
+                        f_FloorIndexerSubsystem.setVelocity(60);
                     }
                     else {
                         i_IndexerSubsystem.setVelocity(0);
@@ -201,55 +227,40 @@ public class RobotContainer {
             //Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.5), i_IntakeSubsystem),
             Commands.run(()->{
                 double jamTime = jamtime;
+                double Reset = reset;
+                if (l_lidarSubsystem.jam()) {
+                    Reset = Timer.getFPGATimestamp();
+                }
+                
                 if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
                         i_IndexerSubsystem.setVelocity(140);
                     }
                     else {
                         i_IndexerSubsystem.setVelocity(0);
                     }
-                if(i_IndexerSubsystem.getVelocity() < 5 || (f_FloorIndexerSubsystem.getVelocity() < 5 && f_FloorIndexerSubsystem.getVelocity() > 0)){
+                if(i_IndexerSubsystem.getVelocity() < 5 || (f_FloorIndexerSubsystem.getVelocity() < 5 && f_FloorIndexerSubsystem.getVelocity() > 0) ){
                     
                 }else{
                     jamTime = Timer.getFPGATimestamp();
                 }
-                    if(Timer.getFPGATimestamp() - jamTime < 1 ){
+                    if(Timer.getFPGATimestamp() - jamTime < 1 && !l_lidarSubsystem.jam() && Timer.getFPGATimestamp() - reset > 0.5){
                     if (Math.abs(CurrentAngle - TurretGoal) < Constants.TurretConstants.allowedShootingTolerance) {
-                        f_FloorIndexerSubsystem.setVelocity(70);
+                        f_FloorIndexerSubsystem.setVelocity(60);
                     } else {
-                        f_FloorIndexerSubsystem.setFloorIndexSpeed(0);
+                        f_FloorIndexerSubsystem.setFloorIndexSpeed(-20);
                     }
                 }else{
+                    SmartDashboard.putBoolean("fixed", true);
                     f_FloorIndexerSubsystem.setVelocity(-40);
         
                 }
                 
 
             }, f_FloorIndexerSubsystem, i_IndexerSubsystem),
-                new InstantCommand(() -> max = 0.2)
+                new InstantCommand(() -> max = 0.13)
                 ));
     }
 
-    private Command ShootOG() {
-        return new SequentialCommandGroup(
-            Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem).withDeadline(new WaitCommand(0.25)),
-        new ParallelCommandGroup(
-           Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
-           Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),
-           Commands.run(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
-            
-           
-            ));
-        
-    }
-
-    private Command ShootDeadline(){
-        return Commands.waitUntil(()-> !l_lidarSubsystem.indexer_full());
-    }
-
-    private Command ShootDeadlineTime(){
-        return new SequentialCommandGroup(new WaitCommand(1), ShootDeadline());
-    }
-    
     private Command ShootOff() {
         return new SequentialCommandGroup(new ParallelCommandGroup(
             
@@ -268,9 +279,31 @@ public class RobotContainer {
         
     }
 
+    private Command ShootOG() {
+        return new SequentialCommandGroup(
+            Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem).withDeadline(new WaitCommand(0.25)),
+        new ParallelCommandGroup(
+           Commands.run(()->i_IndexerSubsystem.setVelocity(100), i_IndexerSubsystem),
+           Commands.run(()->i_IntakeSubsystem.setIntakeSpeed(0.3), i_IntakeSubsystem),
+           Commands.run(()->f_FloorIndexerSubsystem.setVelocity(80), f_FloorIndexerSubsystem)
+            
+           
+           ));
+        
+    }
+
+    private Command ShootDeadline(){
+        return Commands.waitUntil(()-> !l_lidarSubsystem.indexer_full());
+    }
+
+    private Command ShootDeadlineTime(){
+        return new SequentialCommandGroup(new WaitCommand(1), ShootDeadline());
+    }
+    
+
     private Command AutoAim() {
         SmartDashboard.putBoolean("autorun", true);
-        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, false);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, false, ()-> getAlliance());
     }
 
     private Command Nest() {
@@ -284,24 +317,23 @@ public class RobotContainer {
     }
 
     private Command AimAtHub(){
-        if(Constants.Swerve.BLUE_ALLIANCE){
-            return new AutoAimCommand(Constants.Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
-        }else{
-            return new AutoAimCommand(Constants.Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
-        }
+        
+            return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> getAlliance());
+        
+        
             //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     }
 
     private Command AimAtHubBlue(){
         
-            return new AutoAimCommand(Constants.Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+            return new AutoAimCommand(Constants.Locations.BLUEHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> getAlliance());
         
             //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     }
 
     private Command AimAtHubRed(){
             
-            return new AutoAimCommand(Constants.Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
+            return new AutoAimCommand(Constants.Locations.REDHUB.location, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, ()-> getAlliance());
         
             //return new AutoAimCommand(true, t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     }
@@ -313,7 +345,7 @@ public class RobotContainer {
 
     private Command PASS(){
       
-        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, true);
+        return new AutoAimCommand(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem, true, ()-> getAlliance());
     }
 
     private Command ExtendClimb(){
@@ -389,10 +421,10 @@ public class RobotContainer {
         
         
         s_Swerve.setDefaultCommand(new TeleopSwerve(s_Swerve, 
-        ()-> MathUtil.clamp(-driver.getRawAxis(1) * power, -max, max), 
+        ()-> MathUtil.clamp(-driver.getRawAxis(1) * power, -max, max) , 
         ()-> MathUtil.clamp(-driver.getRawAxis(0) * power, -max, max),
-        ()-> MathUtil.clamp(-driver.getRawAxis(4) * power, -max, max), 
-        ()->false));
+        ()-> -driver.getRawAxis(4) * power, 
+        ()->false, ()-> getAlliance()));
 
         s_ShooterSubsystem.setDefaultCommand(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(codriver.getLeftTriggerAxis()* 0.4) , s_ShooterSubsystem));
 
@@ -447,7 +479,6 @@ public class RobotContainer {
         autoAimPASS.whileTrue(PASS());
         autoAimPASS.onFalse(HoodDown());
         armin.onTrue(ArmIn());
-        
         armPartial.whileTrue(ArmPartial());
         armPartial.onFalse(ArmOut());
         
@@ -502,11 +533,11 @@ public class RobotContainer {
     }
 
     void nextAllianceLocation(){
-        this.currentPOI = this.currentPOI.AlianceNext(Constants.getAlliance());
+        this.currentPOI = this.currentPOI.AlianceNext(getAlliance());
     }
 
     void prevAllianceLocation(){
-        this.currentPOI = this.currentPOI.AliancePrev(Constants.getAlliance());
+        this.currentPOI = this.currentPOI.AliancePrev(getAlliance());
     }
 
 

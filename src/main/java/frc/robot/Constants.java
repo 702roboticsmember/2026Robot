@@ -189,25 +189,12 @@ public final class Constants {
         }
     }
 
-    public static boolean getAlliance(){
-        var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        if(alliance.get() == DriverStation.Alliance.Red){
-                            Constants.Swerve.BLUE_ALLIANCE = false;
-                            return false;
-                        }else{
-                                Constants.Swerve.BLUE_ALLIANCE = true;
-                                return true;
-                            }
-                      
-                    }
-                    return false;
-    }
+    
 
     public static final class Swerve {
         public static Pose2d Robotpose = new Pose2d();
         public static ChassisSpeeds speeds = new ChassisSpeeds();
-        public static boolean BLUE_ALLIANCE = false;
+        
         public static final boolean INVERT_GYRO = false;
          public static final double DRIVE_GEAR_RATIO = 5.36; //L1: 7.13 - L2 5.9 - L3 5.36
         public static final double ANGLE_GEAR_RATIO = 18.75;
@@ -241,7 +228,7 @@ public final class Constants {
          */
         public static final double DRIVEBASE_RADIUS = DRIVEBASE_DIAMETER / 2f;
 
-        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.0508;
+        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.050292;
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
@@ -536,8 +523,8 @@ public final class Constants {
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
         //Floor Indexer Constants
         ///public static final int FloorID = 0;
-		public static final double FLOOR_STATOR_CURRENT_LIMIT = 80;
-        public static final double FLOOR_CURRENT_LIMIT = 80;
+		public static final double FLOOR_STATOR_CURRENT_LIMIT = 140;
+        public static final double FLOOR_CURRENT_LIMIT = 70;
         public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = true;
         public static final double FloorSpeed = 0.3;
@@ -599,7 +586,7 @@ public final class Constants {
     public static final class PhysicsConstants {
         public static final double gravity = 9.81;
         public static final double HubHeight = 1.89;
-        public static final double BallIntialHeight = 0.4572;
+        public static final double BallIntialHeight = 0.4826;
         
 
     }

@@ -4,6 +4,7 @@ import frc.robot.SwerveModule;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpersCameronEdition;
+import frc.robot.RobotContainer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -89,9 +90,9 @@ public class Swerve extends SubsystemBase {
                     var alliance = DriverStation.getAlliance();
                     if (alliance.isPresent()) {
                         if(alliance.get() == DriverStation.Alliance.Red){
-                            Constants.Swerve.BLUE_ALLIANCE = false;
+                            RobotContainer.BLUE_ALLIANCE = false;
                             }else{
-                                Constants.Swerve.BLUE_ALLIANCE = true;
+                                RobotContainer.BLUE_ALLIANCE = true;
                             }
                       return alliance.get() == DriverStation.Alliance.Red;
                     }
@@ -306,7 +307,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       if(!doRejectUpdate)
       {
         
-        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Math.sqrt( mt1.std[0]) * 10, Math.sqrt(mt1.std[1])* 10, Math.sqrt(mt1.std[2] ) * 10));
+        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Math.sqrt( mt1.std[0]) * 5, Math.sqrt(mt1.std[1])* 5, Math.sqrt(mt1.std[2] ) ));
         swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);

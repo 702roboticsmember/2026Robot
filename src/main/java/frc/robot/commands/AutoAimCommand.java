@@ -41,6 +41,7 @@ public class AutoAimCommand extends Command {
   private boolean passing;
   private boolean Alliance;
   private boolean Hub;
+  private BooleanSupplier BlueAlliance;
  
   boolean angleRight;
 
@@ -48,7 +49,7 @@ public class AutoAimCommand extends Command {
 
   
   /** Creates a new AutoAimCommand. */
-  public AutoAimCommand(Translation2d poi, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem) {
+  public AutoAimCommand(Translation2d poi, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier BlueAlliance) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
@@ -56,31 +57,33 @@ public class AutoAimCommand extends Command {
     this.poi = poi;
     this.isFixed = true;
     this.Hub = false;
+    this.BlueAlliance = BlueAlliance;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public AutoAimCommand(boolean Hub, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem) {
+  public AutoAimCommand(boolean Hub, TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, BooleanSupplier BlueAlliance) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
+     this.BlueAlliance = BlueAlliance;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     this.isFixed = true;
-    this.poi = Constants.Swerve.BLUE_ALLIANCE? Constants.Locations.BLUEHUB.location: Constants.Locations.REDHUB.location;
+    this.poi = BlueAlliance.getAsBoolean() ? Constants.Locations.BLUEHUB.location: Constants.Locations.REDHUB.location;
     this.Hub = Hub;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, boolean passing) {
+  public AutoAimCommand(TurretSubsystem t_TurretSubsystem, HoodSubsystem h_HoodSubsystem, ShooterSubsystem s_ShooterSubsystem, boolean passing, BooleanSupplier BlueAlliance) {
     this.t_TurretSubsystem = t_TurretSubsystem;
     this.s_ShooterSubsystem = s_ShooterSubsystem;
     this.h_HoodSubsystem = h_HoodSubsystem;
     addRequirements(t_TurretSubsystem, h_HoodSubsystem, s_ShooterSubsystem);
     
-   
+    this.BlueAlliance = BlueAlliance;
     this.isFixed = false;
     this.passing = passing;
     if(passing){
-    this.poi = Constants.Swerve.BLUE_ALLIANCE? Constants.Locations.BLUELEFT.location: Constants.Locations.REDLEFT.location;
+    this.poi = BlueAlliance.getAsBoolean() ? Constants.Locations.BLUELEFT.location: Constants.Locations.REDLEFT.location;
     this.h = 0;
     }
     else this.poi = RobotContainer.currentPOI.location;
@@ -93,7 +96,7 @@ public class AutoAimCommand extends Command {
 // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    Alliance = Constants.Swerve.BLUE_ALLIANCE;
+    Alliance = BlueAlliance.getAsBoolean();
     
   }
 
@@ -154,8 +157,8 @@ public class AutoAimCommand extends Command {
     double angleOffset = CalculateOffset(vrz, Dx, t);
     double distance = CalculateShotDistance(angleOffset, Dx);
     double vx = CalculateVx(distance, vy);
-    double vs = CalculateVs(vx, vy, vrx, angleOffset);
-    double shootAngle = CalculateShootAngle(vx, vy, vrx, angleOffset);
+    double vs = CalculateVs(vx, vy, vrx, vrz, angleOffset);
+    double shootAngle = CalculateShootAngle(vx, vy, vrx, vrz, angleOffset);
     double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
     RobotBasedAngle += angleOffset;
 
@@ -172,7 +175,7 @@ public class AutoAimCommand extends Command {
     // SmartDashboard.putNumber("odtes", RobotBasedAngle);
     // SmartDashboard.putNumber("shootSpeed", vs);
     // SmartDashboard.putNumber("shootSpeedx", vx);
-    // SmartDashboard.putNumber("shootSpeedy", vy);
+    SmartDashboard.putNumber("shootSpeedy", vy);
     SmartDashboard.putNumber("vrx", vrx);
     SmartDashboard.putNumber("vrz", vrz);
      SmartDashboard.putNumber("t", t);
@@ -192,8 +195,9 @@ public class AutoAimCommand extends Command {
     }
     
       //Linear regression.
-      double output = vs * 2.00429 + 1.91073;//TODO Calibrate based on input velocity vs ball actual velocity
-      //double output = 1.87524 * Math.pow(vs, 3) - 39.35572 * Math.pow(vs, 2) + 275.95178* vs-  630.54614;
+      //double output = vs * 2.00429 + 1.91073;//TODO Calibrate based on input velocity vs ball actual velocity
+      double output = 0.450191 * Math.pow(vs, 3) -9.12405 * Math.pow(vs, 2) + 62.95509* vs -131.96832;
+      //double output = 3.64532 * Math.pow(vs, 0.76359);
       //2.2492 + 0.56157
       //Quartic regression
 
@@ -403,25 +407,27 @@ public class AutoAimCommand extends Command {
     return (2*(a)) / ((-b) - Math.sqrt(Input));
   }
 
-  public double CalculateVs(double Vx, double Vy, double Vrx, double angleOffset){
+  public double CalculateVs(double Vx, double Vy, double Vrx, double Vrz, double angleOffset){
     double vrx = Vrx* Math.cos(Math.toRadians(angleOffset));
-    double Input = ((Vx - vrx) * (Vx - vrx)) + (Vy * Vy);
+    double vrz = Vrz * Math.sin(Math.toRadians(angleOffset));
+    double Input = ((Vx - vrx + vrz) * (Vx - vrx + vrz)) + (Vy * Vy);
     if (Input < 0){
       Input = 0;//TODO Constant based on data
     }
     return Math.sqrt(Input);
   }
 
-  public double CalculateShootAngle(double Vx, double Vy, double Vrx, double angleOffset){
+  public double CalculateShootAngle(double Vx, double Vy, double Vrx, double Vrz, double angleOffset){
     double vrx = Vrx* Math.cos(Math.toRadians(angleOffset));
-    double HoodAngle = Vy/(Vx - vrx);
+    double vrz = Vrz * Math.sin(Math.toRadians(angleOffset));
+    double HoodAngle = Vy/(Vx - vrx + vrz);
 
    
-    if(Vy/(Vx - vrx) == (Math.PI/2)){
+    if(Vy/(Vx - vrx + vrz) == (Math.PI/2)){
       return 0;//TODO Constant based on data
     }
    
-    else if( Vy/(Vx - vrx) == (-Math.PI/2) ){
+    else if( Vy/(Vx - vrx + vrz) == (-Math.PI/2) ){
       return 0;//TODO Constant based on data
     }
     else{
