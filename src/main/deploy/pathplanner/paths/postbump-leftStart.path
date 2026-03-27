@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.172168330955778,
-        "y": 6.202225392296718
+        "x": 2.344094151212553,
+        "y": 6.189286733238232
       },
       "isLocked": false,
       "linkedName": "PostBump"

@@ -173,7 +173,7 @@ public class RobotContainer {
     private Command IntakeIn() {
         return new ParallelCommandGroup(
             
-            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.55), i_IntakeSubsystem)
+            new InstantCommand(() -> i_IntakeSubsystem.setIntakeSpeed(0.6), i_IntakeSubsystem)
         ).withDeadline(new WaitCommand(0.3));
     }
     private Command IntakeOut() {
@@ -437,14 +437,14 @@ public class RobotContainer {
         NamedCommands.registerCommand("AimAtHubBlue", AimAtHubBlue());
         NamedCommands.registerCommand("AimAtHubRed", AimAtHubRed());
 
-        // NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
+    // NamedCommands.registerCommand("AimAndShoot", AimAndShoot());
         NamedCommands.registerCommand("IntakeNormal", IntakeIn());
         NamedCommands.registerCommand("StopIntake", IntakeStop());
         NamedCommands.registerCommand("IntakeOut", IntakeOut());
         NamedCommands.registerCommand("AutoIntake", AutoIntake());
         NamedCommands.registerCommand("Climb", ClimbAuto());
         NamedCommands.registerCommand("ClimbDeadline", ClimbDeadline());
-        //NamedCommands.registerCommand("ClimbGrab", GrabClimb());
+        NamedCommands.registerCommand("ClimbGrab", new InstantCommand());
         NamedCommands.registerCommand("ClimbRetract", RetractClimb());
         NamedCommands.registerCommand("ShootDeadline", ShootDeadlineTime());
         //ClimbGrab

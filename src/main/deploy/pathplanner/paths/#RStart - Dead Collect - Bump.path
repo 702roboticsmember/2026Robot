@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 4.003,
-        "y": 0.6
+        "y": 0.65
       },
       "prevControl": null,
       "nextControl": {
         "x": 5.380213114754098,
-        "y": 0.6060737704918029
+        "y": 0.6560737704918029
       },
       "isLocked": false,
       "linkedName": "RightStart"
@@ -128,7 +128,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Untested",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

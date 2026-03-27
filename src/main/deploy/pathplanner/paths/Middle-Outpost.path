@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.7840085592011405,
-        "y": 3.2974964336661916
+        "x": 2.9494347364938776,
+        "y": 3.2555048987049244
       },
       "isLocked": false,
       "linkedName": "MiddleStart"
@@ -20,8 +20,8 @@
         "y": 0.6
       },
       "prevControl": {
-        "x": 2.4734807417974314,
-        "y": 1.2079029957203988
+        "x": 1.896459185369252,
+        "y": 2.017110057954374
       },
       "nextControl": null,
       "isLocked": false,
