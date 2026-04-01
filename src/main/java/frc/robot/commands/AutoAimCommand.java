@@ -197,6 +197,8 @@ public class AutoAimCommand extends Command {
       //Linear regression.
       //double output = vs * 2.00429 + 1.91073;//TODO Calibrate based on input velocity vs ball actual velocity
       double output = 0.450191 * Math.pow(vs, 3) -9.12405 * Math.pow(vs, 2) + 62.95509* vs -131.96832;
+      //double output = 0.811385 * Math.pow(vs, 3) -16.69722 * Math.pow(vs, 2) + 116.04568* vs -256.58627;//y=0.811385x^{3}-16.69722x^{2}+116.04568x-256.58627
+      //double output = 1.74188 * vs + 3.91243;
       //double output = 3.64532 * Math.pow(vs, 0.76359);
       //2.2492 + 0.56157
       //Quartic regression
@@ -216,7 +218,7 @@ public class AutoAimCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_ShooterSubsystem.setVelocity(0);
+    s_ShooterSubsystem.setSpeed(0);
   }
 
   // Returns true when the command should end.

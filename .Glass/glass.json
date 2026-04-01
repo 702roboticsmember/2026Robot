@@ -63,7 +63,8 @@
         "units": "meters",
         "width": 16.54119300842285,
         "window": {
-          "name": "2026 Rebuilt"
+          "name": "2026 Rebuilt",
+          "visible": true
         }
       },
       "/SmartDashboard/turret field": {
@@ -97,7 +98,8 @@
         "open": true
       },
       "open": true
-    }
+    },
+    "visible": true
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)",
@@ -110,7 +112,7 @@
         {
           "axis": [
             {
-              "max": 50.0
+              "max": 100.0
             }
           ],
           "backgroundColor": [
@@ -119,7 +121,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 663,
+          "height": 596,
           "series": [
             {
               "color": [
@@ -141,10 +143,7 @@
             }
           ]
         }
-      ],
-      "window": {
-        "visible": false
-      }
+      ]
     },
     "Plot <1>": {
       "plots": [

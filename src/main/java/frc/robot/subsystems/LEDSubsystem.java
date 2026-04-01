@@ -26,7 +26,7 @@ public class LEDSubsystem extends SubsystemBase {
     led1.setLength(Constants.LEDConstants.BufferLength);
     led1.setData(buffer1);
     led1.start();
-    bagelbow();
+   // bagelbow();
   }
   
    public void setColor(Color color) {
@@ -41,26 +41,26 @@ public class LEDSubsystem extends SubsystemBase {
     
    }
 
-   public void bagelbow() {
+  //  public void bagelbow() {
    
-    for(var i = 0; i < 8; i++) {
+  //   for(var i = 0; i < 8; i++) {
 
 
       
-      buffer1.setLED((m_bagelbow_first_index + i)%16 , Color.kBlue);
-      //buffer1.setLED((m_bagelbow_first_index + i) , Color.kBlue);
-      buffer1.setLED((m_bagelbow_first_index + i + 8)%16 , Color.kYellow);
-      //buffer1.setLED((m_bagelbow_first_index + i + 8), Color.kYellow);
+  //     buffer1.setLED((m_bagelbow_first_index + i)%16 , Color.kBlue);
+  //     //buffer1.setLED((m_bagelbow_first_index + i) , Color.kBlue);
+  //     buffer1.setLED((m_bagelbow_first_index + i + 8)%16 , Color.kYellow);
+  //     //buffer1.setLED((m_bagelbow_first_index + i + 8), Color.kYellow);
       
-    }
+  //   }
 
 
     
   
-    m_bagelbow_first_index = (int)(Timer.getFPGATimestamp()* 8) % 16;
-    led1.setData(buffer1);
+  //   m_bagelbow_first_index = (int)(Timer.getFPGATimestamp()* 8) % 16;
+  //   led1.setData(buffer1);
 
-   }
+  //  }
 
    public void LEDScroll(int length, int start, boolean isForwards){//technically doesn't actually scroll
     if(isForwards){
@@ -98,8 +98,6 @@ public class LEDSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    if (do_the_rainbow) {
-      bagelbow();
-    }
+    
   }
 }

@@ -70,7 +70,7 @@ public class RobotContainer {
     private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final TurretSubsystem t_TurretSubsystem = new TurretSubsystem();
     private final HoodSubsystem h_HoodSubsystem = new HoodSubsystem();
-    private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
+   // private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final LIDARSubsystem l_lidarSubsystem = new LIDARSubsystem();
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
@@ -407,16 +407,16 @@ public class RobotContainer {
 
         t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
         c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()), c_ClimbSubsystem));
-        l_LEDSubsystem.setDefaultCommand(
-        new InstantCommand(()->
-        {
-            l_LEDSubsystem.DoTheRainbow(false);
-            l_LEDSubsystem.LEDScroll(8,0,true);
-            l_LEDSubsystem.LEDScroll(8, 8, false);
+        // l_LEDSubsystem.setDefaultCommand(
+        // new InstantCommand(()->
+        // {
+        //     l_LEDSubsystem.DoTheRainbow(false);
+        //     l_LEDSubsystem.LEDScroll(8,0,true);
+        //     l_LEDSubsystem.LEDScroll(8, 8, false);
             
 
-        }
-        , l_LEDSubsystem));
+        // }
+        // , l_LEDSubsystem));
         
         
         
@@ -503,8 +503,8 @@ public class RobotContainer {
         // ()-> -driver.getRawAxis(4) * power, 
         // ()-> true)));
         
-        extendClimb.onTrue(ExtendClimb());
-        retractClimb.onTrue(RetractClimb());
+        //extendClimb.onTrue(ExtendClimb());
+        //retractClimb.onTrue(RetractClimb());
         // CORIGHTBUMPER.whileTrue(Shoot());
         // //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         // CORIGHTBUMPER.onFalse(ShootOff());

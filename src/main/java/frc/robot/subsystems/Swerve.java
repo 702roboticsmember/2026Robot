@@ -294,7 +294,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       {
         doRejectUpdate = true;
       }
-      if(mt1.avgTagDist > 4)
+      if(mt1.avgTagDist > 5.8)
       {
         doRejectUpdate = true;
       }
@@ -307,7 +307,7 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
       if(!doRejectUpdate)
       {
         
-        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Math.sqrt( mt1.std[0]) * 5, Math.sqrt(mt1.std[1])* 5, Math.sqrt(mt1.std[2] ) ));
+        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] * 5, mt1.std[1]* 5, mt1.std[2]));
         swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);
