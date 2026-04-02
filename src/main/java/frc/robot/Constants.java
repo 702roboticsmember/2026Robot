@@ -1,5 +1,7 @@
 package frc.robot;
 
+
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -278,17 +280,20 @@ public final class Constants {
          * loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
          */
-        public static final double OPEN_LOOP_RAMP = 0.25;
-        public static final double CLOSED_LOOP_RAMP = 0.0;
+
+        public static final boolean isOpenLoop = true;//true
+
+        public static final double OPEN_LOOP_RAMP = 0.25;//.25
+        public static final double CLOSED_LOOP_RAMP = 0.4;//.25
 
         public static final PIDConstants ANGLE_PID = new PIDConstants(FALCON_500_CONSTANTS.angleKP,
                 FALCON_500_CONSTANTS.angleKI, FALCON_500_CONSTANTS.angleKD);
         public static final PIDConstants DRIVE_PID = new PIDConstants(0.12, 0, 0.0);
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double DRIVE_KS = 0.32;//.32
-        public static final double DRIVE_KV = 1.51;//1.51
-        public static final double DRIVE_KA = 0.27;//.27
+        public static final double DRIVE_KS = 0.22;//.32
+        public static final double DRIVE_KV = 1.8;//1.51
+        public static final double DRIVE_KA = 0.18;//.27
 
         /** Units: m/s */
         public static final double MAX_SPEED = 12;
@@ -389,7 +394,7 @@ public final class Constants {
         public static final PIDConstants anglePID = new PIDConstants(0, 0, 0);
 
         public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_LIMIT = 40;//35
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
@@ -414,7 +419,7 @@ public final class Constants {
         public static final int angleMotor = 0;
         public static double angle = 0;
         
-        public static double allowedShootingTolerance = 10;
+        public static double allowedShootingTolerance = 8;
 
     }
 

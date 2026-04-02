@@ -108,7 +108,7 @@ public class Swerve extends SubsystemBase {
                 swerveModuleStates, Constants.Swerve.MAX_SPEED);
 
         for (int i = 0; i < swerveModuleStates.length; i++) {
-            swerveModules[i].setDesiredState(swerveModuleStates[i], false);
+            swerveModules[i].setDesiredState(swerveModuleStates[i], Constants.Swerve.isOpenLoop);
         }
     }
 
@@ -141,7 +141,7 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
 
         for (SwerveModule mod : swerveModules) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], Constants.Swerve.isOpenLoop);
         }
     }
 
@@ -159,7 +159,7 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, Constants.Swerve.MAX_SPEED);
 
         for (SwerveModule mod : swerveModules) {
-            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], false);
+            mod.setDesiredState(swerveModuleStates[mod.moduleNumber], Constants.Swerve.isOpenLoop);
         }
     }
 
@@ -168,7 +168,7 @@ public class Swerve extends SubsystemBase {
         SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, Constants.Swerve.MAX_SPEED);
 
         for (SwerveModule mod : swerveModules) {
-            mod.setDesiredState(desiredStates[mod.moduleNumber], false);
+            mod.setDesiredState(desiredStates[mod.moduleNumber], Constants.Swerve.isOpenLoop);
         }
     }
 
@@ -299,15 +299,15 @@ public void addmt1VisionMeasurement(LimelightHelpersCameronEdition.PoseEstimate 
         doRejectUpdate = true;
       }
       if(Double.isNaN(mt1.std[0]) || Double.isNaN(mt1.std[1]) || Double.isNaN(mt1.std[2])){
-            mt1.std[0] = .5;
-            mt1.std[1] =.5;
-            mt1.std[2] = 9999999;
+            mt1.std[0] = .05;
+            mt1.std[1] =.05;
+            mt1.std[2] = .1;
         }
 
       if(!doRejectUpdate)
       {
         
-        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(mt1.std[0] * 5, mt1.std[1]* 5, mt1.std[2]));
+        swervePoseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(Math.pow(mt1.std[0],2) * 200, Math.pow(mt1.std[1],2)* 200, Math.pow(mt1.std[2],2)));
         swervePoseEstimator.addVisionMeasurement(
             mt1.pose,
             mt1.timestampSeconds);

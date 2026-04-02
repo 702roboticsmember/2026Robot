@@ -79,7 +79,7 @@ public class SwerveModule {
             double toOutputVelocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
                     Constants.Swerve.WHEEL_CIRCUMFERENCE);
 
-            // toOutputVelocity = closedLoopLimiter.calculate(toOutputVelocity);
+            //toOutputVelocity = closedLoopLimiter.calculate(toOutputVelocity);
 
             driveVelocity.Velocity = toOutputVelocity;
             driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
