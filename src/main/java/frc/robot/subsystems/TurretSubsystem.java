@@ -63,7 +63,7 @@ public class TurretSubsystem extends SubsystemBase {
               
     
             var motionMagicConfigs = turretConfig.MotionMagic;
-              motionMagicConfigs.MotionMagicCruiseVelocity = 55; // Target cruise velocity of 80 rps 40
+              motionMagicConfigs.MotionMagicCruiseVelocity = 100; // Target cruise velocity of 80 rps 40
               motionMagicConfigs.MotionMagicAcceleration = 100; // 80 Target acceleration of 160 rps/s (0.5 seconds)
               motionMagicConfigs.MotionMagicJerk = 800; // Target jerk of 1600 rps/s/s (0.1 seconds)
 

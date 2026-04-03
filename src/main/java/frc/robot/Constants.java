@@ -230,7 +230,7 @@ public final class Constants {
          */
         public static final double DRIVEBASE_RADIUS = DRIVEBASE_DIAMETER / 2f;
 
-        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.049809;
+        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.0508;
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
@@ -281,7 +281,7 @@ public final class Constants {
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
          */
 
-        public static final boolean isOpenLoop = true;//true
+        public static final boolean isOpenLoop = false;//true
 
         public static final double OPEN_LOOP_RAMP = 0.25;//.25
         public static final double CLOSED_LOOP_RAMP = 0.4;//.25

@@ -159,7 +159,7 @@ public class AutoAimCommand extends Command {
     double vx = CalculateVx(distance, vy);
     double vs = CalculateVs(vx, vy, vrx, vrz, angleOffset);
     double shootAngle = CalculateShootAngle(vx, vy, vrx, vrz, angleOffset);
-    double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
     RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
@@ -227,28 +227,7 @@ public class AutoAimCommand extends Command {
     return false;
   }
 
-  /**
-   * Checks if the shot is within tolerance to shoot a ball.
-   */
-  // public void checkAngle (){//TODO Currently not accurate for shot on the move.
-  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
-  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
-  //  if (off < 1.05 && off > -1.05){
-  //    this.angleRight = true;
-  //   }else{
-  //    this.angleRight = false;
-  //   }
-  // }
-
-  // public void Good (){//TODO Currently not accurate for shot on the move.
-  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
-  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
-  //  if (off < 1.05 && off > -1.05){
-  //    this.angleRight = true;
-  //   }else{
-  //    this.angleRight = false;
-  //   }
-  // }
+ 
 
   private double getDistance(Pose2d Pose) {
     return Pose.getTranslation().getDistance(poi);
@@ -278,15 +257,7 @@ public class AutoAimCommand extends Command {
       x,
       y);
       
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
-    // //Swerve.gyro.getRobotCentricVelocityX()
-    //new Translation2d();
+
     return vel.rotateBy(angle).getX();
   }
   
@@ -304,16 +275,7 @@ public class AutoAimCommand extends Command {
     Translation2d vel = new Translation2d(
       x,
       y);
-      
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
-    // //Swerve.gyro.getRobotCentricVelocityX()
-    //new Translation2d();
+  
     return -vel.rotateBy(angle).getY();
   }
   /**
