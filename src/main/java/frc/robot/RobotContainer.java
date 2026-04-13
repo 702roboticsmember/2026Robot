@@ -70,7 +70,7 @@ public class RobotContainer {
     private final FloorIndexerSubsystem f_FloorIndexerSubsystem = new FloorIndexerSubsystem();
     private final TurretSubsystem t_TurretSubsystem = new TurretSubsystem();
     private final HoodSubsystem h_HoodSubsystem = new HoodSubsystem();
-    private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
+   // private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final LIDARSubsystem l_lidarSubsystem = new LIDARSubsystem();
     private final XboxController driver = new XboxController(0);
     private final XboxController codriver = new XboxController(1);
@@ -123,6 +123,7 @@ public class RobotContainer {
     public static boolean robotCentric = false;
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
+    public static double liveTune = 0; //controlled with Left and Right Bumpers, used for adjusting shooting strength during the match
 
     public static Locations currentPOI = Locations.BLUEHUB;
     private Field2d locField2d = new Field2d();
@@ -407,16 +408,16 @@ public class RobotContainer {
 
         t_TurretSubsystem.setDefaultCommand(new TurretRotateManualCommand(() -> driver.getRightX(), t_TurretSubsystem));
         c_ClimbSubsystem.setDefaultCommand(new InstantCommand(()-> c_ClimbSubsystem.setSpeed(driver.getLeftTriggerAxis() - driver.getRightTriggerAxis()), c_ClimbSubsystem));
-        l_LEDSubsystem.setDefaultCommand(
-        new InstantCommand(()->
-        {
-            l_LEDSubsystem.DoTheRainbow(false);
-            l_LEDSubsystem.LEDScroll(8,0,true);
-            l_LEDSubsystem.LEDScroll(8, 8, false);
+        // l_LEDSubsystem.setDefaultCommand(
+        // new InstantCommand(()->
+        // {
+        //     l_LEDSubsystem.DoTheRainbow(false);
+        //     l_LEDSubsystem.LEDScroll(8,0,true);
+        //     l_LEDSubsystem.LEDScroll(8, 8, false);
             
 
-        }
-        , l_LEDSubsystem));
+        // }
+        // , l_LEDSubsystem));
         
         
         
@@ -496,15 +497,21 @@ public class RobotContainer {
          COUP.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(0), t_TurretSubsystem));
          CODOWN.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(180), t_TurretSubsystem));
          COLEFT.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(90), t_TurretSubsystem));
-         CORIGHT.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(-85), t_TurretSubsystem));
+         CORIGHT.whileTrue(new InstantCommand(() -> liveTune -= Constants.ShooterConstants.TuneStrength));
+
+
+        //Used for adjusting aim strength mid match
+        // COLEFTBUMPER.onTrue(new InstantCommand(() -> liveTune += Constants.ShooterConstants.TuneStrength));
+        // CORIGHTBUMPER.onTrue(new InstantCommand(() -> liveTune -= Constants.ShooterConstants.TuneStrength));
+
         // COSTART.whileTrue((new TeleopSwerve(s_Swerve, 
         // ()-> -driver.getRawAxis(1) * power, 
         // ()-> -driver.getRawAxis(0) * power,
         // ()-> -driver.getRawAxis(4) * power, 
         // ()-> true)));
         
-        extendClimb.onTrue(ExtendClimb());
-        retractClimb.onTrue(RetractClimb());
+        //extendClimb.onTrue(ExtendClimb());
+        //retractClimb.onTrue(RetractClimb());
         // CORIGHTBUMPER.whileTrue(Shoot());
         // //shoot.whileTrue(new InstantCommand(()-> hoodUp= ()-> false));
         // CORIGHTBUMPER.onFalse(ShootOff());
