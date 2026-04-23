@@ -159,7 +159,7 @@ public class AutoAimCommand extends Command {
     double vx = CalculateVx(distance, vy);
     double vs = CalculateVs(vx, vy, vrx, vrz, angleOffset);
     double shootAngle = CalculateShootAngle(vx, vy, vrx, vrz, angleOffset);
-    double RobotBasedAngle = getTurretAngleToHub(RobotPoseAdjustedTolimelightTurret(Robotpose)).getDegrees();
+    double RobotBasedAngle = getTurretAngleToHub(pose).getDegrees();
     RobotBasedAngle += angleOffset;
 
     if(RobotBasedAngle > Constants.TurretConstants.forwardLimit){
@@ -197,6 +197,8 @@ public class AutoAimCommand extends Command {
       //Linear regression.
       //double output = vs * 2.00429 + 1.91073;//TODO Calibrate based on input velocity vs ball actual velocity
       double output = 0.450191 * Math.pow(vs, 3) -9.12405 * Math.pow(vs, 2) + 62.95509* vs -131.96832;
+      //double output = 0.811385 * Math.pow(vs, 3) -16.69722 * Math.pow(vs, 2) + 116.04568* vs -256.58627;//y=0.811385x^{3}-16.69722x^{2}+116.04568x-256.58627
+      //double output = 1.74188 * vs + 3.91243;
       //double output = 3.64532 * Math.pow(vs, 0.76359);
       //2.2492 + 0.56157
       //Quartic regression
@@ -216,7 +218,7 @@ public class AutoAimCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    s_ShooterSubsystem.setVelocity(0);
+    s_ShooterSubsystem.setSpeed(0);
   }
 
   // Returns true when the command should end.
@@ -225,28 +227,7 @@ public class AutoAimCommand extends Command {
     return false;
   }
 
-  /**
-   * Checks if the shot is within tolerance to shoot a ball.
-   */
-  // public void checkAngle (){//TODO Currently not accurate for shot on the move.
-  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
-  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
-  //  if (off < 1.05 && off > -1.05){
-  //    this.angleRight = true;
-  //   }else{
-  //    this.angleRight = false;
-  //   }
-  // }
-
-  // public void Good (){//TODO Currently not accurate for shot on the move.
-  //  Pose2d pose = Constants.TurretConstants.turretPose2d;
-  //   double off = getAngleToHub(pose).getTan()*getDistance(pose);
-  //  if (off < 1.05 && off > -1.05){
-  //    this.angleRight = true;
-  //   }else{
-  //    this.angleRight = false;
-  //   }
-  // }
+ 
 
   private double getDistance(Pose2d Pose) {
     return Pose.getTranslation().getDistance(poi);
@@ -276,15 +257,7 @@ public class AutoAimCommand extends Command {
       x,
       y);
       
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
-    // //Swerve.gyro.getRobotCentricVelocityX()
-    //new Translation2d();
+
     return vel.rotateBy(angle).getX();
   }
   
@@ -302,16 +275,7 @@ public class AutoAimCommand extends Command {
     Translation2d vel = new Translation2d(
       x,
       y);
-      
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("velxtest", Swerve.gyro.getVelocityX());
-    //   SmartDashboard.putNumber("velytest", Swerve.gyro.getVelocityY());
-    //   SmartDashboard.putNumber("velztest", Swerve.gyro.getVelocityZ());
-    //   SmartDashboard.putNumber("gyroangle", Swerve.gyro.getAngle());
-    // //Swerve.gyro.getRobotCentricVelocityX()
-    //new Translation2d();
+  
     return -vel.rotateBy(angle).getY();
   }
   /**

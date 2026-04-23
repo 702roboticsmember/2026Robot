@@ -1,5 +1,7 @@
 package frc.robot;
 
+
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -61,11 +63,11 @@ public final class Constants {
 
     public enum Locations {
         BLUEHUB(new Translation2d(4.620419, 4.034631), "Blue Alliance Hub"),
-        BLUELEFT(new Translation2d(2, 6.4), "Blue Alliance left side"),
-        BLUERIGHT(new Translation2d(2, 1.8),  "Blue Alliance right side"),
+        BLUELEFT(new Translation2d(1, 6.4), "Blue Alliance left side"),
+        BLUERIGHT(new Translation2d(1, 1.8),  "Blue Alliance right side"),
         REDHUB(new Translation2d(11.910219, 4.034631), "Red Alliance Hub"),
-        REDLEFT(flipTranslation2d(new Translation2d(0.25, 6.4)), "Red Alliance left side"),//(2,6.4)
-        REDRIGHT(flipTranslation2d(new Translation2d(0.25, 1.8)),  "Red Alliance right side"),//(2,1.8)
+        REDLEFT(flipTranslation2d(new Translation2d(1, 6.4)), "Red Alliance left side"),//(2,6.4)
+        REDRIGHT(flipTranslation2d(new Translation2d(1, 1.8)),  "Red Alliance right side"),//(2,1.8)
         CENTER(new Translation2d(8.270494, 4.034536), "Center"),
         BLUELT(new Translation2d(6, 7.4), "Blue Left Trench Entry"),
         REDLT(flipTranslation2d(new Translation2d(6, 7.4)), "Red Left Trench Entry");
@@ -228,7 +230,7 @@ public final class Constants {
          */
         public static final double DRIVEBASE_RADIUS = DRIVEBASE_DIAMETER / 2f;
 
-        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.050846;
+        public static final double WHEEL_CIRCUMFERENCE = 2 * Math.PI * 0.0508;
 
         public static final SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(
                 new Translation2d(BASE_WIDTH / 2.0, TRACK_WIDTH / 2.0),
@@ -249,7 +251,7 @@ public final class Constants {
         /**
          * Units: Volts
          */
-        public static final int ANGLE_STATOR_CURRENT_LIMIT = 40;
+        public static final int ANGLE_STATOR_CURRENT_LIMIT = 60;
         public static final int ANGLE_CURRENT_LIMIT = 25;
         public static final int ANGLE_CURRENT_THRESHOLD = 40;
         public static final double ANGLE_CURRENT_THRESHOLD_TIME = 0.1;
@@ -278,17 +280,20 @@ public final class Constants {
          * loop driving.
          * We found a small open loop ramp (0.25) helps with tread wear, tipping, etc
          */
-        public static final double OPEN_LOOP_RAMP = 0.25;
-        public static final double CLOSED_LOOP_RAMP = 0;
+
+        public static final boolean isOpenLoop = false;//true
+
+        public static final double OPEN_LOOP_RAMP = 0.25;//.25
+        public static final double CLOSED_LOOP_RAMP = 0.4;//.25
 
         public static final PIDConstants ANGLE_PID = new PIDConstants(FALCON_500_CONSTANTS.angleKP,
                 FALCON_500_CONSTANTS.angleKI, FALCON_500_CONSTANTS.angleKD);
         public static final PIDConstants DRIVE_PID = new PIDConstants(0.12, 0, 0.0);
 
         /* Drive Motor Characterization Values From SYSID */
-        public static final double DRIVE_KS = 0.32;//.32
-        public static final double DRIVE_KV = 1.51;//1.51
-        public static final double DRIVE_KA = 0.27;//.27
+        public static final double DRIVE_KS = 0.22;//.32
+        public static final double DRIVE_KV = 1.8;//1.51
+        public static final double DRIVE_KA = 0.18;//.27
 
         /** Units: m/s */
         public static final double MAX_SPEED = 12;
@@ -357,8 +362,8 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int intakeMotor = 13;
         public static final int armMotor = 14;
-        public static final int STATOR_CURRENT_LIMIT = 100;
-        public static final int CURRENT_LIMIT = 100;//35
+        public static final int STATOR_CURRENT_LIMIT = 90;
+        public static final int CURRENT_LIMIT = 60;//35
         public static final int CURRENT_THRESHOLD = 60;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
@@ -389,7 +394,7 @@ public final class Constants {
         public static final PIDConstants anglePID = new PIDConstants(0, 0, 0);
 
         public static final int STATOR_CURRENT_LIMIT = 50;
-        public static final int CURRENT_LIMIT = 35;//35
+        public static final int CURRENT_LIMIT = 40;//35
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
@@ -414,7 +419,7 @@ public final class Constants {
         public static final int angleMotor = 0;
         public static double angle = 0;
         
-        public static double allowedShootingTolerance = 10;
+        public static double allowedShootingTolerance = 8;
 
     }
 
@@ -424,8 +429,8 @@ public final class Constants {
         public static final int shooterMotor2 = 17;
         public static final double conversion = 1.5;
      
-        public static final int STATOR_CURRENT_LIMIT = 120;
-        public static final int CURRENT_LIMIT = 70;//35
+        public static final int STATOR_CURRENT_LIMIT = 100;//120
+        public static final int CURRENT_LIMIT = 60;//35//70
         public static final int CURRENT_THRESHOLD = 40;//60
         public static final double CURRENT_THRESHOLD_TIME = 1;
         public static final boolean ENABLE_CURRENT_LIMIT = true;
@@ -506,7 +511,7 @@ public final class Constants {
         public static final int indexMotorFeeder = 20;
         public static final int indexMotorTurret1 = 21;
         public static final int indexMotorTurret2 = 22;
-        public static final int STATOR_CURRENT_LIMIT = 70;
+        public static final int STATOR_CURRENT_LIMIT = 70;//70
         public static final int CURRENT_LIMIT = 50;//35
         public static final int CURRENT_THRESHOLD = 50;//60
         public static final double CURRENT_THRESHOLD_TIME = 0.1;
@@ -515,16 +520,16 @@ public final class Constants {
         public static final double PrimarySpeed = 0.8;
         public static final double SecondarySpeed = PrimarySpeed;
 
-        public static final int STATOR_CURRENT_LIMIT_SECONDARY = 50;
-        public static final int CURRENT_LIMIT_SECONDARY = 35;
+        public static final int STATOR_CURRENT_LIMIT_SECONDARY = 70;
+        public static final int CURRENT_LIMIT_SECONDARY = 50;
         public static final int CURRENT_THRESHOLD_SECONDARY = 50;
         public static final double CURRENT_THRESHOLD_TIME_SECONDARY = 0.1;
         public static final boolean ENABLE_CURRENT_LIMIT_SECONDARY = true;
         public static final boolean ENABLE_STATOR_CURRENT_LIMIT_SECONDARY = false;
         //Floor Indexer Constants
         ///public static final int FloorID = 0;
-		public static final double FLOOR_STATOR_CURRENT_LIMIT = 140;
-        public static final double FLOOR_CURRENT_LIMIT = 70;
+		public static final double FLOOR_STATOR_CURRENT_LIMIT = 75;//80
+        public static final double FLOOR_CURRENT_LIMIT = 60;
         public static final boolean FLOOR_ENABLE_STATOR_CURRENT_LIMIT = true;
         public static final boolean FLOOR_ENABLE_CURRENT_LIMIT = true;
         public static final double FloorSpeed = 0.3;

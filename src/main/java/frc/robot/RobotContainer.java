@@ -73,7 +73,6 @@ public class RobotContainer {
    // private final LEDSubsystem l_LEDSubsystem = new LEDSubsystem();
     private final LIDARSubsystem l_lidarSubsystem = new LIDARSubsystem();
     private final XboxController driver = new XboxController(0);
-    private final XboxController codriver = new XboxController(1);
 
 
 
@@ -96,20 +95,6 @@ public class RobotContainer {
     
     
     
-    //Co-driver Buttons
-    private final JoystickButton extendClimb = new JoystickButton(codriver, XboxController.Button.kY.value);
-    private final JoystickButton retractClimb = new JoystickButton(codriver, XboxController.Button.kX.value);
-    private final JoystickButton Nest = new JoystickButton(codriver, 0);
-    private final JoystickButton COSTART = new JoystickButton(codriver, XboxController.Button.kStart.value);
-    private final JoystickButton COBACK = new JoystickButton(codriver, XboxController.Button.kBack.value);
-    private final JoystickButton COLEFTBUMPER = new JoystickButton(codriver, XboxController.Button.kLeftBumper.value);
-    private final JoystickButton CORIGHTBUMPER = new JoystickButton(codriver, XboxController.Button.kRightBumper.value);
-  
-    private final POVButton COUP = new POVButton(codriver, Constants.Direction.UP.direction);
-    private final POVButton CODOWN = new POVButton(codriver, Constants.Direction.DOWN.direction);
-    private final POVButton COLEFT = new POVButton(codriver, Constants.Direction.LEFT.direction);
-    private final POVButton CORIGHT = new POVButton(codriver, Constants.Direction.RIGHT.direction);
-    
 
     
    
@@ -123,7 +108,6 @@ public class RobotContainer {
     public static boolean robotCentric = false;
     private final SendableChooser<Command> autoChooser;
     private final SendableChooser<Command> teamChooser;
-    public static double liveTune = 0; //controlled with Left and Right Bumpers, used for adjusting shooting strength during the match
 
     public static Locations currentPOI = Locations.BLUEHUB;
     private Field2d locField2d = new Field2d();
@@ -388,7 +372,7 @@ public class RobotContainer {
 
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(t_TurretSubsystem);
 
     public RobotContainer() {
        
@@ -427,7 +411,7 @@ public class RobotContainer {
         ()-> -driver.getRawAxis(4) * power, 
         ()->false, ()-> getAlliance()));
 
-        s_ShooterSubsystem.setDefaultCommand(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(codriver.getLeftTriggerAxis()* 0.4) , s_ShooterSubsystem));
+        // s_ShooterSubsystem.setDefaultCommand(new InstantCommand(()-> s_ShooterSubsystem.setSpeed(codriver.getLeftTriggerAxis()* 0.4) , s_ShooterSubsystem));
 
         // driver.setRumble(RumbleType.kBothRumble, 0.2);
 
@@ -453,7 +437,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("ArmPartial", ArmPartial());
         NamedCommands.registerCommand("HoodDown", HoodDown());
 
-        t_TurretSubsystem.setDefaultCommand(t_TurretSubsystem.run(()-> codriver.getRawAxis(0)* 0.4));
       
 
         
@@ -494,16 +477,6 @@ public class RobotContainer {
         LEFT.onTrue(wrapLocationChange(()-> prevLocation()));
         armOut.onTrue(ArmOut());
 
-         COUP.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(0), t_TurretSubsystem));
-         CODOWN.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(180), t_TurretSubsystem));
-         COLEFT.whileTrue(Commands.run(()-> t_TurretSubsystem.goToAngle(90), t_TurretSubsystem));
-         CORIGHT.whileTrue(new InstantCommand(() -> liveTune -= Constants.ShooterConstants.TuneStrength));
-
-
-        //Used for adjusting aim strength mid match
-        // COLEFTBUMPER.onTrue(new InstantCommand(() -> liveTune += Constants.ShooterConstants.TuneStrength));
-        // CORIGHTBUMPER.onTrue(new InstantCommand(() -> liveTune -= Constants.ShooterConstants.TuneStrength));
-
         // COSTART.whileTrue((new TeleopSwerve(s_Swerve, 
         // ()-> -driver.getRawAxis(1) * power, 
         // ()-> -driver.getRawAxis(0) * power,
@@ -532,19 +505,19 @@ public class RobotContainer {
 
 
     void nextLocation(){
-        this.currentPOI = this.currentPOI.next();
+        RobotContainer.currentPOI = RobotContainer.currentPOI.next();
     }
 
     void prevLocation(){
-        this.currentPOI = this.currentPOI.prev();
+        RobotContainer.currentPOI = RobotContainer.currentPOI.prev();
     }
 
     void nextAllianceLocation(){
-        this.currentPOI = this.currentPOI.AlianceNext(getAlliance());
+        RobotContainer.currentPOI = RobotContainer.currentPOI.AlianceNext(getAlliance());
     }
 
     void prevAllianceLocation(){
-        this.currentPOI = this.currentPOI.AliancePrev(getAlliance());
+        RobotContainer.currentPOI = RobotContainer.currentPOI.AliancePrev(getAlliance());
     }
 
 

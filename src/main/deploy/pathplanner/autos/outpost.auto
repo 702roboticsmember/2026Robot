@@ -40,7 +40,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Right-start-middle-deadcollect"
+                        "pathName": "Right-Outpost"
                       }
                     }
                   ]
@@ -53,12 +53,6 @@
           "type": "sequential",
           "data": {
             "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "DeadCollectRight-trenchshot"
-                }
-              },
               {
                 "type": "race",
                 "data": {
@@ -73,12 +67,6 @@
                       "type": "named",
                       "data": {
                         "name": "Shoot"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RightTrench-Outpost"
                       }
                     }
                   ]
